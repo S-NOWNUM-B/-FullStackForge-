@@ -1,36 +1,152 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Личный Сайт-Визитка
 
-## Getting Started
+> Современный и элегантный веб-сайт для презентации профессионального портфолио
 
-First, run the development server:
+---
+
+## 🚀 О проекте
+
+Этот проект представляет собой полнофункциональный **личный сайт-визитку**, созданный с использованием **современных веб-технологий**. Сайт предназначен для демонстрации профессиональных навыков, портфолио проектов и предоставления удобного способа связи.
+
+### ✨ Основные возможности
+
+- **🏠 Главная страница** — привлекательная презентация с призывами к действию
+- **👤 О себе** — детальная информация о навыках и профессиональном опыте
+- **🎨 Портфолио** — интерактивная галерея проектов с фильтрацией по технологиям
+- **📞 Контакты** — удобная форма обратной связи и часто задаваемые вопросы
+- **⚙️ Админ-панель** — система управления контентом для обновления информации
+
+---
+
+## 🛠️ Технологический стек
+
+### Frontend
+[![Next.js](https://img.shields.io/badge/Next.js-15-blue?style=flat&logo=next.js)](https://nextjs.org/) 
+[![React](https://img.shields.io/badge/React-19-green?style=flat&logo=react)](https://reactjs.org/) 
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/) 
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4%2B-blue?style=flat&logo=tailwind-css)](https://tailwindcss.com/) 
+[![Framer Motion](https://img.shields.io/badge/Framer%20Motion-11.0%2B-orange?style=flat&logo=framer)](https://www.framer.com/motion/) 
+[![Radix UI](https://img.shields.io/badge/Radix%20UI-1.0%2B-purple?style=flat&logo=radix-ui)](https://www.radix-ui.com/) 
+[![Lucide React](https://img.shields.io/badge/Lucide%20React-0.400%2B-yellow?style=flat&logo=lucide)](https://lucide.dev/)
+
+### Backend
+[![Next.js API](https://img.shields.io/badge/Next.js%20API-Routes-blue?style=flat&logo=next.js)](https://nextjs.org/docs/api-routes/introduction) 
+[![MongoDB](https://img.shields.io/badge/MongoDB-7.0%2B-green?style=flat&logo=mongodb)](https://www.mongodb.com/) 
+[![Mongoose](https://img.shields.io/badge/Mongoose-8.3%2B-orange?style=flat&logo=mongoose)](https://mongoosejs.com/) 
+[![JWT](https://img.shields.io/badge/JWT-9.0%2B-purple?style=flat&logo=json-web-tokens)](https://jwt.io/)
+
+### Инструменты разработки
+[![React Hook Form](https://img.shields.io/badge/React%20Hook%20Form-7.50%2B-blue?style=flat&logo=react-hook-form)](https://react-hook-form.com/) 
+[![Zod](https://img.shields.io/badge/Zod-3.23%2B-green?style=flat&logo=zod)](https://zod.dev/) 
+[![Axios](https://img.shields.io/badge/Axios-1.7%2B-orange?style=flat&logo=axios)](https://axios-http.com/) 
+[![pnpm](https://img.shields.io/badge/pnpm-9.12%2B-purple?style=flat&logo=pnpm)](https://pnpm.io/) 
+[![ESLint](https://img.shields.io/badge/ESLint-9.6%2B-yellow?style=flat&logo=eslint)](https://eslint.org/)
+
+---
+
+## ⚡ Быстрый старт
+
+### 📋 Предварительные требования
+
+- Node.js версии **18.x** или выше
+- pnpm версии **10.15.0** или выше
+- MongoDB (локально или **MongoDB Atlas**)
+
+### 🛠️ Установка
+
+1. **Клонируйте репозиторий**
+   ```bash
+   git clone <repository-url>
+   cd Buisnes-website
+   ```
+
+2. **Установите зависимости**
+   ```bash
+   pnpm install
+   ```
+
+3. **Настройте переменные окружения**
+   
+   Создайте файл `.env.local` в корне проекта:
+   ```bash
+   cp .env.example .env.local
+   ```
+   
+   Отредактируйте `.env.local`:
+   ```env
+   # MongoDB Connection
+   MONGODB_URI=mongodb://localhost:27017/portfolio
+   
+   # Admin Panel Password
+   ADMIN_PASSWORD=your_secure_password
+   ```
+
+4. **Запустите проект**
+   ```bash
+   pnpm dev
+   ```
+
+Откройте [http://localhost:3000](http://localhost:3000) в браузере.
+
+---
+
+## 📁 Структура проекта
+
+```
+Buisnes-website/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── (page)/            # Публичные страницы
+│   │   │   ├── About/         # Страница "О себе"
+│   │   │   ├── Contacts/      # Страница контактов
+│   │   │   ├── Projects/      # Страница проектов
+│   │   │   └── components/    # Общие компоненты
+│   │   ├── admin/             # Административная панель
+│   │   └── api/               # API маршруты
+│   ├── components/            # Переиспользуемые компоненты
+│   ├── lib/                   # Утилиты и хелперы
+│   └── types/                 # TypeScript типы
+├── data/                      # Модели и подключение к БД
+├── public/                    # Статические файлы
+└── конфигурационные файлы     # .env, next.config.js и др.
+```
+---
+
+## 🎨 Особенности дизайна
+
+- **📱 Адаптивный дизайн** — отлично выглядит на всех устройствах
+- **🌙 Темная/светлая тема** — поддержка переключения тем
+- **✨ Плавные анимации** — современные переходы и эффекты
+- **🚀 Оптимизированная производительность** — быстрая загрузка и отзывчивость
+- **🔍 SEO-оптимизация** — правильная структура для поисковых систем
+
+---
+
+## 📊 Управление контентом
+
+### 🛡️ Административная панель
+
+**Доступ к админ-панели:** `/admin`
+
+**Возможности:**
+- ➕ Добавление и редактирование проектов
+- ⚙️ Управление настройками сайта
+- 📥 Просмотр сообщений из контактной формы
+- 🎛️ Настройка отображения контента
+
+---
+
+## 🔧 Команды разработки
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Запуск в режиме разработки
 pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Сборка для продакшена
+pnpm build
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Запуск production сервера
+pnpm start
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Проверка кода линтером
+pnpm lint
