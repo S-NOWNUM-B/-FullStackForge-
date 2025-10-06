@@ -76,31 +76,31 @@ export async function POST(request: NextRequest) {
             <body>
               <div class="container">
                 <div class="header">
-                  <h1>📧 Новое сообщение с сайта-портфолио</h1>
+                  <h1>Новое сообщение с сайта-портфолио</h1>
                 </div>
                 <div class="content">
                   <div class="field">
-                    <div class="field-label">👤 Имя:</div>
+                    <div class="field-label">Имя:</div>
                     <div class="field-value">${name}</div>
                   </div>
                   
                   <div class="field">
-                    <div class="field-label">📧 Email:</div>
+                    <div class="field-label">Email:</div>
                     <div class="field-value"><a href="mailto:${email}">${email}</a></div>
                   </div>
                   
                   <div class="field">
-                    <div class="field-label">📂 Тип проекта:</div>
+                    <div class="field-label">Тип проекта:</div>
                     <div class="field-value">${projectTypeLabels[projectType] || projectType}</div>
                   </div>
                   
                   <div class="field">
-                    <div class="field-label">📌 Тема:</div>
+                    <div class="field-label">Тема:</div>
                     <div class="field-value">${subject}</div>
                   </div>
                   
                   <div class="field">
-                    <div class="field-label">💬 Сообщение:</div>
+                    <div class="field-label">Сообщение:</div>
                     <div class="field-value">${message.replace(/\n/g, '<br>')}</div>
                   </div>
                   
