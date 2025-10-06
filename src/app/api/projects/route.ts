@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category') || '';
     const tech = searchParams.get('tech') || '';
 
-    const query: any = {};
+    const query: Record<string, unknown> = {};
 
     if (search) {
       query.$or = [
@@ -45,9 +45,10 @@ export async function GET(request: NextRequest) {
       currentPage: page,
       total,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Ошибка при получении проектов:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
 
@@ -63,9 +64,10 @@ export async function POST(request: NextRequest) {
       data: project,
       message: 'Проект создан успешно',
     }, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Ошибка при создании проекта:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
 
@@ -98,9 +100,10 @@ export async function PUT(request: NextRequest) {
       data: project,
       message: 'Проект обновлен успешно',
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Ошибка при обновлении проекта:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
 
@@ -132,8 +135,9 @@ export async function DELETE(request: NextRequest) {
       success: true,
       message: 'Проект удален успешно',
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Ошибка при удалении проекта:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

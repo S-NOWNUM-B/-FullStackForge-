@@ -62,7 +62,7 @@ export default function ProjectsPage() {
         allProjects = data.projects || [];
         
         // Фильтрация на клиенте
-        let filtered = allProjects.filter((project) => {
+        const filtered = allProjects.filter((project) => {
           const searchLower = search.toLowerCase();
           const matchesSearch = !search || 
             project.title.toLowerCase().includes(searchLower) ||
@@ -124,7 +124,7 @@ export default function ProjectsPage() {
             className="mb-12 text-center"
           >
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-white">
-              Мои Проекты
+                Мои <span className="text-red-600 font-semibold">проекты</span>
             </h1>
             <p className="text-gray-400 text-lg md:text-xl">
               Здесь собраны мои работы и разработки

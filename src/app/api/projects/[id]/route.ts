@@ -33,10 +33,11 @@ export async function GET(
       success: true,
       data: project,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Ошибка при получении проекта:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: message },
       { status: 500 }
     );
   }

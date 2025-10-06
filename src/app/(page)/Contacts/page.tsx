@@ -103,7 +103,7 @@ export default function ContactsPage() {
       } else {
         throw new Error('Failed to send message');
       }
-    } catch (error) {
+    } catch {
       toast.error("Ошибка при отправке", {
         description: "Пожалуйста, попробуйте еще раз или свяжитесь со мной напрямую через email.",
       });
@@ -129,7 +129,7 @@ export default function ContactsPage() {
             className="text-center mb-16"
           >
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-              Давайте обсудим ваш проект
+                Давайте обсудим <span className="text-red-600 font-semibold">ваш проект</span>
             </h1>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
               Готов воплотить ваши идеи в качественные веб-решения

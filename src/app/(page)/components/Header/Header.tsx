@@ -5,13 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 
 const navLinks = [
   { href: "/", label: "Главная" },
   { href: "/About", label: "Обо мне" },
   { href: "/Projects", label: "Проекты" },
-  { href: "/Contacts", label: "Контакты" },
+  { href: "/Contacts", label: "Консультация" },
 ];
 
 export default function Header() {
