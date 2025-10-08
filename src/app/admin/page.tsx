@@ -49,7 +49,7 @@ export default function AdminPage() {
   }, [isAuthenticated]);
 
   const handleLogin = () => {
-    if (password === 'admin123') {
+    if (password === 'SFG5467Xx$') {
       setIsAuthenticated(true);
     } else {
       alert('Неверный пароль!');

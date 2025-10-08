@@ -2,7 +2,8 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-    output: 'standalone',
+    // Убрали output: 'standalone' для Render
+    // Standalone нужен только для Docker
 };
 
 export default nextConfig;
