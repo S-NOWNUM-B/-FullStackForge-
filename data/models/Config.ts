@@ -20,6 +20,7 @@ const ConfigSchema: Schema<IConfig> = new Schema(
         message: 'Ключ должен быть одним из: home, about, contact',
       },
       unique: true,
+      index: true,
     },
     title: {
       type: String,
@@ -44,8 +45,7 @@ const ConfigSchema: Schema<IConfig> = new Schema(
   }
 );
 
-// Индекс для быстрого поиска по ключу
-ConfigSchema.index({ key: 1 });
+// Индекс уже определен в схеме выше
 
 const Config: Model<IConfig> =
   mongoose.models.Config || mongoose.model<IConfig>('Config', ConfigSchema);

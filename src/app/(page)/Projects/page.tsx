@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -30,14 +30,6 @@ export default function ProjectsPage() {
   const [technologies, setTechnologies] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    fetchFilters();
-  }, []);
-
-  useEffect(() => {
-    fetchProjects();
-  }, [search, selectedCategory, selectedTech, sortOrder, page]);
-
   const fetchFilters = async () => {
     try {
       const res = await fetch('/api/projects/filters');
@@ -51,7 +43,7 @@ export default function ProjectsPage() {
     }
   };
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     setLoading(true);
     try {
       let allProjects: Project[] = [];
@@ -94,7 +86,15 @@ export default function ProjectsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search, selectedCategory, selectedTech, sortOrder, page]);
+
+  useEffect(() => {
+    fetchFilters();
+  }, []);
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
 
   const resetFilters = () => {
     setSearch('');
