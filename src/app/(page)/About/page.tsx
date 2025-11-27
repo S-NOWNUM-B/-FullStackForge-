@@ -15,39 +15,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
-import { FaJava, FaPython, FaNodeJs, FaReact, FaHtml5, FaCss3Alt, FaDocker, FaGitAlt, FaAws, FaFigma } from "react-icons/fa";
-import { SiSpring, SiDjango, SiFastapi, SiTypescript, SiNextdotjs, SiJavascript, SiPostgresql, SiMysql, SiMongodb, SiAdobephotoshop, SiCoreldraw } from "react-icons/si";
+import { TECHNOLOGIES } from "@/lib/technologies";
 
-const technologiesData = [
-    // Backend
-    { name: "JAVA", color: "bg-orange-500 hover:bg-orange-600", icon: FaJava },
-    { name: "SPRING", color: "bg-green-500 hover:bg-green-600", icon: SiSpring },
-    { name: "PYTHON", color: "bg-blue-500 hover:bg-blue-600", icon: FaPython },
-    { name: "DJANGO", color: "bg-green-700 hover:bg-green-800", icon: SiDjango },
-    { name: "FASTAPI", color: "bg-teal-500 hover:bg-teal-600", icon: SiFastapi },
-    { name: "NODE.JS", color: "bg-green-600 hover:bg-green-700", icon: FaNodeJs },
-
-    // Frontend
-    { name: "TYPESCRIPT", color: "bg-blue-600 hover:bg-blue-700", icon: SiTypescript },
-    { name: "REACT", color: "bg-red-400 hover:bg-red-500", icon: FaReact },
-    { name: "NEXT.JS", color: "bg-gray-900 hover:bg-black border border-gray-700", icon: SiNextdotjs },
-    { name: "JAVASCRIPT", color: "bg-yellow-400 hover:bg-yellow-500 text-black", icon: SiJavascript },
-    { name: "HTML5", color: "bg-orange-600 hover:bg-orange-700", icon: FaHtml5 },
-    { name: "CSS3", color: "bg-blue-500 hover:bg-blue-600", icon: FaCss3Alt },
-
-    // Databases & DevOps
-    { name: "POSTGRESQL", color: "bg-blue-700 hover:bg-blue-800", icon: SiPostgresql },
-    { name: "MYSQL", color: "bg-blue-400 hover:bg-blue-500", icon: SiMysql },
-    { name: "MONGODB", color: "bg-green-600 hover:bg-green-700", icon: SiMongodb },
-    { name: "DOCKER", color: "bg-blue-500 hover:bg-blue-600", icon: FaDocker },
-    { name: "GIT", color: "bg-orange-500 hover:bg-orange-600", icon: FaGitAlt },
-    { name: "AWS", color: "bg-gray-700 hover:bg-gray-800", icon: FaAws },
-
-    // Design
-    { name: "FIGMA", color: "bg-red-500 hover:bg-red-600", icon: FaFigma },
-    { name: "PHOTOSHOP", color: "bg-blue-600 hover:bg-blue-700", icon: SiAdobephotoshop },
-    { name: "CORELDRAW", color: "bg-green-600 hover:bg-green-700", icon: SiCoreldraw },
-];
+const technologiesData = TECHNOLOGIES;
 
 const focusAreas = [
   "Создание современных и удобных web-интерфейсов",
@@ -237,10 +207,10 @@ export default function AboutPage() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 1 + index * 0.03 }}
-                    className={`${tech.color} px-5 py-2.5 rounded-lg font-bold text-sm transition-all cursor-pointer shadow-lg text-white flex items-center gap-2`}
+                    className={`${tech.color} px-5 py-2.5 rounded-lg font-bold text-sm transition-all cursor-pointer shadow-lg flex items-center gap-2`}
                   >
-                    <Icon className="text-base" />
-                    {tech.name}
+                    <Icon className="text-base text-white" />
+                    <span className="text-white">{tech.name}</span>
                   </motion.div>
                 );
               })}

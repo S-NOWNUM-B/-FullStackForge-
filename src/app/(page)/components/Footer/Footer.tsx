@@ -11,14 +11,6 @@ const TelegramIcon = () => (
   </svg>
 );
 
-// Иконка для Microsoft Teams
-const TeamsIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-    <path d="M20.625 8.127h-2.997V7.09c0-.486-.393-.88-.879-.88h-5.623c-.486 0-.88.394-.88.88v1.037H7.249c-.486 0-.88.394-.88.88v6.246c0 .486.394.88.88.88h2.998v1.741c0 .486.394.88.88.88h8.618c.486 0 .88-.394.88-.88V9.007c0-.486-.394-.88-.88-.88zm-9.5 7.126H7.249V9.007h3.876v6.246zm8.618 2.621h-7.738v-1.741h2.117c.486 0 .88-.394.88-.88V9.007h4.741v8.867z"/>
-    <path d="M14.498 11.507h1.254v3.752h-1.254z"/>
-  </svg>
-);
-
 // Иконка для Taplink
 const TaplinkIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
@@ -50,12 +42,6 @@ const socialLinks = [
     href: "https://t.me/snownumb", 
     label: "Telegram",
     color: "hover:bg-[#0088cc]"
-  },
-  { 
-    icon: TeamsIcon, 
-    href: "https://teams.microsoft.com/l/chat/0/0?users=mamayev.stas@gmail.com", 
-    label: "Microsoft Teams",
-    color: "hover:bg-[#6264A7]"
   },
   { 
     icon: TaplinkIcon, 

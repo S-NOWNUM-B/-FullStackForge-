@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit, Trash2, X, Upload, Loader2, Image as ImageIcon } from 'lucide-react';
+import { TECHNOLOGY_NAMES } from '@/lib/technologies';
 
 interface Project {
   _id: string;
@@ -20,6 +21,7 @@ interface Project {
 }
 
 const categories = ['Web', 'Mobile', 'Desktop', 'Design', 'AI/ML', 'Другое'];
+const availableTechnologies = TECHNOLOGY_NAMES;
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -35,7 +37,7 @@ export default function AdminPage() {
     fullDescription: '',
     functionality: '',
     category: 'Web',
-    technologies: '',
+    technologies: [] as string[],
     githubUrl: '',
     demoUrl: '',
   });
@@ -99,7 +101,7 @@ export default function AdminPage() {
         fullDescription: project.fullDescription,
         functionality: project.functionality,
         category: project.category,
-        technologies: project.technologies.join(', '),
+        technologies: project.technologies,
         githubUrl: project.githubUrl || '',
         demoUrl: project.demoUrl || '',
       });
@@ -113,7 +115,7 @@ export default function AdminPage() {
         fullDescription: '',
         functionality: '',
         category: 'Web',
-        technologies: '',
+        technologies: [] as string[],
         githubUrl: '',
         demoUrl: '',
       });
@@ -134,7 +136,7 @@ export default function AdminPage() {
       fullDescription: '',
       functionality: '',
       category: 'Web',
-      technologies: '',
+      technologies: [] as string[],
       githubUrl: '',
       demoUrl: '',
     });
@@ -160,7 +162,7 @@ export default function AdminPage() {
 
     const projectData = {
       ...formData,
-      technologies: formData.technologies.split(',').map((t) => t.trim()).filter(Boolean),
+      technologies: formData.technologies,
       thumbnail: thumbnailPreview,
       images: imagesPreview,
       ...(editingProject && { _id: editingProject._id }),
@@ -423,17 +425,42 @@ export default function AdminPage() {
                         </div>
 
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
-                            Технологии * (через запятую)
+                          <label className="block text-sm font-medium text-gray-300 mb-3">
+                            Технологии * (выберите минимум одну)
                           </label>
-                          <input
-                            type="text"
-                            required
-                            value={formData.technologies}
-                            onChange={(e) => setFormData({ ...formData, technologies: e.target.value })}
-                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none"
-                            placeholder="React, TypeScript, Node.js, MongoDB"
-                          />
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-64 overflow-y-auto p-4 bg-gray-800/50 border border-gray-700 rounded-lg">
+                            {availableTechnologies.map((tech) => (
+                              <label
+                                key={tech}
+                                className="flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg cursor-pointer transition-colors border border-gray-700"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={formData.technologies.includes(tech)}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setFormData({ 
+                                        ...formData, 
+                                        technologies: [...formData.technologies, tech] 
+                                      });
+                                    } else {
+                                      setFormData({ 
+                                        ...formData, 
+                                        technologies: formData.technologies.filter(t => t !== tech) 
+                                      });
+                                    }
+                                  }}
+                                  className="w-4 h-4 text-red-600 bg-gray-700 border-gray-600 rounded focus:ring-red-500 focus:ring-2"
+                                />
+                                <span className="text-sm text-white">{tech}</span>
+                              </label>
+                            ))}
+                          </div>
+                          {formData.technologies.length > 0 && (
+                            <p className="text-xs text-gray-400 mt-2">
+                              Выбрано: {formData.technologies.length} технологий
+                            </p>
+                          )}
                         </div>
                       </motion.div>
                     )}

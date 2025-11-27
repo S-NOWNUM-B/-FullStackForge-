@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Loader2, Eye, Search, Calendar, SlidersHorizontal, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { TECHNOLOGY_NAMES } from '@/lib/technologies';
 
 interface Project {
   _id: string;
@@ -36,50 +37,36 @@ export default function ProjectsPage() {
       const data = await res.json();
       if (data.success) {
         setCategories(data.categories || []);
-        setTechnologies(data.technologies || []);
+        // Используем статический список технологий вместо динамического
+        setTechnologies(TECHNOLOGY_NAMES);
       }
     } catch (error) {
       console.error('Ошибка загрузки фильтров:', error);
+      // В случае ошибки используем статический список
+      setTechnologies(TECHNOLOGY_NAMES);
     }
   };
 
   const fetchProjects = useCallback(async () => {
     setLoading(true);
     try {
-      let allProjects: Project[] = [];
-      const res = await fetch('/api/projects?limit=100');
+      // Формируем URL с параметрами для серверной фильтрации и пагинации
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '10',
+        sort: sortOrder,
+      });
+
+      if (search) params.append('search', search);
+      if (selectedCategory !== 'all') params.append('category', selectedCategory);
+      if (selectedTech !== 'all') params.append('tech', selectedTech);
+
+      const res = await fetch(`/api/projects?${params.toString()}`);
       const data = await res.json();
 
       if (data.success) {
-        allProjects = data.projects || [];
-        
-        // Фильтрация на клиенте
-        const filtered = allProjects.filter((project) => {
-          const searchLower = search.toLowerCase();
-          const matchesSearch = !search || 
-            project.title.toLowerCase().includes(searchLower) ||
-            project.shortDescription.toLowerCase().includes(searchLower);
-          const matchesCategory = selectedCategory === 'all' || project.category === selectedCategory;
-          const matchesTech = selectedTech === 'all' || project.technologies.includes(selectedTech);
-          return matchesSearch && matchesCategory && matchesTech;
-        });
-
-        // Сортировка по дате
-        filtered.sort((a, b) => {
-          const dateA = new Date(a.createdAt).getTime();
-          const dateB = new Date(b.createdAt).getTime();
-          return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
-        });
-
-        // Пагинация - 10 элементов
-        const limit = 10;
-        const total = filtered.length;
-        const pages = Math.ceil(total / limit);
-        const start = (page - 1) * limit;
-        const paginatedProjects = filtered.slice(start, start + limit);
-
-        setProjects(paginatedProjects);
-        setTotalPages(pages || 1);
+        setProjects(data.projects || []);
+        setTotalPages(data.totalPages || 1);
       }
     } catch (error) {
       console.error('Ошибка загрузки проектов:', error);
@@ -273,7 +260,7 @@ export default function ProjectsPage() {
           ) : (
             <>
               {/* Сетка проектов */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-8">
                 {projects.map((project, index) => (
                   <motion.div
                     key={project._id}

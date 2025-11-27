@@ -9,10 +9,11 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '9');
+    const limit = parseInt(searchParams.get('limit') || '10');
     const search = searchParams.get('search') || '';
     const category = searchParams.get('category') || '';
     const tech = searchParams.get('tech') || '';
+    const sort = searchParams.get('sort') || 'newest';
 
     const query: Record<string, unknown> = {};
 
@@ -27,13 +28,16 @@ export async function GET(request: NextRequest) {
       query.category = category;
     }
 
-    if (tech) {
+    if (tech && tech !== 'all') {
       query.technologies = { $in: [tech] };
     }
 
+    // Определяем порядок сортировки
+    const sortOrder = sort === 'oldest' ? 1 : -1;
+
     const total = await Project.countDocuments(query);
     const projects = await Project.find(query)
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: sortOrder })
       .limit(limit)
       .skip((page - 1) * limit)
       .lean();
