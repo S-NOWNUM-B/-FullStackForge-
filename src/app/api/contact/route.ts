@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/data/db';
 import ContactMessage from '@/data/models/ContactMessage';
+import { sendContactEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,6 +35,21 @@ export async function POST(request: NextRequest) {
       email,
       projectType,
     });
+
+    // Отправляем email
+    try {
+      await sendContactEmail({
+        name,
+        email,
+        subject,
+        message,
+        projectType,
+      });
+      console.log('✅ Email успешно отправлен на почту');
+    } catch (emailError) {
+      console.error('⚠️ Ошибка при отправке email (но сообщение сохранено в БД):', emailError);
+      // Не возвращаем ошибку пользователю, так как сообщение уже сохранено
+    }
 
     return NextResponse.json({
       success: true,

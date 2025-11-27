@@ -5,5 +5,11 @@ declare namespace NodeJS {
     MONGODB_URI: string;
     ADMIN_PASSWORD?: string;
     NODE_ENV: 'development' | 'production' | 'test';
+    
+    // SMTP Configuration
+    SMTP_HOST?: string;
+    SMTP_PORT?: string;
+    SMTP_USER?: string;
+    SMTP_PASSWORD?: string;
   }
 }
