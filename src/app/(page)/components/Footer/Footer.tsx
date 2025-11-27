@@ -11,44 +11,44 @@ const TelegramIcon = () => (
   </svg>
 );
 
-// Иконка для Taplink
-const TaplinkIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.88-11.71L10 14.17l-1.88-1.88a.996.996 0 10-1.41 1.41l2.59 2.59c.39.39 1.02.39 1.41 0L17.3 9.7a.996.996 0 000-1.41c-.39-.39-1.03-.39-1.42 0z"/>
-  </svg>
+// Иконка для Watsapp
+const WhatsappIcon = () => (
+    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+        <path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.4 4.8L2 22l5.4-1.4C8.8 21.5 10.4 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.5 0-2.9-.4-4.1-1.2l-.3-.2-3.2.9.9-3.1-.2-.3C4.4 15 4 13.6 4 12 4 7.6 7.6 4 12 4s8 3.6 8 8-3.6 8-8 8zm4-5.3c-.2-.1-1.3-.7-1.5-.8-.2-.1-.3-.1-.5.1-.1.2-.6.8-.7.9-.1.1-.3.1-.5 0-.2-.1-.9-.3-1.7-1.1-.6-.5-1.1-1.3-1.2-1.5-.1-.2 0-.3.1-.4.1-.1.2-.3.3-.4.1-.1.1-.2.2-.3.1-.1.1-.2.2-.3.1-.1 0-.2 0-.3 0-.1-.5-1.2-.7-1.6-.2-.4-.4-.3-.5-.3h-.4c-.1 0-.3 0-.4.2-.2.2-.7.7-.7 1.8 0 1.1.8 2.2.9 2.4.1.2 1.6 2.4 3.8 3.3.5.2.9.3 1.2.4.5.2.9.2 1.2.1.4-.1 1.3-.5 1.5-1 .2-.5.2-.9.1-1 0-.1-.2-.1-.4-.2z" />
+    </svg>
 );
 
 const socialLinks = [
-  { 
-    icon: Linkedin, 
-    href: "https://www.linkedin.com/in/стас-мамаев-b9a868316/", 
-    label: "LinkedIn",
-    color: "hover:bg-[#0077B5]"
-  },
-  { 
-    icon: Github, 
-    href: "https://github.com/S-NOWNUM-B", 
-    label: "GitHub",
-    color: "hover:bg-gray-700"
-  },
-  { 
-    icon: Mail, 
-    href: "mailto:mamayev.stas@gmail.com", 
-    label: "Email",
-    color: "hover:bg-red-600"
-  },
-  { 
-    icon: TelegramIcon, 
-    href: "https://t.me/snownumb", 
-    label: "Telegram",
-    color: "hover:bg-[#0088cc]"
-  },
-  { 
-    icon: TaplinkIcon, 
-    href: "https://taplink.cc/snownumb", 
-    label: "Taplink",
-    color: "hover:bg-red-600"
-  },
+    {
+        icon: Linkedin,
+        href: "https://www.linkedin.com/in/стас-мамаев-b9a868316/",
+        label: "LinkedIn",
+        color: "hover:bg-[#0077B5]"
+    },
+    {
+        icon: Github,
+        href: "https://github.com/S-NOWNUM-B",
+        label: "GitHub",
+        color: "hover:bg-gray-700"
+    },
+    {
+        icon: Mail,
+        href: "mailto:mamayev.stas@gmail.com",
+        label: "Email",
+        color: "hover:bg-red-600"
+    },
+    {
+        icon: TelegramIcon,
+        href: "https://t.me/snownumb",
+        label: "Telegram",
+        color: "hover:bg-[#0088cc]"
+    },
+    {
+        icon: WhatsappIcon,
+        href: "https://wa.me/message/7TZW2OWPDQY4E1",
+        label: "WhatsApp",
+        color: "hover:bg-[#25D366]"
+    },
 ];
 
 export default function Footer() {

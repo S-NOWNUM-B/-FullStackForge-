@@ -32,15 +32,17 @@ if (!global.mongoose) {
  * При неудаче даём ясную подсказку в логах чтобы быстро решить проблему
  * (например: проверить MONGODB_URI и белый список IP в MongoDB Atlas).
  */
-async function connectWithRetry(retries = 5): Promise<typeof mongoose> {
+async function connectWithRetry(retries = 2): Promise<typeof mongoose> {
   let attempt = 0;
 
   const tryConnect = async (): Promise<typeof mongoose> => {
     attempt += 1;
     try {
       const opts = {
-        // Быстро таймаутим запрос на выбор сервера чтобы не ждать слишком долго
-        serverSelectionTimeoutMS: 5000,
+        // Быстрее таймаут для ускорения ответа
+        serverSelectionTimeoutMS: 3000,
+        socketTimeoutMS: 3000,
+        connectTimeoutMS: 3000,
         bufferCommands: false,
       } as const;
 
@@ -62,8 +64,8 @@ async function connectWithRetry(retries = 5): Promise<typeof mongoose> {
         throw err;
       }
 
-      // Экспоненциальный backoff
-      const delayMs = 2000 * attempt;
+      // Уменьшенный backoff
+      const delayMs = 1000 * attempt;
       await new Promise((res) => setTimeout(res, delayMs));
       return tryConnect();
     }

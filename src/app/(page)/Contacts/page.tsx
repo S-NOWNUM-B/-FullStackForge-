@@ -23,11 +23,15 @@ const contactSchema = z.object({
 type ContactFormData = z.infer<typeof contactSchema>;
 
 const projectTypes = [
-  { value: "landing", label: "Лендинг" },
-  { value: "webapp", label: "Веб-приложение" },
-  { value: "ecommerce", label: "Интернет-магазин" },
-  { value: "corporate", label: "Корпоративный сайт" },
-  { value: "other", label: "Другое" },
+    { value: "api", label: "Backend / API (FastAPI, NestJS)" },
+    { value: "saas", label: "SaaS‑сервис / веб‑приложение" },
+    { value: "dashboard", label: "Админка / аналитический дашборд" },
+    { value: "ecommerce", label: "Интернет‑магазин / CRM‑система" },
+    { value: "mvp_figma", label: "Проработка MVP и прототипа в Figma" },
+    { value: "presentation", label: "Презентация продукта / питч‑дек" },
+    { value: "study_project", label: "Учебный или проектный кейс" },
+    { value: "landing", label: "Лендинг / промо‑страница" },
+    { value: "other", label: "Другое" }
 ];
 
 const features = [

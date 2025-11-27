@@ -3,6 +3,9 @@ import dbConnect from '@/data/db';
 import Project from '@/data/models/Project';
 import mongoose from 'mongoose';
 
+// Кэширование на 60 секунд - мгновенная загрузка!
+export const revalidate = 60;
+
 export async function GET(request: NextRequest) {
   try {
     await dbConnect();

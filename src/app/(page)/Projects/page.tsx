@@ -48,7 +48,6 @@ export default function ProjectsPage() {
   };
 
   const fetchProjects = useCallback(async () => {
-    setLoading(true);
     try {
       // Формируем URL с параметрами для серверной фильтрации и пагинации
       const params = new URLSearchParams({
@@ -61,16 +60,19 @@ export default function ProjectsPage() {
       if (selectedCategory !== 'all') params.append('category', selectedCategory);
       if (selectedTech !== 'all') params.append('tech', selectedTech);
 
-      const res = await fetch(`/api/projects?${params.toString()}`);
+      const res = await fetch(`/api/projects?${params.toString()}`, {
+        // Используем кэш браузера
+        next: { revalidate: 60 }
+      });
       const data = await res.json();
 
       if (data.success) {
         setProjects(data.projects || []);
         setTotalPages(data.totalPages || 1);
+        setLoading(false);
       }
     } catch (error) {
       console.error('Ошибка загрузки проектов:', error);
-    } finally {
       setLoading(false);
     }
   }, [search, selectedCategory, selectedTech, sortOrder, page]);
@@ -159,9 +161,11 @@ export default function ProjectsPage() {
             {/* Панель фильтров */}
             {showFilters && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
+                initial={{ opacity: 0, scaleY: 0 }}
+                animate={{ opacity: 1, scaleY: 1 }}
+                exit={{ opacity: 0, scaleY: 0 }}
+                transition={{ duration: 0.15, ease: "easeOut" }}
+                style={{ transformOrigin: 'top' }}
                 className="bg-gray-800/50 border border-gray-700/50 rounded-lg p-6 backdrop-blur-sm"
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -174,7 +178,7 @@ export default function ProjectsPage() {
                         setSelectedCategory(e.target.value);
                         setPage(1);
                       }}
-                      className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20"
+                      className="w-full px-4 py-2.5 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20"
                     >
                       <option value="all">Все категории</option>
                       {categories.map((cat) => (
@@ -192,7 +196,7 @@ export default function ProjectsPage() {
                         setSelectedTech(e.target.value);
                         setPage(1);
                       }}
-                      className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20"
+                      className="w-full px-4 py-2.5 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20"
                     >
                       <option value="all">Все технологии</option>
                       {technologies.map((tech) => (
@@ -210,7 +214,7 @@ export default function ProjectsPage() {
                         setSortOrder(e.target.value as 'newest' | 'oldest');
                         setPage(1);
                       }}
-                      className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20"
+                      className="w-full px-4 py-2.5 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20"
                     >
                       <option value="newest">Сначала новые</option>
                       <option value="oldest">Сначала старые</option>
@@ -222,7 +226,7 @@ export default function ProjectsPage() {
                     <button
                       onClick={resetFilters}
                       disabled={!hasActiveFilters}
-                      className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700 rounded-lg text-white hover:border-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                      className="w-full px-4 py-2.5 bg-gray-900/50 border border-gray-700 rounded-lg text-white hover:border-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
                     >
                       <X className="w-4 h-4" />
                       Сбросить

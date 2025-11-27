@@ -27,7 +27,8 @@ export async function POST(request: NextRequest) {
     const emailConfigured = 
       process.env.SMTP_HOST && 
       process.env.SMTP_USER && 
-      process.env.SMTP_PASSWORD;
+      process.env.SMTP_PASSWORD &&
+      process.env.NODE_ENV === 'production'; // Отправляем email только в продакшене
 
     if (emailConfigured) {
       // Настраиваем транспортер nodemailer
@@ -43,15 +44,20 @@ export async function POST(request: NextRequest) {
 
       // Типы проектов
       const projectTypeLabels: Record<string, string> = {
-        landing: 'Лендинг',
-        webapp: 'Веб-приложение',
-        ecommerce: 'Интернет-магазин',
-        corporate: 'Корпоративный сайт',
+        api: 'Backend / API (FastAPI, NestJS)',
+        saas: 'SaaS‑сервис / веб‑приложение',
+        dashboard: 'Админка / аналитический дашборд',
+        ecommerce: 'Интернет‑магазин / CRM‑система',
+        mvp_figma: 'Проработка MVP и прототипа в Figma',
+        presentation: 'Презентация продукта / питч‑дек',
+        study_project: 'Учебный или проектный кейс',
+        landing: 'Лендинг / промо‑страница',
         other: 'Другое',
       };
 
       // Отправляем email
-      await transporter.sendMail({
+      try {
+        await transporter.sendMail({
         from: process.env.SMTP_FROM || process.env.SMTP_USER,
         to: process.env.SMTP_USER,
         replyTo: email,
@@ -133,15 +139,17 @@ ${message}
       });
 
       console.log('✅ Email успешно отправлен');
+      } catch (emailError) {
+        console.error('❌ Ошибка отправки email:', emailError);
+        // Не прерываем выполнение, продолжаем работу
+      }
     } else {
-      console.warn('⚠️ SMTP не настроен. Email не отправлен. Данные сохранены в логах.');
+      console.warn('⚠️ SMTP не настроен или dev режим. Email не отправлен. Данные сохранены в логах.');
     }
 
     return NextResponse.json({
       success: true,
-      message: emailConfigured 
-        ? 'Сообщение успешно отправлено' 
-        : 'Сообщение принято (email не настроен)',
+      message: 'Сообщение успешно принято',
     });
   } catch (error) {
     console.error('❌ Ошибка при отправке сообщения:', error);
