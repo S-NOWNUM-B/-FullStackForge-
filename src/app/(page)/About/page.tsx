@@ -71,7 +71,7 @@ const competencies = [
   "Создание адаптивных и кроссбраузерных пользовательских интерфейсов",
   "Работа с облачными сервисами (AWS) и контейнеризацией (Docker)",
   "Настройка CI/CD процессов и автоматизация развертывания",
-  "Использование Git и GitHub/GitLab для командной разработки",
+  "Использование Git и GitHub для командной разработки",
   "Изучение и внедрение современных архитектурных паттернов и best practices",
   "Обеспечение безопасности веб-приложений и защита данных пользователей",
 ];
@@ -201,16 +201,21 @@ export default function AboutPage() {
             <div className="flex flex-wrap justify-center gap-3">
               {technologiesData.map((tech, index) => {
                 const Icon = tech.icon;
+                // Извлекаем hex цвет из строки color
+                const bgColor = tech.color.match(/#[0-9A-Fa-f]{6}/)?.[0] || '#gray';
+                const hoverColor = tech.color.match(/hover:bg-\[#([0-9A-Fa-f]{6})\]/)?.[1] || bgColor.replace('#', '');
+                
                 return (
                   <motion.div
                     key={tech.name}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 1 + index * 0.03 }}
-                    className={`${tech.color} px-5 py-2.5 rounded-lg font-bold text-sm transition-all cursor-pointer shadow-lg flex items-center gap-2`}
+                    style={{ backgroundColor: bgColor }}
+                    className="px-5 py-2.5 rounded-lg font-bold text-sm transition-all cursor-pointer shadow-lg flex items-center gap-2 text-white hover:scale-105"
                   >
-                    <Icon className="text-base text-white" />
-                    <span className="text-white">{tech.name}</span>
+                    <Icon className="text-base" />
+                    <span>{tech.name}</span>
                   </motion.div>
                 );
               })}

@@ -37,6 +37,7 @@ export async function GET(request: NextRequest) {
 
     const total = await Project.countDocuments(query);
     const projects = await Project.find(query)
+      .select('title shortDescription category technologies createdAt thumbnail')
       .sort({ createdAt: sortOrder })
       .limit(limit)
       .skip((page - 1) * limit)

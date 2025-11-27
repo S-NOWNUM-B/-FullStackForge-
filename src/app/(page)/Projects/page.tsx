@@ -310,17 +310,17 @@ export default function ProjectsPage() {
                       </p>
 
                       {/* Технологии */}
-                      <div className="flex flex-wrap gap-2 mb-4">
+                      <div className="flex items-center gap-2 mb-4 overflow-x-auto scrollbar-hide">
                         {project.technologies.slice(0, 3).map((tech) => (
                           <span
                             key={tech}
-                            className="px-2 py-1 bg-gray-900/50 text-gray-400 rounded text-xs border border-gray-700/50"
+                            className="px-2 py-1 bg-gray-900/50 text-gray-400 rounded text-xs border border-gray-700/50 whitespace-nowrap flex-shrink-0"
                           >
                             {tech}
                           </span>
                         ))}
                         {project.technologies.length > 3 && (
-                          <span className="px-2 py-1 bg-gray-900/50 text-gray-400 rounded text-xs border border-gray-700/50">
+                          <span className="px-2 py-1 bg-gray-900/50 text-gray-400 rounded text-xs border border-gray-700/50 whitespace-nowrap flex-shrink-0">
                             +{project.technologies.length - 3}
                           </span>
                         )}
