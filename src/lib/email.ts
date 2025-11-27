@@ -35,14 +35,21 @@ export async function sendContactEmail(data: EmailData): Promise<void> {
   }
 
   // Создаем транспорт для отправки email
+  const port = parseInt(SMTP_PORT);
   const transporter = nodemailer.createTransport({
     host: SMTP_HOST,
-    port: parseInt(SMTP_PORT),
-    secure: false, // true для 465, false для других портов
+    port: port,
+    secure: port === 465, // true для 465 (SSL), false для 587 (TLS)
     auth: {
       user: SMTP_USER,
       pass: SMTP_PASSWORD,
     },
+    // Дополнительные настройки для обхода блокировок
+    tls: {
+      rejectUnauthorized: false, // Не проверяем SSL сертификат (для совместимости)
+    },
+    connectionTimeout: 10000, // 10 секунд на подключение
+    greetingTimeout: 5000, // 5 секунд на приветствие
   });
 
   // Проверяем подключение
