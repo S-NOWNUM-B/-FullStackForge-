@@ -27,8 +27,7 @@ export async function POST(request: NextRequest) {
     const emailConfigured = 
       process.env.SMTP_HOST && 
       process.env.SMTP_USER && 
-      process.env.SMTP_PASSWORD &&
-      process.env.NODE_ENV === 'production'; // Отправляем email только в продакшене
+      process.env.SMTP_PASSWORD;
 
     if (emailConfigured) {
       // Настраиваем транспортер nodemailer
