@@ -27,27 +27,65 @@ if (!global.mongoose) {
   global.mongoose = cached;
 }
 
+/**
+ * Попытки подключения с экспоненциальным backoff.
+ * При неудаче даём ясную подсказку в логах чтобы быстро решить проблему
+ * (например: проверить MONGODB_URI и белый список IP в MongoDB Atlas).
+ */
+async function connectWithRetry(retries = 5): Promise<typeof mongoose> {
+  let attempt = 0;
+
+  const tryConnect = async (): Promise<typeof mongoose> => {
+    attempt += 1;
+    try {
+      const opts = {
+        // Быстро таймаутим запрос на выбор сервера чтобы не ждать слишком долго
+        serverSelectionTimeoutMS: 5000,
+        bufferCommands: false,
+      } as const;
+
+      const m = await mongoose.connect(MONGODB_URI, opts);
+      console.log('✅ MongoDB подключен успешно');
+      return m;
+    } catch (err: any) {
+      const msg = err?.message || err;
+      console.error(`Ошибка подключения к MongoDB (попытка ${attempt}/${retries}):`, msg);
+
+      if (attempt >= retries) {
+        console.error('❗ Не удалось подключиться к MongoDB после нескольких попыток.');
+        console.error('Проверьте следующие вещи:');
+        console.error('- Переменная окружения `MONGODB_URI` настроена корректно.');
+        console.error('- В MongoDB Atlas добавлен белый список IP (Network Access).');
+        console.error("  Для Render используйте временно 0.0.0.0/0 или настройте VPC Peering/Private Endpoint.");
+        console.error('- Кластер доступен и не в режиме обслуживания.');
+        console.error('Документация Atlas (whitelist): https://www.mongodb.com/docs/atlas/security/whitelist/');
+        throw err;
+      }
+
+      // Экспоненциальный backoff
+      const delayMs = 2000 * attempt;
+      await new Promise((res) => setTimeout(res, delayMs));
+      return tryConnect();
+    }
+  };
+
+  return tryConnect();
+}
+
 async function dbConnect(): Promise<typeof mongoose> {
   if (cached.conn) {
     return cached.conn;
   }
 
   if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      console.log('✅ MongoDB подключен успешно');
-      return mongoose;
-    });
+    cached.promise = connectWithRetry().then((m) => m);
   }
 
   try {
     cached.conn = await cached.promise;
   } catch (e) {
     cached.promise = null;
-    console.error('❌ Ошибка подключения к MongoDB:', e);
+    console.error('❌ Ошибка подключения к MongoDB (в dbConnect):', (e as any)?.message || e);
     throw e;
   }
 
