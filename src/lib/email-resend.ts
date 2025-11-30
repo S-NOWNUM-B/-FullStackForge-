@@ -126,17 +126,17 @@ export async function sendContactEmailResend(data: EmailData): Promise<void> {
       <body>
         <div class="container">
           <div class="header">
-            <h1>🔔 Новое сообщение с портфолио</h1>
+            <h1>Новое сообщение</h1>
           </div>
           
           <div class="content">
             <div class="field">
-              <div class="field-label">👤 Имя отправителя</div>
+              <div class="field-label">Имя отправителя</div>
               <div class="field-value">${data.name}</div>
             </div>
             
             <div class="field">
-              <div class="field-label">📧 Email для связи</div>
+              <div class="field-label">Email для связи</div>
               <div class="field-value">
                 <a href="mailto:${data.email}" class="email-link">
                   ${data.email}
@@ -145,19 +145,19 @@ export async function sendContactEmailResend(data: EmailData): Promise<void> {
             </div>
             
             <div class="field">
-              <div class="field-label">📝 Тема сообщения</div>
+              <div class="field-label">Тема сообщения</div>
               <div class="field-value">${data.subject}</div>
             </div>
             
             <div class="field">
-              <div class="field-label">🏷️ Тип проекта</div>
+              <div class="field-label">Тип проекта</div>
               <div class="field-value">
                 <span class="badge">${projectTypeLabel}</span>
               </div>
             </div>
             
             <div class="field">
-              <div class="field-label">💬 Сообщение</div>
+              <div class="field-label">Сообщение</div>
               <div class="message-box">${data.message}</div>
             </div>
           </div>
@@ -181,9 +181,9 @@ export async function sendContactEmailResend(data: EmailData): Promise<void> {
   `;
 
   try {
-    console.log('📧 Отправка email через Resend API...', {
+    console.log('Отправка email через Resend API...', {
       to: 'mamayev.stas@gmail.com',
-      subject: `📩 ${data.subject} | ${data.name}`,
+      subject: `${data.subject} | ${data.name}`,
       replyTo: data.email,
     });
 
@@ -191,7 +191,7 @@ export async function sendContactEmailResend(data: EmailData): Promise<void> {
       from: 'Portfolio Contact <onboarding@resend.dev>', // Можно заменить на свой домен
       to: 'mamayev.stas@gmail.com',
       replyTo: data.email,
-      subject: `📩 ${data.subject} | ${data.name}`,
+      subject: `${data.subject} | ${data.name}`,
       html: htmlContent,
     });
 

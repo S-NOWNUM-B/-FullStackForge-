@@ -23,8 +23,7 @@ const contactSchema = z.object({
 type ContactFormData = z.infer<typeof contactSchema>;
 
 const projectTypes = [
-    { value: "api", label: "Backend / API (FastAPI, NestJS)" },
-    { value: "saas", label: "SaaS‑сервис / веб‑приложение" },
+    { value: "web", label: "Веб-сайт / Frontend and Backend" },
     { value: "dashboard", label: "Админка / аналитический дашборд" },
     { value: "ecommerce", label: "Интернет‑магазин / CRM‑система" },
     { value: "mvp_figma", label: "Проработка MVP и прототипа в Figma" },

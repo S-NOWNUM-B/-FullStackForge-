@@ -9,8 +9,7 @@ interface EmailData {
 }
 
 const projectTypeLabels: Record<string, string> = {
-  api: "Backend / API (FastAPI, NestJS)",
-  saas: "SaaS‑сервис / веб‑приложение",
+  web: "Веб-сайт / Frontend and Backend",
   dashboard: "Админка / аналитический дашборд",
   ecommerce: "Интернет‑магазин / CRM‑система",
   mvp_figma: "Проработка MVP и прототипа в Figma",
@@ -37,7 +36,7 @@ export async function sendContactEmail(data: EmailData): Promise<void> {
   // Создаем транспорт для отправки email
   const port = parseInt(SMTP_PORT);
   
-  console.log('📧 Инициализация SMTP с параметрами:', {
+  console.log('Инициализация SMTP с параметрами:', {
     host: SMTP_HOST,
     port: port,
     secure: port === 465,
@@ -227,7 +226,7 @@ ${data.message}
   };
 
   try {
-    console.log('📤 Отправка письма...', {
+    console.log('Отправка письма...', {
       from: mailOptions.from,
       to: mailOptions.to,
       subject: mailOptions.subject,
