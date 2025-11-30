@@ -7,8 +7,17 @@ export async function GET(request: Request) {
   const authHeader = request.headers.get('authorization');
   const cronSecret = process.env.CRON_SECRET;
   
+  // Логирование для диагностики
+  console.log('🔍 Cron ping получен:', {
+    hasAuthHeader: !!authHeader,
+    hasCronSecret: !!cronSecret,
+    authHeaderValue: authHeader ? `${authHeader.substring(0, 20)}...` : 'отсутствует',
+    expectedValue: cronSecret ? `Bearer ${cronSecret.substring(0, 20)}...` : 'не установлен',
+  });
+  
   // Если CRON_SECRET установлен, проверяем авторизацию
   if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+    console.log('❌ Авторизация не прошла');
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
