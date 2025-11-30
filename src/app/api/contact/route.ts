@@ -3,8 +3,16 @@ import connectDB from '@/data/db';
 import ContactMessage from '@/data/models/ContactMessage';
 import { sendContactEmail } from '@/lib/email';
 
+interface EmailData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  projectType: string;
+}
+
 // Функция для динамической загрузки Resend (если установлен)
-async function sendEmailWithResend(data: any) {
+async function sendEmailWithResend(data: EmailData) {
   try {
     const { sendContactEmailResend } = await import('@/lib/email-resend');
     return await sendContactEmailResend(data);

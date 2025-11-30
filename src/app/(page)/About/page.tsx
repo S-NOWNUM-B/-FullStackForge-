@@ -203,7 +203,6 @@ export default function AboutPage() {
                 const Icon = tech.icon;
                 // Извлекаем hex цвет из строки color
                 const bgColor = tech.color.match(/#[0-9A-Fa-f]{6}/)?.[0] || '#gray';
-                const hoverColor = tech.color.match(/hover:bg-\[#([0-9A-Fa-f]{6})\]/)?.[1] || bgColor.replace('#', '');
                 
                 return (
                   <motion.div

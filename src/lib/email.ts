@@ -242,10 +242,11 @@ ${data.message}
       response: info.response,
     });
   } catch (error) {
+    const errorObj = error as { code?: string; command?: string };
     console.error('❌ Ошибка при отправке email:', {
       error: error,
-      code: (error as any)?.code,
-      command: (error as any)?.command,
+      code: errorObj.code,
+      command: errorObj.command,
       message: error instanceof Error ? error.message : 'Unknown error',
     });
     throw error;
