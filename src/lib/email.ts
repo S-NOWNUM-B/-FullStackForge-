@@ -10,14 +10,13 @@ interface EmailData {
 }
 
 const projectTypeLabels: Record<string, string> = {
-  web: "Веб-сайт / Frontend and Backend",
-  dashboard: "Админка / аналитический дашборд",
-  ecommerce: "Интернет‑магазин / CRM‑система",
-  mvp_figma: "Проработка MVP и прототипа в Figma",
-  presentation: "Презентация продукта / питч‑дек",
-  study_project: "Учебный или проектный кейс",
-  landing: "Лендинг / промо‑страница",
-  other: "Другое"
+    web: "Веб-сайт (Frontend + Backend)",
+    landing: "Лендинг / промо-страница",
+    dashboard: "Админка / аналитический дашборд",
+    mvp_figma: "Прототип в Figma",
+    presentation: "Презентация / питч-дек",
+    mentoring: "Менторство / консультации",
+    other: "Другое"
 };
 
 export async function sendContactEmail(data: EmailData): Promise<void> {
