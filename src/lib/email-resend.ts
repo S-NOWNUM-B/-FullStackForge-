@@ -10,7 +10,7 @@ interface EmailData {
 }
 
 const projectTypeLabels: Record<string, string> = {
-    web: "Веб-сайт (Frontend + Backend)",
+    web: "Веб-сайт / Frontend + Backend",
     landing: "Лендинг / промо-страница",
     dashboard: "Админка / аналитический дашборд",
     mvp_figma: "Прототип в Figma",
