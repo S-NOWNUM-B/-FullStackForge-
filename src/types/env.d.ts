@@ -6,10 +6,13 @@ declare namespace NodeJS {
     ADMIN_PASSWORD?: string;
     NODE_ENV: 'development' | 'production' | 'test';
     
-    // SMTP Configuration
+    // SMTP Configuration (опционально, если не используется Resend)
     SMTP_HOST?: string;
     SMTP_PORT?: string;
     SMTP_USER?: string;
     SMTP_PASSWORD?: string;
+    
+    // Resend API (рекомендуется для production на Render)
+    RESEND_API_KEY?: string;
   }
 }

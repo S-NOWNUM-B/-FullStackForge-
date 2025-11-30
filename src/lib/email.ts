@@ -36,6 +36,14 @@ export async function sendContactEmail(data: EmailData): Promise<void> {
 
   // Создаем транспорт для отправки email
   const port = parseInt(SMTP_PORT);
+  
+  console.log('📧 Инициализация SMTP с параметрами:', {
+    host: SMTP_HOST,
+    port: port,
+    secure: port === 465,
+    user: SMTP_USER,
+  });
+
   const transporter = nodemailer.createTransport({
     host: SMTP_HOST,
     port: port,
@@ -48,18 +56,14 @@ export async function sendContactEmail(data: EmailData): Promise<void> {
     tls: {
       rejectUnauthorized: false, // Не проверяем SSL сертификат (для совместимости)
     },
-    connectionTimeout: 10000, // 10 секунд на подключение
-    greetingTimeout: 5000, // 5 секунд на приветствие
+    connectionTimeout: 30000, // 30 секунд на подключение (увеличено)
+    greetingTimeout: 10000, // 10 секунд на приветствие (увеличено)
+    socketTimeout: 30000, // 30 секунд на операции с сокетом
   });
 
-  // Проверяем подключение
-  try {
-    await transporter.verify();
-    console.log('✅ SMTP сервер готов к отправке писем');
-  } catch (error) {
-    console.error('❌ Ошибка подключения к SMTP серверу:', error);
-    throw new Error('Failed to connect to SMTP server');
-  }
+  // НЕ проверяем подключение заранее, пробуем сразу отправить
+  // (verify() может таймаутиться на Render, но само письмо иногда проходит)
+  console.log('📨 Пропускаем verify(), пробуем отправить письмо напрямую...');
 
   const projectTypeLabel = projectTypeLabels[data.projectType] || data.projectType;
 
@@ -223,14 +227,27 @@ ${data.message}
   };
 
   try {
+    console.log('📤 Отправка письма...', {
+      from: mailOptions.from,
+      to: mailOptions.to,
+      subject: mailOptions.subject,
+    });
+    
     const info = await transporter.sendMail(mailOptions);
+    
     console.log('✅ Email успешно отправлен:', {
       messageId: info.messageId,
       to: mailOptions.to,
       subject: mailOptions.subject,
+      response: info.response,
     });
   } catch (error) {
-    console.error('❌ Ошибка при отправке email:', error);
+    console.error('❌ Ошибка при отправке email:', {
+      error: error,
+      code: (error as any)?.code,
+      command: (error as any)?.command,
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
     throw error;
   }
 }

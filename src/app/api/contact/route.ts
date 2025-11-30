@@ -3,6 +3,17 @@ import connectDB from '@/data/db';
 import ContactMessage from '@/data/models/ContactMessage';
 import { sendContactEmail } from '@/lib/email';
 
+// Функция для динамической загрузки Resend (если установлен)
+async function sendEmailWithResend(data: any) {
+  try {
+    const { sendContactEmailResend } = await import('@/lib/email-resend');
+    return await sendContactEmailResend(data);
+  } catch (error) {
+    console.log('⚠️ Resend не установлен, используем SMTP');
+    throw error;
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -38,13 +49,18 @@ export async function POST(request: NextRequest) {
 
     // Отправляем email
     try {
-      await sendContactEmail({
-        name,
-        email,
-        subject,
-        message,
-        projectType,
-      });
+      const emailData = { name, email, subject, message, projectType };
+      
+      // Пробуем Resend (если RESEND_API_KEY установлен)
+      if (process.env.RESEND_API_KEY) {
+        console.log('📧 Используем Resend API для отправки email');
+        await sendEmailWithResend(emailData);
+      } else {
+        // Иначе используем SMTP
+        console.log('📧 Используем SMTP для отправки email');
+        await sendContactEmail(emailData);
+      }
+      
       console.log('✅ Email успешно отправлен на почту');
     } catch (emailError) {
       console.error('⚠️ Ошибка при отправке email (но сообщение сохранено в БД):', emailError);
