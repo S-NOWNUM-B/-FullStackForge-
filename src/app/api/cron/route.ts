@@ -3,11 +3,12 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  // Проверяем секретный ключ для безопасности
+  // Проверяем секретный ключ для безопасности (опционально)
   const authHeader = request.headers.get('authorization');
-  const cronSecret = process.env.CRON_SECRET || 'default-secret-change-in-production';
+  const cronSecret = process.env.CRON_SECRET;
   
-  if (authHeader !== `Bearer ${cronSecret}`) {
+  // Если CRON_SECRET установлен, проверяем авторизацию
+  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
