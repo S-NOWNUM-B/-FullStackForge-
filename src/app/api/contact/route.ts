@@ -9,6 +9,7 @@ interface EmailData {
   subject: string;
   message: string;
   projectType: string;
+  projectTypeLabel?: string; // Полный текст типа проекта
 }
 
 // Функция для динамической загрузки Resend (если установлен)
@@ -25,7 +26,7 @@ async function sendEmailWithResend(data: EmailData) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, subject, message, projectType } = body;
+    const { name, email, subject, message, projectType, projectTypeLabel } = body;
 
     // Валидация данных
     if (!name || !email || !subject || !message || !projectType) {
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     // Отправляем email
     try {
-      const emailData = { name, email, subject, message, projectType };
+      const emailData = { name, email, subject, message, projectType, projectTypeLabel };
       
       // Пробуем Resend (если RESEND_API_KEY установлен)
       if (process.env.RESEND_API_KEY) {

@@ -6,6 +6,7 @@ interface EmailData {
   subject: string;
   message: string;
   projectType: string;
+  projectTypeLabel?: string; // Полный текст типа проекта
 }
 
 const projectTypeLabels: Record<string, string> = {
@@ -64,7 +65,8 @@ export async function sendContactEmail(data: EmailData): Promise<void> {
   // (verify() может таймаутиться на Render, но само письмо иногда проходит)
   console.log('📨 Пропускаем verify(), пробуем отправить письмо напрямую...');
 
-  const projectTypeLabel = projectTypeLabels[data.projectType] || data.projectType;
+  // Используем переданный текст или ищем по значению
+  const projectTypeLabel = data.projectTypeLabel || projectTypeLabels[data.projectType] || data.projectType;
 
   // HTML шаблон письма
   const htmlContent = `

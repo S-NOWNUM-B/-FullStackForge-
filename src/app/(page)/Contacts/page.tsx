@@ -89,12 +89,18 @@ export default function ContactsPage() {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
+      // Находим полный текст типа проекта
+      const projectTypeLabel = projectTypes.find(pt => pt.value === data.projectType)?.label || data.projectType;
+      
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          projectTypeLabel, // Добавляем полный текст
+        }),
       });
 
       if (response.ok) {

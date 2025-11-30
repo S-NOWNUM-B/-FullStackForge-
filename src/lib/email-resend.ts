@@ -6,6 +6,7 @@ interface EmailData {
   subject: string;
   message: string;
   projectType: string;
+  projectTypeLabel?: string; // Полный текст типа проекта
 }
 
 const projectTypeLabels: Record<string, string> = {
@@ -28,7 +29,8 @@ export async function sendContactEmailResend(data: EmailData): Promise<void> {
   }
 
   const resend = new Resend(apiKey);
-  const projectTypeLabel = projectTypeLabels[data.projectType] || data.projectType;
+  // Используем переданный текст или ищем по значению
+  const projectTypeLabel = data.projectTypeLabel || projectTypeLabels[data.projectType] || data.projectType;
 
   // HTML шаблон письма (красивый и современный)
   const htmlContent = `
