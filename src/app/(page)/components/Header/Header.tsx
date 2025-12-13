@@ -47,8 +47,8 @@ export default function Header() {
               whileTap={{ scale: 0.95 }}
               className="text-xl md:text-2xl font-bold"
             >
-              <span className="text-white">Next</span>
-              <span className="text-red-600 neon-glow">Web</span>
+              <span className="text-white">FullStack</span>
+              <span className="text-red-600 neon-glow">Forge</span>
             </motion.div>
           </Link>
 
