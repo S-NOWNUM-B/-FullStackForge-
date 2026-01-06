@@ -32,7 +32,6 @@ interface ProjectData {
   projectDuration?: string;
   challenges?: string;
   results?: string;
-  tags: string[];
   viewsCount?: number;
   createdAt?: string;
   updatedAt?: string;
@@ -50,13 +49,12 @@ const STEPS = [
   { id: 1, name: 'Основная информация', description: 'Название, категория, статус' },
   { id: 2, name: 'Описание', description: 'Описания и функционал' },
   { id: 3, name: 'Медиа', description: 'Изображения проекта' },
-  { id: 4, name: 'Дополнительно', description: 'Технологии, ссылки, теги' },
+  { id: 4, name: 'Дополнительно', description: 'Технологии, ссылки' },
 ];
 
 const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [tagInput, setTagInput] = useState('');
   
   const [formData, setFormData] = useState<ProjectData>({
     title: '',
@@ -76,14 +74,29 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     projectDuration: '',
     challenges: '',
     results: '',
-    tags: [],
   });
 
   useEffect(() => {
     if (project) {
       setFormData({
-        ...project,
+        _id: project._id,
+        title: project.title || '',
+        shortDescription: project.shortDescription || '',
+        fullDescription: project.fullDescription || '',
+        functionality: project.functionality || '',
+        thumbnail: project.thumbnail || '',
+        images: project.images || [],
+        technologies: project.technologies || [],
+        category: project.category || 'Web',
+        githubUrl: project.githubUrl || '',
+        demoUrl: project.demoUrl || '',
+        status: project.status || 'draft',
+        featured: project.featured || false,
         completedAt: project.completedAt ? new Date(project.completedAt).toISOString().split('T')[0] : '',
+        clientName: project.clientName || '',
+        projectDuration: project.projectDuration || '',
+        challenges: project.challenges || '',
+        results: project.results || '',
       });
     } else {
       setFormData({
@@ -104,7 +117,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
         projectDuration: '',
         challenges: '',
         results: '',
-        tags: [],
       });
     }
     setCurrentStep(1);
@@ -590,42 +602,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
             className="mt-2"
           />
         </div>
-      </div>
-
-      <div>
-        <Label htmlFor="tags">Теги для поиска</Label>
-        <div className="flex gap-2 mt-2">
-          <Input
-            id="tags"
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
-            placeholder="Введите тег и нажмите Enter"
-            className="flex-1"
-          />
-          <Button type="button" onClick={handleAddTag} variant="secondary">
-            Добавить
-          </Button>
-        </div>
-        {formData.tags && formData.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-3">
-            {formData.tags.map(tag => (
-              <span
-                key={tag}
-                className="inline-flex items-center gap-1 px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-sm"
-              >
-                {tag}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveTag(tag)}
-                  className="hover:text-red-500 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </span>
-            ))}
-          </div>
-        )}
       </div>
     </motion.div>
   );

@@ -19,7 +19,6 @@ export interface IProject extends Document {
   projectDuration?: string; // "2 месяца", "3 недели" и т.д.
   challenges?: string; // Какие проблемы решались
   results?: string; // Какие результаты достигнуты
-  tags: string[]; // Дополнительные теги для поиска
   viewsCount: number; // Счетчик просмотров
   createdAt: Date;
   updatedAt: Date;
@@ -103,10 +102,6 @@ const ProjectSchema: Schema<IProject> = new Schema(
     results: {
       type: String,
       maxlength: [2000, 'Максимум 2000 символов'],
-    },
-    tags: {
-      type: [String],
-      default: [],
     },
     viewsCount: {
       type: Number,

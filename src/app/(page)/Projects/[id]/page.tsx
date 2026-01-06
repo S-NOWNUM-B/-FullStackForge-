@@ -16,7 +16,6 @@ interface Project {
   thumbnail: string;
   images: string[];
   technologies: string[];
-  tags: string[];
   category: string;
   githubUrl?: string;
   demoUrl?: string;
@@ -358,28 +357,6 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                 </motion.div>
               )}
             </div>
-          )}
-
-          {/* Теги */}
-          {project.tags && project.tags.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.55 }}
-              className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8 mb-12"
-            >
-              <h2 className="text-2xl font-bold text-white mb-4">Теги</h2>
-              <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 bg-red-600/10 text-red-400 rounded-full text-sm border border-red-600/20"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
           )}
 
           {/* Кнопка назад внизу */}
