@@ -214,17 +214,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     }));
   };
 
-  const handleAddTag = () => {
-    if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
-      setFormData(prev => ({ ...prev, tags: [...prev.tags, tagInput.trim()] }));
-      setTagInput('');
-    }
-  };
-
-  const handleRemoveTag = (tag: string) => {
-    setFormData(prev => ({ ...prev, tags: prev.tags.filter(t => t !== tag) }));
-  };
-
   const handleSubmit = async (status?: 'draft' | 'published') => {
     setIsLoading(true);
     try {
