@@ -11,6 +11,17 @@ export interface IProject extends Document {
   category: string;
   githubUrl: string;
   demoUrl: string;
+  // Новые поля для расширенного функционала
+  status: 'draft' | 'published' | 'archived';
+  priority: number; // Для сортировки (чем выше, тем важнее)
+  featured: boolean; // Избранный проект для главной
+  completedAt?: Date; // Дата завершения проекта
+  clientName?: string; // Название клиента
+  projectDuration?: string; // "2 месяца", "3 недели" и т.д.
+  challenges?: string; // Какие проблемы решались
+  results?: string; // Какие результаты достигнуты
+  tags: string[]; // Дополнительные теги для поиска
+  viewsCount: number; // Счетчик просмотров
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,12 +42,12 @@ const ProjectSchema: Schema<IProject> = new Schema(
     fullDescription: {
       type: String,
       required: [true, 'Полное описание обязательно'],
-      maxlength: [3000, 'Максимум 3000 символов'],
+      maxlength: [5000, 'Максимум 5000 символов'],
     },
     functionality: {
       type: String,
       required: [true, 'Описание функционала обязательно'],
-      maxlength: [3000, 'Максимум 3000 символов'],
+      maxlength: [5000, 'Максимум 5000 символов'],
     },
     thumbnail: {
       type: String,
@@ -63,6 +74,52 @@ const ProjectSchema: Schema<IProject> = new Schema(
       type: String,
       default: '',
     },
+    // Новые поля
+    status: {
+      type: String,
+      enum: ['draft', 'published', 'archived'],
+      default: 'published',
+    },
+    priority: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
+    featured: {
+      type: Boolean,
+      default: false,
+    },
+    completedAt: {
+      type: Date,
+    },
+    clientName: {
+      type: String,
+      trim: true,
+      maxlength: [100, 'Максимум 100 символов'],
+    },
+    projectDuration: {
+      type: String,
+      trim: true,
+      maxlength: [50, 'Максимум 50 символов'],
+    },
+    challenges: {
+      type: String,
+      maxlength: [2000, 'Максимум 2000 символов'],
+    },
+    results: {
+      type: String,
+      maxlength: [2000, 'Максимум 2000 символов'],
+    },
+    tags: {
+      type: [String],
+      default: [],
+    },
+    viewsCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
   },
   {
     timestamps: true,
@@ -72,6 +129,8 @@ const ProjectSchema: Schema<IProject> = new Schema(
 ProjectSchema.index({ createdAt: -1 });
 ProjectSchema.index({ title: 'text', shortDescription: 'text' });
 ProjectSchema.index({ category: 1 });
+ProjectSchema.index({ status: 1, priority: -1 }); // Для фильтрации и сортировки
+ProjectSchema.index({ featured: 1 }); // Для быстрого поиска избранных
 
 const Project: Model<IProject> = mongoose.models.Project || mongoose.model<IProject>('Project', ProjectSchema);
 

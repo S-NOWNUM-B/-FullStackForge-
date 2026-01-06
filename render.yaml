@@ -12,7 +12,9 @@ services:
         value: production
       - key: MONGODB_URI
         sync: false
-      - key: ADMIN_PASSWORD
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: AUTH_SECRET
         sync: false
       - key: CRON_SECRET
         sync: false
@@ -20,20 +22,6 @@ services:
         sync: false
       - key: RESEND_API_KEY
         sync: false
-      - key: SMTP_HOST
-        sync: false
-      - key: SMTP_PORT
-        sync: false
-      - key: SMTP_USER
-        sync: false
-      - key: SMTP_PASSWORD
-        sync: false
     healthCheckPath: /api/health
     autoDeploy: true
-
-# Закомментировано для бесплатного плана
-# databases:
-#   - name: portfolio-db
-#     plan: free
-    databaseName: portfolio
 

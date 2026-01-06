@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { SessionProvider } from "next-auth/react";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Toaster } from "sonner";
@@ -11,17 +12,58 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Портфолио | Профессиональный разработчик",
-  description: "Современное портфолио разработчика с проектами и опытом работы",
-  keywords: ["портфолио", "разработчик", "веб-разработка", "проекты"],
-  authors: [{ name: "Your Name" }],
+  title: {
+    default: "FullStackForge | Fullstack Developer",
+    template: "%s | FullStackForge"
+  },
+  description: "Создаю надёжные и современные веб-решения для бизнеса и людей. Fullstack разработка на React, Next.js, Node.js, MongoDB.",
+  keywords: [
+    "fullstack developer",
+    "веб-разработка",
+    "React",
+    "Next.js", 
+    "Node.js",
+    "TypeScript",
+    "MongoDB",
+    "портфолио разработчика",
+    "создание сайтов",
+    "разработка веб-приложений"
+  ],
+  authors: [{ name: "FullStackForge" }],
+  creator: "FullStackForge",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
   openGraph: {
     type: "website",
     locale: "ru_RU",
-    url: "https://yourwebsite.com",
-    title: "Портфолио | Профессиональный разработчик",
-    description: "Современное портфолио разработчика с проектами и опытом работы",
-    siteName: "Портфолио",
+    url: "/",
+    title: "FullStackForge | Fullstack Developer",
+    description: "Создаю надёжные и современные веб-решения для бизнеса и людей",
+    siteName: "FullStackForge",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "FullStackForge - Fullstack Developer",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FullStackForge | Fullstack Developer",
+    description: "Создаю надёжные и современные веб-решения",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 
@@ -35,22 +77,24 @@ export default function RootLayout({
       <body
         className={`${inter.variable} font-sans antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-          disableTransitionOnChange
-        >
-          <div className="relative min-h-screen flex flex-col">
-            {children}
-          </div>
-          <Toaster
-            position="top-right"
-            richColors
-            closeButton
-            theme="dark"
-          />
-        </ThemeProvider>
+        <SessionProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem={false}
+            disableTransitionOnChange
+          >
+            <div className="relative min-h-screen flex flex-col">
+              {children}
+            </div>
+            <Toaster
+              position="top-right"
+              richColors
+              closeButton
+              theme="dark"
+            />
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

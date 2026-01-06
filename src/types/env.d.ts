@@ -3,8 +3,12 @@
 declare namespace NodeJS {
   interface ProcessEnv {
     MONGODB_URI: string;
-    ADMIN_PASSWORD?: string;
+    ADMIN_PASSWORD_HASH: string;
     NODE_ENV: 'development' | 'production' | 'test';
+    
+    // NextAuth
+    AUTH_SECRET: string;
+    NEXTAUTH_URL?: string;
     
     // Application URLs
     NEXT_PUBLIC_BASE_URL?: string;
@@ -12,13 +16,17 @@ declare namespace NodeJS {
     // Cron Jobs
     CRON_SECRET?: string;
     
-    // SMTP Configuration (опционально, если не используется Resend)
+    // Email (Resend рекомендуется)
+    RESEND_API_KEY?: string;
+    
+    // SMTP Configuration (fallback, если нет Resend)
     SMTP_HOST?: string;
     SMTP_PORT?: string;
     SMTP_USER?: string;
     SMTP_PASSWORD?: string;
     
-    // Resend API (рекомендуется для production на Render)
-    RESEND_API_KEY?: string;
+    // UploadThing
+    UPLOADTHING_SECRET?: string;
+    UPLOADTHING_APP_ID?: string;
   }
 }
