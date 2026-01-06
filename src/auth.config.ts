@@ -2,6 +2,7 @@ import type { NextAuthConfig } from 'next-auth';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const authConfig = {
+  trustHost: true,
   pages: {
     signIn: '/admin',
   },
