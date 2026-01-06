@@ -539,7 +539,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
           <p className="text-xs text-gray-500">Можно загрузить несколько файлов</p>
         </div>
 
-        {formData.images.length > 0 && (
+        {formData.images && formData.images.length > 0 && (
           <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {formData.images.map((img, index) => (
               <div key={index} className="relative group">
@@ -628,7 +628,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
             Добавить
           </Button>
         </div>
-        {formData.tags.length > 0 && (
+        {formData.tags && formData.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-3">
             {formData.tags.map(tag => (
               <span
