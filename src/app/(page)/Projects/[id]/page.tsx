@@ -337,7 +337,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                         <div className="text-white font-medium">{project.projectDuration}</div>
                       </div>
                     )}
-                    {project.completedAt && (
+                    {project.completedAt ? (
                       <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
                         <div className="text-sm text-gray-400 mb-1">Дата завершения</div>
                         <div className="text-white font-medium">
@@ -347,6 +347,11 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                             day: 'numeric',
                           })}
                         </div>
+                      </div>
+                    ) : (
+                      <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
+                        <div className="text-sm text-gray-400 mb-1">Категория</div>
+                        <div className="text-white font-medium">{project.category}</div>
                       </div>
                     )}
                   </div>
