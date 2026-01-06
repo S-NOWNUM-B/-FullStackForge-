@@ -283,12 +283,6 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
             transition={{ duration: 0.6, delay: 0.5 }}
             className="flex justify-center"
           >
-            <Link href="/Projects">
-              <Button variant="secondary" size="lg" className="group">
-                <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
-                Вернуться к проектам
-              </Button>
-            </Link>
           </motion.div>
         </div>
       </main>

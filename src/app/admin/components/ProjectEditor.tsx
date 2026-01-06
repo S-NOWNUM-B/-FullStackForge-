@@ -309,7 +309,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
           maxLength={100}
           className="mt-2"
         />
-        <p className="text-xs text-gray-500 mt-1">{formData.title.length}/100</p>
+        <p className="text-xs text-gray-500 mt-1">{(formData.title || '').length}/100</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -430,7 +430,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
           rows={3}
           className="mt-2"
         />
-        <p className="text-xs text-gray-500 mt-1">{formData.shortDescription.length}/200</p>
+        <p className="text-xs text-gray-500 mt-1">{(formData.shortDescription || '').length}/200</p>
       </div>
 
       <div>
@@ -444,7 +444,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
           rows={6}
           className="mt-2"
         />
-        <p className="text-xs text-gray-500 mt-1">{formData.fullDescription.length}/5000</p>
+        <p className="text-xs text-gray-500 mt-1">{(formData.fullDescription || '').length}/5000</p>
       </div>
 
       <div>
@@ -458,7 +458,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
           rows={6}
           className="mt-2"
         />
-        <p className="text-xs text-gray-500 mt-1">{formData.functionality.length}/5000</p>
+        <p className="text-xs text-gray-500 mt-1">{(formData.functionality || '').length}/5000</p>
       </div>
 
       <div>
@@ -656,7 +656,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <motion.div
@@ -664,17 +664,17 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         transition={{ type: 'spring', damping: 20 }}
-        className="bg-gray-900 rounded-2xl shadow-2xl border-2 border-gray-800 w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+        className="bg-gradient-to-br from-gray-900 via-black to-gray-900 rounded-2xl shadow-2xl border border-red-600/30 w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b-2 border-gray-800">
+            <div className="flex items-center justify-between p-6 border-b border-red-600/20">
               <h2 className="text-2xl font-bold text-white">
                 {project ? 'Редактировать проект' : 'Создать новый проект'}
               </h2>
               <button
                 onClick={onClose}
-                className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all"
+                className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-900/20 rounded-lg transition-all"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -696,7 +696,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
             </div>
 
             {/* Footer */}
-            <div className="p-6 border-t-2 border-gray-800 bg-gray-900/95 backdrop-blur">
+            <div className="p-6 border-t border-red-600/20 bg-black/50 backdrop-blur">
               <div className="flex items-center justify-between gap-4">
                 <Button
                   onClick={prevStep}
