@@ -309,23 +309,23 @@ export default function ProjectsPage() {
                       <h3 className="text-xl font-bold mb-2 text-white group-hover:text-red-400 transition-colors line-clamp-1">
                         {project.title}
                       </h3>
-                      <p className="text-gray-400 mb-4 line-clamp-2 text-sm">
+                      <p className="text-gray-400 mb-4 text-sm line-clamp-3">
                         {project.shortDescription}
                       </p>
 
                       {/* Технологии */}
-                      <div className="flex items-center gap-2 mb-4 overflow-x-auto scrollbar-hide">
-                        {project.technologies.slice(0, 3).map((tech) => (
+                      <div className="flex items-center gap-2 mb-4 flex-wrap">
+                        {project.technologies.slice(0, 2).map((tech) => (
                           <span
                             key={tech}
-                            className="px-2 py-1 bg-gray-900/50 text-gray-400 rounded text-xs border border-gray-700/50 whitespace-nowrap flex-shrink-0"
+                            className="px-2 py-1 bg-gray-900/50 text-gray-400 rounded text-xs border border-gray-700/50 whitespace-nowrap"
                           >
                             {tech}
                           </span>
                         ))}
-                        {project.technologies.length > 3 && (
-                          <span className="px-2 py-1 bg-gray-900/50 text-gray-400 rounded text-xs border border-gray-700/50 whitespace-nowrap flex-shrink-0">
-                            +{project.technologies.length - 3}
+                        {project.technologies.length > 2 && (
+                          <span className="px-2 py-1 bg-gray-900/50 text-gray-400 rounded text-xs border border-gray-700/50 whitespace-nowrap">
+                            +{project.technologies.length - 2}
                           </span>
                         )}
                       </div>

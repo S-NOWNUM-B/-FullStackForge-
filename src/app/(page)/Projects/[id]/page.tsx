@@ -4,7 +4,7 @@ import { useState, useEffect, use, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Github, ExternalLink, Loader2, Calendar, FolderOpen, Code2, Globe } from 'lucide-react';
+import { ArrowLeft, Github, ExternalLink, Loader2, Calendar, FolderOpen, Code2, Globe, FileText, Cpu, Target, Award, Info } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 interface Project {
@@ -231,7 +231,10 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
               transition={{ duration: 0.6, delay: 0.3 }}
               className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8"
             >
-              <h2 className="text-2xl font-bold text-white mb-4">О проекте</h2>
+              <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                <FileText className="w-6 h-6 text-red-600" />
+                О проекте
+              </h2>
               <div className="prose prose-invert max-w-none">
                 <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
                   {project.fullDescription}
@@ -265,7 +268,10 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
             transition={{ duration: 0.6, delay: 0.4 }}
             className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8 mb-8"
           >
-            <h2 className="text-2xl font-bold text-white mb-6">Технологии</h2>
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <Cpu className="w-6 h-6 text-red-600" />
+              Технологии
+            </h2>
             <div className="flex flex-wrap gap-3">
               {project.technologies.map((tech, index) => (
                 <motion.span
@@ -292,7 +298,10 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                   transition={{ duration: 0.6, delay: 0.45 }}
                   className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8"
                 >
-                  <h2 className="text-2xl font-bold text-white mb-4">Вызовы и проблемы</h2>
+                  <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Target className="w-6 h-6 text-red-600" />
+                    Вызовы и проблемы
+                  </h2>
                   <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
                     {project.challenges}
                   </p>
@@ -307,7 +316,10 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                   transition={{ duration: 0.6, delay: 0.45 }}
                   className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8"
                 >
-                  <h2 className="text-2xl font-bold text-white mb-4">Результаты</h2>
+                  <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Award className="w-6 h-6 text-red-600" />
+                    Результаты
+                  </h2>
                   <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
                     {project.results}
                   </p>
@@ -322,7 +334,10 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                   transition={{ duration: 0.6, delay: 0.5 }}
                   className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8 lg:col-span-2"
                 >
-                  <h2 className="text-2xl font-bold text-white mb-4">Информация о проекте</h2>
+                  <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Info className="w-6 h-6 text-red-600" />
+                    Информация о проекте
+                  </h2>
                   <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {project.clientName && (
                       <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
