@@ -130,16 +130,16 @@ export default function ProjectsManager() {
           <div className="text-3xl font-bold text-white">{stats.total}</div>
           <div className="text-sm text-gray-400">Всего проектов</div>
         </div>
-        <div className="bg-gradient-to-br from-green-900/30 via-green-800/20 to-green-700/30 backdrop-blur-sm rounded-xl p-6 border border-green-600/30">
-          <div className="text-3xl font-bold text-green-400">{stats.published}</div>
+        <div className="bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
+          <div className="text-3xl font-bold text-white">{stats.published}</div>
           <div className="text-sm text-gray-400">Опубликовано</div>
         </div>
-        <div className="bg-gradient-to-br from-yellow-900/30 via-yellow-800/20 to-yellow-700/30 backdrop-blur-sm rounded-xl p-6 border border-yellow-600/30">
-          <div className="text-3xl font-bold text-yellow-400">{stats.draft}</div>
+        <div className="bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
+          <div className="text-3xl font-bold text-white">{stats.draft}</div>
           <div className="text-sm text-gray-400">Черновики</div>
         </div>
         <div className="bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
-          <div className="text-3xl font-bold text-red-400">{stats.featured}</div>
+          <div className="text-3xl font-bold text-white">{stats.featured}</div>
           <div className="text-sm text-gray-400">Избранные</div>
         </div>
       </div>
