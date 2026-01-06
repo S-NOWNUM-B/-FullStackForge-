@@ -20,6 +20,13 @@ export async function GET(request: NextRequest) {
 
     const query: Record<string, unknown> = {};
 
+    // На публичной странице показываем только опубликованные проекты
+    // В админке передаем параметр showAll=true чтобы видеть все
+    const showAll = searchParams.get('showAll') === 'true';
+    if (!showAll) {
+      query.status = 'published';
+    }
+
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: 'i' } },

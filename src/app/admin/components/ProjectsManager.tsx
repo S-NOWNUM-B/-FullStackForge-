@@ -23,7 +23,7 @@ export default function ProjectsManager() {
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/projects?limit=100');
+      const res = await fetch('/api/projects?limit=100&showAll=true');
       const data = await res.json();
       if (data.success) {
         setProjects(data.projects || []);
@@ -145,7 +145,7 @@ export default function ProjectsManager() {
       </div>
 
       {/* Controls */}
-      <div className="bg-gradient-to-br from-red-900/20 via-red-800/10 to-red-700/20 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
+      <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div className="flex gap-2">
             <button
@@ -161,7 +161,7 @@ export default function ProjectsManager() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as 'all' | 'published' | 'draft' | 'archived')}
-              className="px-3 py-2 rounded-lg border border-red-600/30 bg-black/30 backdrop-blur-sm text-gray-300 text-sm focus:border-red-600/50 focus:outline-none"
+              className="px-3 py-2 rounded-lg border border-gray-700/50 bg-gray-800/40 backdrop-blur-sm text-gray-300 text-sm focus:border-gray-600 focus:outline-none"
             >
               <option value="all">Все статусы</option>
               <option value="published">Опубликованные</option>
@@ -172,7 +172,7 @@ export default function ProjectsManager() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as 'priority' | 'date' | 'views')}
-              className="px-3 py-2 rounded-lg border border-red-600/30 bg-black/30 backdrop-blur-sm text-gray-300 text-sm focus:border-red-600/50 focus:outline-none"
+              className="px-3 py-2 rounded-lg border border-gray-700/50 bg-gray-800/40 backdrop-blur-sm text-gray-300 text-sm focus:border-gray-600 focus:outline-none"
             >
               <option value="priority">По приоритету</option>
               <option value="date">По дате</option>
@@ -185,7 +185,7 @@ export default function ProjectsManager() {
       {/* Projects Grid */}
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-400"></div>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -197,7 +197,7 @@ export default function ProjectsManager() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="bg-gradient-to-br from-red-900/20 via-red-800/10 to-red-700/20 backdrop-blur-sm rounded-xl border border-red-600/30 overflow-hidden hover:border-red-600/50 transition-all"
+                className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl overflow-hidden hover:border-gray-600 transition-all"
               >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
@@ -246,10 +246,10 @@ export default function ProjectsManager() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex gap-2 pt-2 border-t border-red-600/20">
+                  <div className="flex gap-2 pt-2 border-t border-gray-700/50">
                     <button
                       onClick={() => handleEdit(project)}
-                      className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900/30 rounded-lg transition-colors border border-red-600/30 hover:border-red-600/50"
+                      className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors border border-gray-700/50 hover:border-gray-600"
                     >
                       <Edit className="w-4 h-4" />
                       Редактировать
@@ -259,7 +259,7 @@ export default function ProjectsManager() {
                       className={`flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors border ${
                         project.featured 
                           ? 'text-yellow-400 bg-yellow-900/30 border-yellow-600/30' 
-                          : 'text-gray-400 hover:bg-gray-900/30 border-gray-600/30'
+                          : 'text-gray-400 hover:bg-gray-700/30 border-gray-700/30'
                       }`}
                     >
                       <Star className={`w-4 h-4 ${project.featured ? 'fill-current' : ''}`} />
@@ -275,7 +275,7 @@ export default function ProjectsManager() {
                     {project.status === 'published' && (
                       <button
                         onClick={() => handleStatusChange(project, 'archived')}
-                        className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-gray-400 hover:bg-gray-900/30 rounded-lg transition-colors border border-gray-600/30"
+                        className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-gray-400 hover:bg-gray-700/30 rounded-lg transition-colors border border-gray-700/30"
                       >
                         <Archive className="w-4 h-4" />
                       </button>
@@ -295,7 +295,7 @@ export default function ProjectsManager() {
       )}
 
       {filteredProjects.length === 0 && !loading && (
-        <div className="text-center py-12 bg-gradient-to-br from-red-900/20 via-red-800/10 to-red-700/20 backdrop-blur-sm rounded-xl border border-red-600/30">
+        <div className="text-center py-12 bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl">
           <p className="text-gray-400">
             {filterStatus === 'all' ? 'Нет проектов' : 'Нет проектов с таким статусом'}
           </p>
