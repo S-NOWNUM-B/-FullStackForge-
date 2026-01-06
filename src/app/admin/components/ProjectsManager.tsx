@@ -68,6 +68,7 @@ export default function ProjectsManager() {
   };
 
   const handleStatusChange = async (project: Project, newStatus: 'draft' | 'published' | 'archived') => {
+    if (!project) return;
     try {
       const res = await fetch(`/api/projects/${project._id}`, {
         method: 'PUT',
@@ -88,6 +89,7 @@ export default function ProjectsManager() {
   };
 
   const handleToggleFeatured = async (project: Project) => {
+    if (!project) return;
     try {
       const res = await fetch(`/api/projects/${project._id}`, {
         method: 'PUT',
@@ -107,7 +109,7 @@ export default function ProjectsManager() {
     }
   };
 
-  const filteredProjects = projects
+  const filteredProjects = (projects || [])
     .filter(p => filterStatus === 'all' || p.status === filterStatus)
     .sort((a, b) => {
       if (sortBy === 'priority') return (b.priority || 0) - (a.priority || 0);
