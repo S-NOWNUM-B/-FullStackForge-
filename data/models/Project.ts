@@ -13,7 +13,6 @@ export interface IProject extends Document {
   demoUrl: string;
   // Новые поля для расширенного функционала
   status: 'draft' | 'published' | 'archived';
-  priority: number; // Для сортировки (чем выше, тем важнее)
   featured: boolean; // Избранный проект для главной
   completedAt?: Date; // Дата завершения проекта
   clientName?: string; // Название клиента
@@ -80,12 +79,6 @@ const ProjectSchema: Schema<IProject> = new Schema(
       enum: ['draft', 'published', 'archived'],
       default: 'published',
     },
-    priority: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 100,
-    },
     featured: {
       type: Boolean,
       default: false,
@@ -129,7 +122,7 @@ const ProjectSchema: Schema<IProject> = new Schema(
 ProjectSchema.index({ createdAt: -1 });
 ProjectSchema.index({ title: 'text', shortDescription: 'text' });
 ProjectSchema.index({ category: 1 });
-ProjectSchema.index({ status: 1, priority: -1 }); // Для фильтрации и сортировки
+ProjectSchema.index({ status: 1 }); // Для фильтрации
 ProjectSchema.index({ featured: 1 }); // Для быстрого поиска избранных
 
 const Project: Model<IProject> = mongoose.models.Project || mongoose.model<IProject>('Project', ProjectSchema);

@@ -26,7 +26,6 @@ interface ProjectData {
   githubUrl?: string;
   demoUrl?: string;
   status: 'draft' | 'published' | 'archived';
-  priority: number;
   featured: boolean;
   completedAt?: string;
   clientName?: string;
@@ -71,7 +70,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     githubUrl: '',
     demoUrl: '',
     status: 'draft',
-    priority: 0,
     featured: false,
     completedAt: '',
     clientName: '',
@@ -100,7 +98,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
         githubUrl: '',
         demoUrl: '',
         status: 'draft',
-        priority: 0,
         featured: false,
         completedAt: '',
         clientName: '',
@@ -339,24 +336,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
             <option value="published">Опубликован</option>
             <option value="archived">Архив</option>
           </select>
-        </div>
-      </div>
-
-      <div>
-        <Label htmlFor="priority">Приоритет (0-100): {formData.priority}</Label>
-        <input
-          type="range"
-          id="priority"
-          min="0"
-          max="100"
-          value={formData.priority}
-          onChange={(e) => setFormData(prev => ({ ...prev, priority: parseInt(e.target.value) }))}
-          className="mt-2 w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-red-500"
-        />
-        <div className="flex justify-between text-xs text-gray-500 mt-1">
-          <span>Низкий</span>
-          <span>Средний</span>
-          <span>Высокий</span>
         </div>
       </div>
 

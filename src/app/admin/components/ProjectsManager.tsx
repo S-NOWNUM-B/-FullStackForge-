@@ -14,7 +14,7 @@ export default function ProjectsManager() {
   const [showEditor, setShowEditor] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft' | 'archived'>('all');
-  const [sortBy, setSortBy] = useState<'priority' | 'date' | 'views'>('priority');
+  const [sortBy, setSortBy] = useState<'date' | 'views'>('date');
 
   useEffect(() => {
     fetchProjects();
@@ -112,7 +112,6 @@ export default function ProjectsManager() {
   const filteredProjects = (projects || [])
     .filter(p => filterStatus === 'all' || p.status === filterStatus)
     .sort((a, b) => {
-      if (sortBy === 'priority') return (b.priority || 0) - (a.priority || 0);
       if (sortBy === 'views') return (b.viewsCount || 0) - (a.viewsCount || 0);
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
@@ -173,10 +172,9 @@ export default function ProjectsManager() {
 
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'priority' | 'date' | 'views')}
+              onChange={(e) => setSortBy(e.target.value as 'date' | 'views')}
               className="px-3 py-2 rounded-lg border border-gray-700/50 bg-gray-800/40 backdrop-blur-sm text-gray-300 text-sm focus:border-gray-600 focus:outline-none"
             >
-              <option value="priority">По приоритету</option>
               <option value="date">По дате</option>
               <option value="views">По просмотрам</option>
             </select>
@@ -241,7 +239,6 @@ export default function ProjectsManager() {
                       <Eye className="w-3 h-3" />
                       {project.viewsCount || 0}
                     </span>
-                    <span>Приоритет: {project.priority || 0}</span>
                     <span className="flex-1 text-right">
                       {new Date(project.createdAt).toLocaleDateString('ru')}
                     </span>

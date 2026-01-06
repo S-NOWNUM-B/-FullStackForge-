@@ -16,9 +16,15 @@ interface Project {
   thumbnail: string;
   images: string[];
   technologies: string[];
+  tags: string[];
   category: string;
   githubUrl?: string;
   demoUrl?: string;
+  clientName?: string;
+  projectDuration?: string;
+  completedAt?: string;
+  challenges?: string;
+  results?: string;
   createdAt: string;
 }
 
@@ -258,7 +264,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8 mb-12"
+            className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8 mb-8"
           >
             <h2 className="text-2xl font-bold text-white mb-6">Технологии</h2>
             <div className="flex flex-wrap gap-3">
@@ -275,6 +281,101 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
               ))}
             </div>
           </motion.div>
+
+          {/* Дополнительная информация */}
+          {(project.challenges || project.results || project.clientName || project.projectDuration || project.completedAt) && (
+            <div className="grid lg:grid-cols-2 gap-8 mb-8">
+              {/* Вызовы и проблемы */}
+              {project.challenges && (
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.45 }}
+                  className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8"
+                >
+                  <h2 className="text-2xl font-bold text-white mb-4">Вызовы и проблемы</h2>
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
+                    {project.challenges}
+                  </p>
+                </motion.div>
+              )}
+
+              {/* Результаты */}
+              {project.results && (
+                <motion.div
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.45 }}
+                  className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8"
+                >
+                  <h2 className="text-2xl font-bold text-white mb-4">Результаты</h2>
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
+                    {project.results}
+                  </p>
+                </motion.div>
+              )}
+
+              {/* Информация о клиенте и продолжительности */}
+              {(project.clientName || project.projectDuration || project.completedAt) && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                  className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8 lg:col-span-2"
+                >
+                  <h2 className="text-2xl font-bold text-white mb-4">Информация о проекте</h2>
+                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    {project.clientName && (
+                      <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
+                        <div className="text-sm text-gray-400 mb-1">Клиент</div>
+                        <div className="text-white font-medium">{project.clientName}</div>
+                      </div>
+                    )}
+                    {project.projectDuration && (
+                      <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
+                        <div className="text-sm text-gray-400 mb-1">Длительность</div>
+                        <div className="text-white font-medium">{project.projectDuration}</div>
+                      </div>
+                    )}
+                    {project.completedAt && (
+                      <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
+                        <div className="text-sm text-gray-400 mb-1">Дата завершения</div>
+                        <div className="text-white font-medium">
+                          {new Date(project.completedAt).toLocaleDateString('ru-RU', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          )}
+
+          {/* Теги */}
+          {project.tags && project.tags.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.55 }}
+              className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8 mb-12"
+            >
+              <h2 className="text-2xl font-bold text-white mb-4">Теги</h2>
+              <div className="flex flex-wrap gap-2">
+                {project.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-red-600/10 text-red-400 rounded-full text-sm border border-red-600/20"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
           {/* Кнопка назад внизу */}
           <motion.div
