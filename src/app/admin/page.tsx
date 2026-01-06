@@ -1,9 +1,9 @@
 'use client';
 
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, LogOut } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import AdminDashboard from './AdminDashboard';
 
@@ -34,10 +34,6 @@ export default function AdminPage() {
     }
   };
 
-  const handleLogout = async () => {
-    await signOut({ redirect: false });
-  };
-
   // Показываем загрузку пока проверяется сессия
   if (status === 'loading') {
     return (
@@ -49,22 +45,7 @@ export default function AdminPage() {
 
   // Если авторизован, показываем админ панель
   if (session) {
-    return (
-      <>
-        <div className="fixed top-4 right-4 z-50">
-          <Button
-            onClick={handleLogout}
-            variant="destructive"
-            size="sm"
-            className="flex items-center gap-2"
-          >
-            <LogOut size={16} />
-            Выйти
-          </Button>
-        </div>
-        <AdminDashboard />
-      </>
-    );
+    return <AdminDashboard />;
   }
 
   // Форма входа

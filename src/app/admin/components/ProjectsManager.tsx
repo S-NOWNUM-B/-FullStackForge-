@@ -126,19 +126,19 @@ export default function ProjectsManager() {
     <div className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
+        <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
           <div className="text-3xl font-bold text-white">{stats.total}</div>
           <div className="text-sm text-gray-400">Всего проектов</div>
         </div>
-        <div className="bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
+        <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
           <div className="text-3xl font-bold text-white">{stats.published}</div>
           <div className="text-sm text-gray-400">Опубликовано</div>
         </div>
-        <div className="bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
+        <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
           <div className="text-3xl font-bold text-white">{stats.draft}</div>
           <div className="text-sm text-gray-400">Черновики</div>
         </div>
-        <div className="bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
+        <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
           <div className="text-3xl font-bold text-white">{stats.featured}</div>
           <div className="text-sm text-gray-400">Избранные</div>
         </div>
