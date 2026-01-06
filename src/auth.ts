@@ -3,9 +3,26 @@ import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
 import { authConfig } from './auth.config';
 
+// Получаем secret или генерируем временный с предупреждением
+const getSecret = () => {
+  const secret = process.env.AUTH_SECRET;
+  
+  if (!secret) {
+    console.warn('⚠️  WARNING: AUTH_SECRET is not set!');
+    console.warn('⚠️  Please set AUTH_SECRET environment variable on Render.com');
+    console.warn('⚠️  Generate one with: openssl rand -base64 32');
+    
+    // Возвращаем фиксированный fallback (НЕ безопасно для production, но позволит работать)
+    return 'CHANGE-THIS-TO-RANDOM-SECRET-IN-PRODUCTION-' + (process.env.MONGODB_URI?.slice(0, 20) || 'fallback');
+  }
+  
+  return secret;
+};
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
+  secret: getSecret(),
   providers: [
     Credentials({
       name: 'credentials',
