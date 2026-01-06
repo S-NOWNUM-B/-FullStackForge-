@@ -42,3 +42,87 @@ export async function GET(
     );
   }
 }
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    await dbConnect();
+    
+    const { id } = await params;
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, error: 'Неверный формат ID проекта' },
+        { status: 400 }
+      );
+    }
+    
+    const body = await request.json();
+    
+    const updatedProject = await Project.findByIdAndUpdate(
+      id,
+      body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedProject) {
+      return NextResponse.json(
+        { success: false, error: 'Проект не найден' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: updatedProject,
+    });
+  } catch (error) {
+    console.error('Ошибка при обновлении проекта:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json(
+      { success: false, error: message },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    await dbConnect();
+    
+    const { id } = await params;
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, error: 'Неверный формат ID проекта' },
+        { status: 400 }
+      );
+    }
+    
+    const deletedProject = await Project.findByIdAndDelete(id);
+
+    if (!deletedProject) {
+      return NextResponse.json(
+        { success: false, error: 'Проект не найден' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Проект успешно удален',
+    });
+  } catch (error) {
+    console.error('Ошибка при удалении проекта:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json(
+      { success: false, error: message },
+      { status: 500 }
+    );
+  }
+}

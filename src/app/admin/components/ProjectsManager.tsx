@@ -126,31 +126,31 @@ export default function ProjectsManager() {
     <div className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-          <div className="text-3xl font-bold text-gray-900 dark:text-white">{stats.total}</div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">Всего проектов</div>
+        <div className="bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
+          <div className="text-3xl font-bold text-white">{stats.total}</div>
+          <div className="text-sm text-gray-400">Всего проектов</div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-          <div className="text-3xl font-bold text-green-600">{stats.published}</div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">Опубликовано</div>
+        <div className="bg-gradient-to-br from-green-900/30 via-green-800/20 to-green-700/30 backdrop-blur-sm rounded-xl p-6 border border-green-600/30">
+          <div className="text-3xl font-bold text-green-400">{stats.published}</div>
+          <div className="text-sm text-gray-400">Опубликовано</div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-          <div className="text-3xl font-bold text-yellow-600">{stats.draft}</div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">Черновики</div>
+        <div className="bg-gradient-to-br from-yellow-900/30 via-yellow-800/20 to-yellow-700/30 backdrop-blur-sm rounded-xl p-6 border border-yellow-600/30">
+          <div className="text-3xl font-bold text-yellow-400">{stats.draft}</div>
+          <div className="text-sm text-gray-400">Черновики</div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-          <div className="text-3xl font-bold text-blue-600">{stats.featured}</div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">Избранные</div>
+        <div className="bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
+          <div className="text-3xl font-bold text-red-400">{stats.featured}</div>
+          <div className="text-sm text-gray-400">Избранные</div>
         </div>
       </div>
 
       {/* Controls */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+      <div className="bg-gradient-to-br from-red-900/20 via-red-800/10 to-red-700/20 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div className="flex gap-2">
             <button
               onClick={handleCreate}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-lg shadow-red-600/20"
             >
               <Plus className="w-4 h-4" />
               Создать проект
@@ -161,7 +161,7 @@ export default function ProjectsManager() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as 'all' | 'published' | 'draft' | 'archived')}
-              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+              className="px-3 py-2 rounded-lg border border-red-600/30 bg-black/30 backdrop-blur-sm text-gray-300 text-sm focus:border-red-600/50 focus:outline-none"
             >
               <option value="all">Все статусы</option>
               <option value="published">Опубликованные</option>
@@ -172,7 +172,7 @@ export default function ProjectsManager() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as 'priority' | 'date' | 'views')}
-              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm"
+              className="px-3 py-2 rounded-lg border border-red-600/30 bg-black/30 backdrop-blur-sm text-gray-300 text-sm focus:border-red-600/50 focus:outline-none"
             >
               <option value="priority">По приоритету</option>
               <option value="date">По дате</option>
@@ -185,7 +185,7 @@ export default function ProjectsManager() {
       {/* Projects Grid */}
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -197,25 +197,25 @@ export default function ProjectsManager() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden group hover:shadow-xl transition-shadow"
+                className="bg-gradient-to-br from-red-900/20 via-red-800/10 to-red-700/20 backdrop-blur-sm rounded-xl border border-red-600/30 overflow-hidden hover:border-red-600/50 transition-all"
               >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
                   <img
                     src={project.thumbnail}
                     alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover"
                   />
                   <div className="absolute top-2 right-2 flex gap-2">
                     {project.featured && (
-                      <span className="px-2 py-1 bg-yellow-500 text-white text-xs font-bold rounded">
+                      <span className="px-2 py-1 bg-yellow-500/90 backdrop-blur-sm text-white text-xs font-bold rounded">
                         <Star className="w-3 h-3 inline" />
                       </span>
                     )}
-                    <span className={`px-2 py-1 text-xs font-bold rounded ${
-                      project.status === 'published' ? 'bg-green-500 text-white' :
-                      project.status === 'draft' ? 'bg-yellow-500 text-white' :
-                      'bg-gray-500 text-white'
+                    <span className={`px-2 py-1 text-xs font-bold rounded backdrop-blur-sm ${
+                      project.status === 'published' ? 'bg-green-500/90 text-white' :
+                      project.status === 'draft' ? 'bg-yellow-500/90 text-white' :
+                      'bg-gray-500/90 text-white'
                     }`}>
                       {project.status === 'published' ? 'Опубликован' :
                        project.status === 'draft' ? 'Черновик' : 'Архив'}
@@ -226,15 +226,15 @@ export default function ProjectsManager() {
                 {/* Content */}
                 <div className="p-4 space-y-3">
                   <div>
-                    <h3 className="font-bold text-lg text-gray-900 dark:text-white line-clamp-1">
+                    <h3 className="font-bold text-lg text-white line-clamp-1">
                       {project.title}
                     </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mt-1">
+                    <p className="text-sm text-gray-400 line-clamp-2 mt-1">
                       {project.shortDescription}
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-4 text-xs text-gray-400">
                     <span className="flex items-center gap-1">
                       <Eye className="w-3 h-3" />
                       {project.viewsCount || 0}
@@ -246,20 +246,20 @@ export default function ProjectsManager() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex gap-2 pt-2 border-t border-red-600/20">
                     <button
                       onClick={() => handleEdit(project)}
-                      className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                      className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900/30 rounded-lg transition-colors border border-red-600/30 hover:border-red-600/50"
                     >
                       <Edit className="w-4 h-4" />
                       Редактировать
                     </button>
                     <button
                       onClick={() => handleToggleFeatured(project)}
-                      className={`flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      className={`flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors border ${
                         project.featured 
-                          ? 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20' 
-                          : 'text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                          ? 'text-yellow-400 bg-yellow-900/30 border-yellow-600/30' 
+                          : 'text-gray-400 hover:bg-gray-900/30 border-gray-600/30'
                       }`}
                     >
                       <Star className={`w-4 h-4 ${project.featured ? 'fill-current' : ''}`} />
@@ -267,7 +267,7 @@ export default function ProjectsManager() {
                     {project.status === 'draft' && (
                       <button
                         onClick={() => handleStatusChange(project, 'published')}
-                        className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+                        className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-green-400 hover:bg-green-900/30 rounded-lg transition-colors border border-green-600/30"
                       >
                         <Send className="w-4 h-4" />
                       </button>
@@ -275,14 +275,14 @@ export default function ProjectsManager() {
                     {project.status === 'published' && (
                       <button
                         onClick={() => handleStatusChange(project, 'archived')}
-                        className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-gray-400 hover:bg-gray-900/30 rounded-lg transition-colors border border-gray-600/30"
                       >
                         <Archive className="w-4 h-4" />
                       </button>
                     )}
                     <button
                       onClick={() => handleDelete(project._id)}
-                      className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                      className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900/30 rounded-lg transition-colors border border-red-600/30"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -295,8 +295,8 @@ export default function ProjectsManager() {
       )}
 
       {filteredProjects.length === 0 && !loading && (
-        <div className="text-center py-12">
-          <p className="text-gray-500 dark:text-gray-400">
+        <div className="text-center py-12 bg-gradient-to-br from-red-900/20 via-red-800/10 to-red-700/20 backdrop-blur-sm rounded-xl border border-red-600/30">
+          <p className="text-gray-400">
             {filterStatus === 'all' ? 'Нет проектов' : 'Нет проектов с таким статусом'}
           </p>
         </div>
