@@ -31,6 +31,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.password) {
+          console.log('[auth] Пароль не предоставлен');
           return null;
         }
 
@@ -38,7 +39,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const hashedPassword = process.env.ADMIN_PASSWORD_HASH;
         
         if (!hashedPassword) {
-          console.error('❌ ADMIN_PASSWORD_HASH не установлен в .env');
+          console.error('❌ ADMIN_PASSWORD_HASH не установлен в переменных окружения');
+          return null;
+        }
+
+        // Проверяем формат bcrypt хеша (должен начинаться с $2a$, $2b$ или $2y$)
+        const isBcryptHash = /^\$2[aby]\$\d{2}\$.{53}$/.test(hashedPassword);
+        
+        if (!isBcryptHash) {
+          console.error('❌ ADMIN_PASSWORD_HASH не является валидным bcrypt хешем!');
+          console.error('❌ Хеш должен начинаться с $2a$, $2b$ или $2y$');
+          console.error('❌ Сгенерируйте хеш командой: node -e "const bcrypt = require(\'bcrypt\'); bcrypt.hash(\'ваш_пароль\', 10).then(console.log)"');
+          console.error(`❌ Текущее значение начинается с: ${hashedPassword.substring(0, 10)}...`);
           return null;
         }
 
@@ -50,15 +62,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           );
 
           if (isValid) {
+            console.log('✅ Аутентификация успешна');
             return {
               id: 'admin',
               role: 'admin',
             };
           }
           
+          console.log('[auth] Неверный пароль');
           return null;
         } catch (error) {
-          console.error('Ошибка при проверке пароля:', error);
+          console.error('❌ Ошибка при проверке пароля:', error);
+          if (error instanceof Error) {
+            console.error('❌ Детали ошибки:', error.message);
+          }
           return null;
         }
       },

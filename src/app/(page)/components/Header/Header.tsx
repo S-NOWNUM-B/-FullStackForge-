@@ -10,7 +10,7 @@ const navLinks = [
   { href: "/", label: "Главная" },
   { href: "/About", label: "Обо мне" },
   { href: "/Projects", label: "Проекты" },
-  { href: "/Work", label: "Работа со мной" },
+  { href: "/Work", label: "Условия работы" },
 ];
 
 export default function Header() {

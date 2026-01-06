@@ -56,9 +56,9 @@ export default function HomePage() {
                 Обо мне
               </Button>
             </Link>
-            <Link href="/Contacts">
+            <Link href="/Work">
               <Button variant="secondary" size="xl" className="min-w-[200px]">
-                Связаться
+                Условия работы
               </Button>
             </Link>
           </div>
