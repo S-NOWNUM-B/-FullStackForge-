@@ -18,12 +18,15 @@ const config: Config = {
   	extend: {
   		fontFamily: {
   			sans: [
-  				'var(--font-geist-sans)',
+  				'var(--font-roboto)',
+  				'-apple-system',
+  				'BlinkMacSystemFont',
+  				'Roboto',
   				'system-ui',
   				'sans-serif'
   			],
   			mono: [
-  				'var(--font-geist-mono)',
+  				'Roboto Mono',
   				'monospace'
   			]
   		},
