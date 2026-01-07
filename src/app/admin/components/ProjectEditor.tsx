@@ -25,7 +25,7 @@ interface ProjectData {
   category: string;
   githubUrl?: string;
   demoUrl?: string;
-  status: 'draft' | 'published' | 'archived';
+  status: 'draft' | 'published';
   featured: boolean;
   completedAt?: string;
   clientName?: string;
@@ -78,6 +78,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
 
   useEffect(() => {
     if (project) {
+      console.log('Loading project for editing:', project);
       setFormData({
         _id: project._id,
         title: project.title || '',
@@ -98,7 +99,9 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
         challenges: project.challenges || '',
         results: project.results || '',
       });
+      console.log('Form data set:', formData);
     } else {
+      console.log('Creating new project');
       setFormData({
         title: '',
         shortDescription: '',
@@ -330,12 +333,11 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
           <select
             id="status"
             value={formData.status}
-            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'draft' | 'published' | 'archived' }))}
+            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'draft' | 'published' }))}
             className="mt-2 w-full px-4 py-2 bg-gray-800 border-2 border-gray-700 rounded-lg text-white focus:border-red-500 focus:outline-none transition-all"
           >
             <option value="draft">Черновик</option>
             <option value="published">Опубликован</option>
-            <option value="archived">Архив</option>
           </select>
         </div>
       </div>

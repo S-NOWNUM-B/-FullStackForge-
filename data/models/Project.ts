@@ -12,7 +12,7 @@ export interface IProject extends Document {
   githubUrl: string;
   demoUrl: string;
   // Новые поля для расширенного функционала
-  status: 'draft' | 'published' | 'archived';
+  status: 'draft' | 'published';
   featured: boolean; // Избранный проект для главной
   completedAt?: Date; // Дата завершения проекта
   clientName?: string; // Название клиента
@@ -75,7 +75,7 @@ const ProjectSchema: Schema<IProject> = new Schema(
     // Новые поля
     status: {
       type: String,
-      enum: ['draft', 'published', 'archived'],
+      enum: ['draft', 'published'],
       default: 'published',
     },
     featured: {

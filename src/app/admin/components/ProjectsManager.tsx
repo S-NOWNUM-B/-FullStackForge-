@@ -13,7 +13,7 @@ export default function ProjectsManager() {
   const [loading, setLoading] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
-  const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft' | 'archived'>('all');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft'>('all');
   const [sortBy, setSortBy] = useState<'date' | 'views'>('date');
 
   useEffect(() => {
@@ -67,13 +67,13 @@ export default function ProjectsManager() {
     }
   };
 
-  const handleStatusChange = async (project: Project, newStatus: 'draft' | 'published' | 'archived') => {
+  const handleStatusChange = async (project: Project, newStatus: 'draft' | 'published') => {
     if (!project) return;
     try {
       const res = await fetch(`/api/projects/${project._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...project, status: newStatus }),
+        body: JSON.stringify({ _id: project._id, status: newStatus }),
       });
 
       if (res.ok) {
@@ -91,14 +91,15 @@ export default function ProjectsManager() {
   const handleToggleFeatured = async (project: Project) => {
     if (!project) return;
     try {
+      const newFeaturedStatus = !project.featured;
       const res = await fetch(`/api/projects/${project._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...project, featured: !project.featured }),
+        body: JSON.stringify({ _id: project._id, featured: newFeaturedStatus }),
       });
 
       if (res.ok) {
-        toast.success(project.featured ? 'Убрано из избранного' : 'Добавлено в избранное');
+        toast.success(newFeaturedStatus ? 'Добавлено в избранное' : 'Убрано из избранного');
         fetchProjects();
       } else {
         toast.error('Не удалось обновить');
@@ -161,13 +162,12 @@ export default function ProjectsManager() {
           <div className="flex flex-wrap gap-2">
             <select
               value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value as 'all' | 'published' | 'draft' | 'archived')}
+              onChange={(e) => setFilterStatus(e.target.value as 'all' | 'published' | 'draft')}
               className="px-3 py-2 rounded-lg border border-gray-700/50 bg-gray-800/40 backdrop-blur-sm text-gray-300 text-sm focus:border-gray-600 focus:outline-none"
             >
               <option value="all">Все статусы</option>
               <option value="published">Опубликованные</option>
               <option value="draft">Черновики</option>
-              <option value="archived">Архив</option>
             </select>
 
             <select
@@ -267,14 +267,16 @@ export default function ProjectsManager() {
                       <button
                         onClick={() => handleStatusChange(project, 'published')}
                         className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-green-400 hover:bg-green-900/30 rounded-lg transition-colors border border-green-600/30"
+                        title="Опубликовать"
                       >
                         <Send className="w-4 h-4" />
                       </button>
                     )}
                     {project.status === 'published' && (
                       <button
-                        onClick={() => handleStatusChange(project, 'archived')}
-                        className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-gray-400 hover:bg-gray-700/30 rounded-lg transition-colors border border-gray-700/30"
+                        onClick={() => handleStatusChange(project, 'draft')}
+                        className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-yellow-400 hover:bg-yellow-900/30 rounded-lg transition-colors border border-yellow-600/30"
+                        title="В черновики"
                       >
                         <Archive className="w-4 h-4" />
                       </button>

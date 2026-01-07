@@ -28,7 +28,7 @@ export interface Project {
   githubUrl?: string;
   demoUrl?: string;
   // Новые поля
-  status: 'draft' | 'published' | 'archived';
+  status: 'draft' | 'published';
   priority: number;
   featured: boolean;
   completedAt?: string;
