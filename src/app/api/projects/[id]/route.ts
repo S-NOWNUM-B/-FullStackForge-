@@ -86,7 +86,7 @@ export async function PUT(
     console.error('Ошибка при обновлении проекта:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { success: false, error: message },
+      { success: false, error: `Ошибка обновления: ${message}` },
       { status: 500 }
     );
   }

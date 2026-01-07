@@ -78,7 +78,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
 
   useEffect(() => {
     if (project) {
-      console.log('Loading project for editing:', project);
       setFormData({
         _id: project._id,
         title: project.title || '',
@@ -99,9 +98,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
         challenges: project.challenges || '',
         results: project.results || '',
       });
-      console.log('Form data set:', formData);
     } else {
-      console.log('Creating new project');
       setFormData({
         title: '',
         shortDescription: '',
@@ -254,8 +251,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       const url = project ? `/api/projects/${project._id}` : '/api/projects';
       const method = project ? 'PUT' : 'POST';
       
-      console.log('Saving project:', dataToSave);
-      
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -263,18 +258,14 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       });
 
       if (res.ok) {
-        const result = await res.json();
-        console.log('Save result:', result);
         toast.success(project ? 'Проект обновлен' : 'Проект создан');
         onSave(); // Вызываем callback для обновления списка
         onClose();
       } else {
         const error = await res.json();
-        console.error('Save error:', error);
         toast.error(error.error || 'Ошибка сохранения проекта');
       }
     } catch (error) {
-      console.error('Submit error:', error);
       toast.error('Ошибка сохранения проекта');
     } finally {
       setIsLoading(false);
