@@ -37,6 +37,7 @@ export default function ProjectsManager() {
   };
 
   const handleEdit = (project: Project) => {
+    console.log('[ProjectsManager] handleEdit called with project:', project);
     setEditingProject(project);
     setShowEditor(true);
   };

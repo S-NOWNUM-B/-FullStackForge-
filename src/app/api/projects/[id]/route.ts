@@ -12,8 +12,11 @@ export async function GET(
     
     const { id } = await params;
     
+    console.log('[API GET] Fetching project with id:', id);
+    
     // Проверяем, является ли ID валидным ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.error('[API GET] Invalid ObjectId format:', id);
       return NextResponse.json(
         { success: false, error: 'Неверный формат ID проекта' },
         { status: 400 }
@@ -21,6 +24,8 @@ export async function GET(
     }
     
     const project = await Project.findById(id).lean();
+    
+    console.log('[API GET] Found project:', project ? 'Yes' : 'No');
 
     if (!project) {
       return NextResponse.json(
@@ -34,7 +39,7 @@ export async function GET(
       data: project,
     });
   } catch (error) {
-    console.error('Ошибка при получении проекта:', error);
+    console.error('[API GET] Error fetching project:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
       { success: false, error: message },

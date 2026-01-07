@@ -77,7 +77,9 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
   });
 
   useEffect(() => {
+    console.log('[ProjectEditor] useEffect triggered, project:', project);
     if (project) {
+      console.log('[ProjectEditor] Setting form data from project');
       setFormData({
         _id: project._id,
         title: project.title || '',
@@ -98,7 +100,9 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
         challenges: project.challenges || '',
         results: project.results || '',
       });
+      console.log('[ProjectEditor] Form data has been set');
     } else {
+      console.log('[ProjectEditor] Creating new project - resetting form');
       setFormData({
         title: '',
         shortDescription: '',

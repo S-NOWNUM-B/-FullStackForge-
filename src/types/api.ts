@@ -29,15 +29,13 @@ export interface Project {
   demoUrl?: string;
   // Новые поля
   status: 'draft' | 'published';
-  priority: number;
   featured: boolean;
   completedAt?: string;
   clientName?: string;
   projectDuration?: string;
   challenges?: string;
   results?: string;
-  tags: string[];
-  viewsCount: number;
+  viewsCount?: number;
   createdAt: string;
   updatedAt: string;
 }
