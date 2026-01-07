@@ -27,7 +27,6 @@ export default function ProjectsManager() {
       const data = await res.json();
       if (data.success) {
         setProjects(data.projects || []);
-        toast.success('Проекты загружены');
       }
     } catch (error) {
       console.error('Ошибка загрузки проектов:', error);

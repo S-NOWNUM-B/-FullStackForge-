@@ -3,9 +3,8 @@
  * Запуск из корня проекта: node --loader tsx scripts/migrate-archived-status.ts
  */
 
-import { config } from 'dotenv';
-import { resolve } from 'path';
-config({ path: resolve(process.cwd(), '.env.local') });
+// Скрипт требует установки dotenv: pnpm add -D dotenv
+// Или используйте API endpoint: http://localhost:3000/api/admin/migrate-archived
 
 import mongoose from 'mongoose';
 

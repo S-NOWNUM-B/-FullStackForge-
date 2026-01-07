@@ -61,9 +61,12 @@ export async function PUT(
     
     const body = await request.json();
     
+    // Убираем _id из body, чтобы не перезаписывать его
+    const { _id, ...updateData } = body;
+    
     const updatedProject = await Project.findByIdAndUpdate(
       id,
-      body,
+      { $set: updateData },
       { new: true, runValidators: true }
     );
 
