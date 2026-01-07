@@ -214,11 +214,9 @@ export default function ProjectsManager() {
                     )}
                     <span className={`px-2 py-1 text-xs font-bold rounded backdrop-blur-sm ${
                       project.status === 'published' ? 'bg-green-500/90 text-white' :
-                      project.status === 'draft' ? 'bg-yellow-500/90 text-white' :
-                      'bg-gray-500/90 text-white'
+                      'bg-yellow-500/90 text-white'
                     }`}>
-                      {project.status === 'published' ? 'Опубликован' :
-                       project.status === 'draft' ? 'Черновик' : 'Архив'}
+                      {project.status === 'published' ? 'Опубликован' : 'Черновик'}
                     </span>
                   </div>
                 </div>

@@ -217,16 +217,43 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     }));
   };
 
-  const handleSubmit = async (status?: 'draft' | 'published') => {
+  const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const dataToSave = {
-        ...formData,
-        status: status || formData.status,
+      // Подготавливаем данные для сохранения
+      const dataToSave: any = {
+        title: formData.title,
+        shortDescription: formData.shortDescription,
+        fullDescription: formData.fullDescription,
+        functionality: formData.functionality,
+        thumbnail: formData.thumbnail,
+        images: formData.images,
+        technologies: formData.technologies,
+        category: formData.category,
+        githubUrl: formData.githubUrl || '',
+        demoUrl: formData.demoUrl || '',
+        status: formData.status,
+        featured: formData.featured,
+        clientName: formData.clientName || '',
+        projectDuration: formData.projectDuration || '',
+        challenges: formData.challenges || '',
+        results: formData.results || '',
       };
+
+      // Преобразуем дату в ISO формат если она заполнена
+      if (formData.completedAt) {
+        dataToSave.completedAt = new Date(formData.completedAt).toISOString();
+      }
+      
+      // Для обновления добавляем _id
+      if (project) {
+        dataToSave._id = project._id;
+      }
       
       const url = project ? `/api/projects/${project._id}` : '/api/projects';
       const method = project ? 'PUT' : 'POST';
+      
+      console.log('Saving project:', dataToSave);
       
       const res = await fetch(url, {
         method,
@@ -235,13 +262,18 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       });
 
       if (res.ok) {
+        const result = await res.json();
+        console.log('Save result:', result);
         toast.success(project ? 'Проект обновлен' : 'Проект создан');
         onSave(); // Вызываем callback для обновления списка
         onClose();
       } else {
-        toast.error('Ошибка сохранения проекта');
+        const error = await res.json();
+        console.error('Save error:', error);
+        toast.error(error.error || 'Ошибка сохранения проекта');
       }
     } catch (error) {
+      console.error('Submit error:', error);
       toast.error('Ошибка сохранения проекта');
     } finally {
       setIsLoading(false);
@@ -656,22 +688,13 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
 
                 <div className="flex gap-3">
                   {currentStep === STEPS.length && (
-                    <>
-                      <Button
-                        onClick={() => handleSubmit('draft')}
-                        disabled={isLoading}
-                        variant="secondary"
-                      >
-                        Сохранить как черновик
-                      </Button>
-                      <Button
-                        onClick={() => handleSubmit('published')}
-                        disabled={isLoading}
-                        variant="neon"
-                      >
-                        {isLoading ? 'Сохранение...' : project ? 'Обновить' : 'Создать'}
-                      </Button>
-                    </>
+                    <Button
+                      onClick={() => handleSubmit()}
+                      disabled={isLoading}
+                      variant="neon"
+                    >
+                      {isLoading ? 'Сохранение...' : project ? 'Обновить' : 'Создать'}
+                    </Button>
                   )}
                   {currentStep < STEPS.length && (
                     <Button
