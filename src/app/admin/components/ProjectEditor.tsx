@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
@@ -56,31 +55,9 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   
-  const [formData, setFormData] = useState<ProjectData>({
-    title: '',
-    shortDescription: '',
-    fullDescription: '',
-    functionality: '',
-    thumbnail: '',
-    images: [],
-    technologies: [],
-    category: 'Web',
-    githubUrl: '',
-    demoUrl: '',
-    status: 'draft',
-    featured: false,
-    completedAt: '',
-    clientName: '',
-    projectDuration: '',
-    challenges: '',
-    results: '',
-  });
-
-  useEffect(() => {
-    console.log('[ProjectEditor] useEffect triggered, project:', project);
+  const [formData, setFormData] = useState<ProjectData>(() => {
     if (project) {
-      console.log('[ProjectEditor] Setting form data from project');
-      setFormData({
+      return {
         _id: project._id,
         title: project.title || '',
         shortDescription: project.shortDescription || '',
@@ -99,33 +76,28 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
         projectDuration: project.projectDuration || '',
         challenges: project.challenges || '',
         results: project.results || '',
-      });
-      console.log('[ProjectEditor] Form data has been set');
-    } else {
-      console.log('[ProjectEditor] Creating new project - resetting form');
-      setFormData({
-        title: '',
-        shortDescription: '',
-        fullDescription: '',
-        functionality: '',
-        thumbnail: '',
-        images: [],
-        technologies: [],
-        category: 'Web',
-        githubUrl: '',
-        demoUrl: '',
-        status: 'draft',
-        featured: false,
-        completedAt: '',
-        clientName: '',
-        projectDuration: '',
-        challenges: '',
-        results: '',
-      });
+      };
     }
-    setCurrentStep(1);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project]);
+    return {
+      title: '',
+      shortDescription: '',
+      fullDescription: '',
+      functionality: '',
+      thumbnail: '',
+      images: [],
+      technologies: [],
+      category: 'Web',
+      githubUrl: '',
+      demoUrl: '',
+      status: 'draft',
+      featured: false,
+      completedAt: '',
+      clientName: '',
+      projectDuration: '',
+      challenges: '',
+      results: '',
+    };
+  });
 
   const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
