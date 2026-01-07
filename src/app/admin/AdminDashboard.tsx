@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { LogOut } from 'lucide-react';
 import { signOut } from 'next-auth/react';

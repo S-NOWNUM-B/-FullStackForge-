@@ -62,6 +62,7 @@ export async function PUT(
     const body = await request.json();
     
     // Убираем _id из body, чтобы не перезаписывать его
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, ...updateData } = body;
     
     const updatedProject = await Project.findByIdAndUpdate(

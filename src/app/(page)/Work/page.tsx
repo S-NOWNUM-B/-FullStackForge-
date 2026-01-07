@@ -3,7 +3,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { 
-  Briefcase,
   Code,
   Rocket,
   FileText,
@@ -15,12 +14,10 @@ import {
   Mail,
   Send,
   Shield,
-  Zap,
   Target,
   Database,
   Layers,
-  GitBranch,
-  MessageSquare
+  GitBranch
 } from "lucide-react";
 
 const projectTypes = [
@@ -43,29 +40,6 @@ const projectTypes = [
     icon: Database,
     title: "Внутренние CRM/дашборды",
     description: "Системы для автоматизации бизнес-процессов компании"
-  },
-];
-
-const techStack = [
-  {
-    category: "Frontend",
-    icon: Code,
-    technologies: "React, Next.js, TypeScript, Tailwind CSS, Framer Motion"
-  },
-  {
-    category: "Backend",
-    icon: Database,
-    technologies: "Node.js, Python, REST API, GraphQL"
-  },
-  {
-    category: "Базы данных",
-    icon: Layers,
-    technologies: "MongoDB, PostgreSQL, MySQL, Redis"
-  },
-  {
-    category: "DevOps",
-    icon: GitBranch,
-    technologies: "Docker, AWS, Git, CI/CD, Render, Vercel"
   },
 ];
 

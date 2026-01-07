@@ -19,7 +19,6 @@ const getSecret = () => {
   return secret;
 };
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   secret: getSecret(),

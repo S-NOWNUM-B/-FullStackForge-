@@ -123,6 +123,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       });
     }
     setCurrentStep(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project]);
 
   const convertToBase64 = (file: File): Promise<string> => {
@@ -221,7 +222,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     setIsLoading(true);
     try {
       // Подготавливаем данные для сохранения
-      const dataToSave: any = {
+      const dataToSave: Record<string, unknown> = {
         title: formData.title,
         shortDescription: formData.shortDescription,
         fullDescription: formData.fullDescription,
