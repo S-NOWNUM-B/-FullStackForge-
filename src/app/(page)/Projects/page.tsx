@@ -122,28 +122,30 @@ export default function ProjectsPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 space-y-4"
+            className="mb-8"
           >
-            {/* Первая строка: Поиск */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              {/* Поиск */}
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                    setPage(1);
-                  }}
-                  placeholder="Поиск по названию, описанию или технологиям..."
-                  className="w-full pl-12 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all"
-                />
-              </div>
-            </div>
+            <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
+              <div className="space-y-4">
+                {/* Первая строка: Поиск */}
+                <div className="flex flex-col sm:flex-row gap-4">
+                  {/* Поиск */}
+                  <div className="relative flex-1">
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                      type="text"
+                      value={search}
+                      onChange={(e) => {
+                        setSearch(e.target.value);
+                        setPage(1);
+                      }}
+                      placeholder="Поиск по названию, описанию или технологиям..."
+                      className="w-full pl-12 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all"
+                    />
+                  </div>
+                </div>
 
-            {/* Вторая строка: Фильтры */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {/* Вторая строка: Фильтры */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Категория */}
               <select
                 value={selectedCategory}
@@ -196,6 +198,8 @@ export default function ProjectsPage() {
                 <X className="w-4 h-4" />
                 Сбросить
               </button>
+                </div>
+              </div>
             </div>
           </motion.div>
 
