@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, Eye, Star, Search, X } from 'lucide-react';
+import { Trash2, Eye, Search, X, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Project } from '@/types/api';
 
@@ -71,28 +71,6 @@ export default function ProjectsManager() {
     }
   };
 
-  const handleToggleFeatured = async (project: Project) => {
-    if (!project) return;
-    try {
-      const newFeaturedStatus = !project.featured;
-      const res = await fetch(`/api/projects/${project._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ _id: project._id, featured: newFeaturedStatus }),
-      });
-
-      if (res.ok) {
-        toast.success(newFeaturedStatus ? 'Добавлено в избранное' : 'Убрано из избранного');
-        fetchProjects();
-      } else {
-        toast.error('Не удалось обновить');
-      }
-    } catch (error) {
-      console.error('Ошибка обновления:', error);
-      toast.error('Ошибка при обновлении');
-    }
-  };
-
   const filteredProjects = (projects || [])
     .filter(p => {
       // Фильтр по поиску
@@ -133,8 +111,16 @@ export default function ProjectsManager() {
       {/* Controls */}
       <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
         <div className="space-y-4">
-          {/* Строка поиска */}
+          {/* Первая строка: Кнопка создания + Поиск */}
           <div className="flex flex-col sm:flex-row gap-4">
+            <button
+              onClick={() => window.location.href = '/admin/create-project'}
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-lg shadow-red-600/20 font-medium whitespace-nowrap"
+            >
+              <Plus className="w-5 h-5" />
+              Создать проект
+            </button>
+
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
@@ -187,7 +173,7 @@ export default function ProjectsManager() {
             <button
               onClick={resetFilters}
               disabled={!hasActiveFilters}
-              className="px-4 py-2.5 bg-gray-900/50 border border-gray-700 rounded-lg text-white hover:border-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 text-sm"
+              className="px-4 py-2.5 bg-red-600 hover:bg-red-700 disabled:bg-gray-900/50 border border-red-600 hover:border-red-700 disabled:border-gray-700 rounded-lg text-white disabled:text-gray-500 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 text-sm font-medium"
             >
               <X className="w-4 h-4" />
               Сбросить
@@ -220,14 +206,6 @@ export default function ProjectsManager() {
                     alt={project.title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-2 right-2 flex gap-2">
-                    {project.featured && (
-                      <span className="px-2 py-1 bg-yellow-500/90 backdrop-blur-sm text-white text-xs font-bold rounded flex items-center gap-1">
-                        <Star className="w-3 h-3 fill-current" />
-                        Избранное
-                      </span>
-                    )}
-                  </div>
                 </div>
 
                 {/* Content */}
@@ -252,19 +230,7 @@ export default function ProjectsManager() {
                   </div>
 
                   {/* Actions */}
-                  <div className="space-y-2 pt-2 border-t border-gray-700/50">
-                    <button
-                      onClick={() => handleToggleFeatured(project)}
-                      className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors border ${
-                        project.featured 
-                          ? 'text-yellow-400 bg-yellow-900/30 border-yellow-600/50 hover:bg-yellow-900/40' 
-                          : 'text-gray-400 hover:text-yellow-400 hover:bg-yellow-900/20 border-gray-700/50 hover:border-yellow-600/30'
-                      }`}
-                      title={project.featured ? 'Убрать из избранного' : 'Добавить в избранное'}
-                    >
-                      <Star className={`w-4 h-4 ${project.featured ? 'fill-current' : ''}`} />
-                      {project.featured ? 'Убрать из избранного' : 'Добавить в избранное'}
-                    </button>
+                  <div className="pt-2 border-t border-gray-700/50">
                     <button
                       onClick={() => handleDelete(project._id)}
                       className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-colors border border-red-600/30 hover:border-red-600/50"

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Loader2, Eye, Search, Calendar, SlidersHorizontal, X } from 'lucide-react';
+import { Loader2, Eye, Search, Calendar, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 interface Project {
@@ -28,7 +28,6 @@ export default function ProjectsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [categories, setCategories] = useState<string[]>([]);
   const [technologies, setTechnologies] = useState<string[]>([]);
-  const [showFilters, setShowFilters] = useState(false);
 
   const fetchFilters = async () => {
     try {
@@ -125,7 +124,7 @@ export default function ProjectsPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-8 space-y-4"
           >
-            {/* Строка поиска и кнопка фильтров */}
+            {/* Первая строка: Поиск */}
             <div className="flex flex-col sm:flex-row gap-4">
               {/* Поиск */}
               <div className="relative flex-1">
@@ -137,103 +136,67 @@ export default function ProjectsPage() {
                     setSearch(e.target.value);
                     setPage(1);
                   }}
-                  placeholder="Поиск по названию или описанию..."
-                  className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all backdrop-blur-sm"
+                  placeholder="Поиск по названию, описанию или технологиям..."
+                  className="w-full pl-12 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all"
                 />
               </div>
-
-              {/* Кнопка показа фильтров */}
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all backdrop-blur-sm border ${
-                  showFilters || hasActiveFilters
-                    ? 'bg-red-600 text-white border-red-600'
-                    : 'bg-gray-800/50 text-gray-400 border-gray-700/50 hover:border-red-600'
-                }`}
-              >
-                <SlidersHorizontal className="w-5 h-5" />
-                <span className="hidden sm:inline">Фильтры</span>
-                {hasActiveFilters && <span className="w-2 h-2 bg-white rounded-full" />}
-              </button>
             </div>
 
-            {/* Панель фильтров */}
-            {showFilters && (
-              <motion.div
-                initial={{ opacity: 0, scaleY: 0 }}
-                animate={{ opacity: 1, scaleY: 1 }}
-                exit={{ opacity: 0, scaleY: 0 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
-                style={{ transformOrigin: 'top' }}
-                className="bg-gray-800/50 border border-gray-700/50 rounded-lg p-6 backdrop-blur-sm"
+            {/* Вторая строка: Фильтры */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {/* Категория */}
+              <select
+                value={selectedCategory}
+                onChange={(e) => {
+                  setSelectedCategory(e.target.value);
+                  setPage(1);
+                }}
+                className="px-4 py-2.5 rounded-lg border border-gray-700 bg-gray-900/50 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {/* Категория */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Категория</label>
-                    <select
-                      value={selectedCategory}
-                      onChange={(e) => {
-                        setSelectedCategory(e.target.value);
-                        setPage(1);
-                      }}
-                      className="w-full px-4 py-2.5 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20"
-                    >
-                      <option value="all">Все категории</option>
-                      {categories.map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                  </div>
+                <option value="all">Все категории</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
 
-                  {/* Технология */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Технология</label>
-                    <select
-                      value={selectedTech}
-                      onChange={(e) => {
-                        setSelectedTech(e.target.value);
-                        setPage(1);
-                      }}
-                      className="w-full px-4 py-2.5 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20"
-                    >
-                      <option value="all">Все технологии</option>
-                      {technologies.map((tech) => (
-                        <option key={tech} value={tech}>{tech}</option>
-                      ))}
-                    </select>
-                  </div>
+              {/* Технология */}
+              <select
+                value={selectedTech}
+                onChange={(e) => {
+                  setSelectedTech(e.target.value);
+                  setPage(1);
+                }}
+                className="px-4 py-2.5 rounded-lg border border-gray-700 bg-gray-900/50 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
+              >
+                <option value="all">Все технологии</option>
+                {technologies.map((tech) => (
+                  <option key={tech} value={tech}>{tech}</option>
+                ))}
+              </select>
 
-                  {/* Сортировка по дате */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Сортировка</label>
-                    <select
-                      value={sortOrder}
-                      onChange={(e) => {
-                        setSortOrder(e.target.value as 'newest' | 'oldest');
-                        setPage(1);
-                      }}
-                      className="w-full px-4 py-2.5 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20"
-                    >
-                      <option value="newest">Сначала новые</option>
-                      <option value="oldest">Сначала старые</option>
-                    </select>
-                  </div>
+              {/* Сортировка по дате */}
+              <select
+                value={sortOrder}
+                onChange={(e) => {
+                  setSortOrder(e.target.value as 'newest' | 'oldest');
+                  setPage(1);
+                }}
+                className="px-4 py-2.5 rounded-lg border border-gray-700 bg-gray-900/50 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
+              >
+                <option value="newest">Сначала новые</option>
+                <option value="oldest">Сначала старые</option>
+              </select>
 
-                  {/* Кнопка сброса */}
-                  <div className="flex items-end">
-                    <button
-                      onClick={resetFilters}
-                      disabled={!hasActiveFilters}
-                      className="w-full px-4 py-2.5 bg-gray-900/50 border border-gray-700 rounded-lg text-white hover:border-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-                    >
-                      <X className="w-4 h-4" />
-                      Сбросить
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            )}
+              {/* Кнопка сброса */}
+              <button
+                onClick={resetFilters}
+                disabled={!hasActiveFilters}
+                className="px-4 py-2.5 bg-red-600 hover:bg-red-700 disabled:bg-gray-900/50 border border-red-600 hover:border-red-700 disabled:border-gray-700 rounded-lg text-white disabled:text-gray-500 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 text-sm font-medium"
+              >
+                <X className="w-4 h-4" />
+                Сбросить
+              </button>
+            </div>
           </motion.div>
 
           {/* Список проектов */}
@@ -311,24 +274,6 @@ export default function ProjectsPage() {
                       <p className="text-gray-400 mb-4 text-sm line-clamp-3 min-h-[4rem]">
                         {project.shortDescription}
                       </p>
-
-                      {/* Технологии */}
-                      <div className="flex items-center gap-2 mb-4 flex-wrap min-h-[2rem]">
-                        {project.technologies.slice(0, 3).map((tech) => (
-                          <span
-                            key={tech}
-                            className="px-2 py-1 bg-gray-900/50 text-gray-400 rounded text-xs border border-gray-700/50 whitespace-nowrap truncate max-w-[80px]"
-                            title={tech}
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                        {project.technologies.length > 3 && (
-                          <span className="px-2 py-1 bg-gray-900/50 text-gray-400 rounded text-xs border border-gray-700/50 whitespace-nowrap">
-                            +{project.technologies.length - 3}
-                          </span>
-                        )}
-                      </div>
 
                       {/* Кнопка */}
                       <div className="mt-auto">

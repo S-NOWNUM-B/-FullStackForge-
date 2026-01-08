@@ -20,12 +20,41 @@ interface Project {
   githubUrl?: string;
   demoUrl?: string;
   clientName?: string;
-  projectDuration?: string;
+  startedAt?: string;
   completedAt?: string;
   challenges?: string;
   results?: string;
   createdAt: string;
 }
+
+// Функция для расчета продолжительности проекта
+const calculateDuration = (startDate?: string, endDate?: string): string | null => {
+  if (!startDate || !endDate) return null;
+  
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  
+  const diffTime = Math.abs(end.getTime() - start.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays < 7) {
+    return `${diffDays} ${diffDays === 1 ? 'день' : diffDays < 5 ? 'дня' : 'дней'}`;
+  } else if (diffDays < 30) {
+    const weeks = Math.floor(diffDays / 7);
+    const days = diffDays % 7;
+    if (days === 0) {
+      return `${weeks} ${weeks === 1 ? 'неделя' : weeks < 5 ? 'недели' : 'недель'}`;
+    }
+    return `${weeks} ${weeks === 1 ? 'неделя' : weeks < 5 ? 'недели' : 'недель'} ${days} ${days === 1 ? 'день' : days < 5 ? 'дня' : 'дней'}`;
+  } else {
+    const months = Math.floor(diffDays / 30);
+    const days = diffDays % 30;
+    if (days === 0) {
+      return `${months} ${months === 1 ? 'месяц' : months < 5 ? 'месяца' : 'месяцев'}`;
+    }
+    return `${months} ${months === 1 ? 'месяц' : months < 5 ? 'месяца' : 'месяцев'} ${days} ${days === 1 ? 'день' : days < 5 ? 'дня' : 'дней'}`;
+  }
+};
 
 export default function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -288,7 +317,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
           </motion.div>
 
           {/* Дополнительная информация */}
-          {(project.challenges || project.results || project.clientName || project.projectDuration || project.completedAt) && (
+          {(project.challenges || project.results || project.clientName || project.startedAt || project.completedAt) && (
             <div className="grid lg:grid-cols-2 gap-8 mb-8">
               {/* Вызовы и проблемы */}
               {project.challenges && (
@@ -327,7 +356,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
               )}
 
               {/* Информация о клиенте и продолжительности */}
-              {(project.clientName || project.projectDuration || project.completedAt) && (
+              {(project.clientName || (project.startedAt && project.completedAt) || project.completedAt) && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -345,10 +374,10 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                         <div className="text-white font-medium">{project.clientName}</div>
                       </div>
                     )}
-                    {project.projectDuration && (
+                    {calculateDuration(project.startedAt, project.completedAt) && (
                       <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
                         <div className="text-sm text-gray-400 mb-1">Длительность</div>
-                        <div className="text-white font-medium">{project.projectDuration}</div>
+                        <div className="text-white font-medium">{calculateDuration(project.startedAt, project.completedAt)}</div>
                       </div>
                     )}
                     {project.completedAt ? (
