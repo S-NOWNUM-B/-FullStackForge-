@@ -280,11 +280,7 @@ export default function ProjectsPage() {
 
               {/* Пагинация */}
               {totalPages > 1 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex justify-center items-center gap-3"
-                >
+                <div className="flex justify-center items-center gap-3">
                   <Button
                     variant="secondary"
                     onClick={() => setPage(p => Math.max(1, p - 1))}
@@ -319,7 +315,7 @@ export default function ProjectsPage() {
                   >
                     Вперёд
                   </Button>
-                </motion.div>
+                </div>
               )}
             </>
           )}
