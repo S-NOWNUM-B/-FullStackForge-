@@ -270,10 +270,10 @@ export default function ProjectsPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="group bg-gray-800/30 border border-gray-700/50 rounded-lg overflow-hidden hover:border-red-600 transition-all backdrop-blur-sm hover:shadow-lg hover:shadow-red-600/10"
+                    className="group bg-gray-800/30 border border-gray-700/50 rounded-lg overflow-hidden hover:border-red-600 transition-all backdrop-blur-sm hover:shadow-lg hover:shadow-red-600/10 flex flex-col h-[480px]"
                   >
                     {/* Изображение */}
-                    <div className="relative w-full h-48 overflow-hidden bg-gray-900/50">
+                    <div className="relative w-full h-48 flex-shrink-0 overflow-hidden bg-gray-900/50">
                       {project.thumbnail ? (
                         <Image
                           src={project.thumbnail}
@@ -297,45 +297,48 @@ export default function ProjectsPage() {
                     </div>
 
                     {/* Контент */}
-                    <div className="p-6">
+                    <div className="p-6 flex flex-col flex-1">
                       {/* Категория */}
                       <div className="mb-3">
-                        <span className="px-3 py-1 bg-red-600/10 text-red-400 rounded-full text-xs font-medium border border-red-600/20">
+                        <span className="px-3 py-1 bg-red-600/10 text-red-400 rounded-full text-xs font-medium border border-red-600/20 inline-block">
                           {project.category}
                         </span>
                       </div>
 
-                      <h3 className="text-xl font-bold mb-2 text-white group-hover:text-red-400 transition-colors line-clamp-1">
+                      <h3 className="text-lg font-bold mb-2 text-white group-hover:text-red-400 transition-colors line-clamp-2 min-h-[3.5rem]">
                         {project.title}
                       </h3>
-                      <p className="text-gray-400 mb-4 text-sm line-clamp-3">
+                      <p className="text-gray-400 mb-4 text-sm line-clamp-3 min-h-[4rem]">
                         {project.shortDescription}
                       </p>
 
                       {/* Технологии */}
-                      <div className="flex items-center gap-2 mb-4 flex-wrap">
-                        {project.technologies.slice(0, 2).map((tech) => (
+                      <div className="flex items-center gap-2 mb-4 flex-wrap min-h-[2rem]">
+                        {project.technologies.slice(0, 3).map((tech) => (
                           <span
                             key={tech}
-                            className="px-2 py-1 bg-gray-900/50 text-gray-400 rounded text-xs border border-gray-700/50 whitespace-nowrap"
+                            className="px-2 py-1 bg-gray-900/50 text-gray-400 rounded text-xs border border-gray-700/50 whitespace-nowrap truncate max-w-[80px]"
+                            title={tech}
                           >
                             {tech}
                           </span>
                         ))}
-                        {project.technologies.length > 2 && (
+                        {project.technologies.length > 3 && (
                           <span className="px-2 py-1 bg-gray-900/50 text-gray-400 rounded text-xs border border-gray-700/50 whitespace-nowrap">
-                            +{project.technologies.length - 2}
+                            +{project.technologies.length - 3}
                           </span>
                         )}
                       </div>
 
                       {/* Кнопка */}
-                      <Link href={`/Projects/${project._id}`}>
-                        <Button variant="secondary" size="default" className="w-full group">
-                          <Eye className="w-4 h-4 mr-2" />
-                          Посмотреть проект
-                        </Button>
-                      </Link>
+                      <div className="mt-auto">
+                        <Link href={`/Projects/${project._id}`}>
+                          <Button variant="secondary" size="default" className="w-full group">
+                            <Eye className="w-4 h-4 mr-2" />
+                            Посмотреть проект
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
                   </motion.div>
                 ))}

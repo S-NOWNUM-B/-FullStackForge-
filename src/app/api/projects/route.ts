@@ -18,33 +18,100 @@ export async function GET(request: NextRequest) {
     const tech = searchParams.get('tech') || '';
     const sort = searchParams.get('sort') || 'newest';
 
-    const query: Record<string, unknown> = {};
-
     // На публичной странице показываем только опубликованные проекты
-    // В админке передаем параметр showAll=true чтобы видеть все
     const showAll = searchParams.get('showAll') === 'true';
-    if (!showAll) {
-      query.status = 'published';
-    }
-
-    if (search) {
-      query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { shortDescription: { $regex: search, $options: 'i' } },
+    
+    // Умный поиск с приоритетами
+    if (search && search.trim().length >= 2) {
+      // Создаем aggregation pipeline для поиска с весами
+      const searchRegex = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Экранируем спецсимволы
+      const pipeline: any[] = [
+        {
+          $match: {
+            ...(showAll ? {} : { status: 'published' }),
+            ...(category && category !== 'all' ? { category } : {}),
+            ...(tech && tech !== 'all' ? { technologies: { $in: [tech] } } : {}),
+            $or: [
+              { title: { $regex: searchRegex, $options: 'i' } },
+              { shortDescription: { $regex: searchRegex, $options: 'i' } },
+              { technologies: { $regex: searchRegex, $options: 'i' } },
+            ]
+          }
+        },
+        {
+          $addFields: {
+            // Вычисляем релевантность (чем меньше число, тем выше приоритет)
+            relevance: {
+              $cond: [
+                { $regexMatch: { input: '$title', regex: `^${searchRegex}`, options: 'i' } },
+                1, // Начинается с поискового запроса - высший приоритет
+                {
+                  $cond: [
+                    { $regexMatch: { input: '$title', regex: searchRegex, options: 'i' } },
+                    2, // Содержится в названии - высокий приоритет
+                    {
+                      $cond: [
+                        {
+                          $gt: [
+                            {
+                              $size: {
+                                $filter: {
+                                  input: '$technologies',
+                                  cond: { $regexMatch: { input: '$$this', regex: searchRegex, options: 'i' } }
+                                }
+                              }
+                            },
+                            0
+                          ]
+                        },
+                        3, // Найдено в технологиях - средний приоритет
+                        4  // Найдено в описании - низкий приоритет
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        { $sort: { relevance: 1, createdAt: sort === 'oldest' ? 1 : -1 } },
+        { $project: { title: 1, shortDescription: 1, category: 1, technologies: 1, createdAt: 1, thumbnail: 1 } }
       ];
+
+      const total = await Project.countDocuments({
+        ...(showAll ? {} : { status: 'published' }),
+        ...(category && category !== 'all' ? { category } : {}),
+        ...(tech && tech !== 'all' ? { technologies: { $in: [tech] } } : {}),
+        $or: [
+          { title: { $regex: searchRegex, $options: 'i' } },
+          { shortDescription: { $regex: searchRegex, $options: 'i' } },
+          { technologies: { $regex: searchRegex, $options: 'i' } },
+        ]
+      });
+
+      const projects = await Project.aggregate([
+        ...pipeline,
+        { $skip: (page - 1) * limit },
+        { $limit: limit }
+      ]);
+
+      return NextResponse.json({
+        success: true,
+        projects,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page,
+        total,
+      });
     }
 
-    if (category && category !== 'all') {
-      query.category = category;
-    }
+    // Обычный поиск без текстового запроса
+    const query: Record<string, unknown> = {
+      ...(showAll ? {} : { status: 'published' }),
+      ...(category && category !== 'all' ? { category } : {}),
+      ...(tech && tech !== 'all' ? { technologies: { $in: [tech] } } : {}),
+    };
 
-    if (tech && tech !== 'all') {
-      query.technologies = { $in: [tech] };
-    }
-
-    // Определяем порядок сортировки
     const sortOrder = sort === 'oldest' ? 1 : -1;
-
     const total = await Project.countDocuments(query);
     const projects = await Project.find(query)
       .select('title shortDescription category technologies createdAt thumbnail')
