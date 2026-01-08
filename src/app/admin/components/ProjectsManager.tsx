@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { Trash2, Eye, Search, X, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Project } from '@/types/api';
+import ProjectEditor from './ProjectEditor';
 
 export default function ProjectsManager() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -15,6 +16,7 @@ export default function ProjectsManager() {
   const [selectedTech, setSelectedTech] = useState<string>('all');
   const [categories, setCategories] = useState<string[]>([]);
   const [technologies, setTechnologies] = useState<string[]>([]);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -113,7 +115,7 @@ export default function ProjectsManager() {
           {/* Первая строка: Кнопка создания + Поиск */}
           <div className="flex flex-col sm:flex-row gap-4">
             <button
-              onClick={() => window.location.href = '/admin/create-project'}
+              onClick={() => setIsEditorOpen(true)}
               className="flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-lg shadow-red-600/20 font-medium whitespace-nowrap"
             >
               <Plus className="w-5 h-5" />
@@ -243,6 +245,17 @@ export default function ProjectsManager() {
         <div className="text-center py-12 bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl">
           <p className="text-gray-400">Проекты не найдены</p>
         </div>
+      )}
+
+      {/* Project Editor Modal */}
+      {isEditorOpen && (
+        <ProjectEditor
+          onClose={() => setIsEditorOpen(false)}
+          onSave={() => {
+            fetchProjects();
+            setIsEditorOpen(false);
+          }}
+        />
       )}
     </div>
   );

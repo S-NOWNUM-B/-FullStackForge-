@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { Loader2, Eye, Search, Calendar, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
@@ -105,25 +104,17 @@ export default function ProjectsPage() {
       <main className="relative z-10 w-full py-20 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Заголовок */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-12 text-center"
-          >
+          <div className="mb-12 text-center">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-white">
                 Мои <span className="text-red-600 font-semibold">проекты</span>
             </h1>
             <p className="text-gray-400 text-lg md:text-xl">
               Здесь собраны мои работы и разработки
             </p>
-          </motion.div>
+          </div>
 
           {/* Поиск и фильтры */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
-          >
+          <div className="mb-8">
             <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
               <div className="space-y-4">
                 {/* Первая строка: Поиск */}
@@ -201,7 +192,7 @@ export default function ProjectsPage() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Список проектов */}
           {loading ? (
@@ -209,11 +200,7 @@ export default function ProjectsPage() {
               <Loader2 className="w-10 h-10 animate-spin text-red-600" />
             </div>
           ) : projects.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center py-20"
-            >
+            <div className="text-center py-20">
               <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-800/50 rounded-full mb-6 border border-gray-700/50">
                 <Search className="w-10 h-10 text-gray-600" />
               </div>
@@ -226,7 +213,7 @@ export default function ProjectsPage() {
                   Сбросить фильтры
                 </Button>
               )}
-            </motion.div>
+            </div>
           ) : (
             <>
               {/* Сетка проектов */}
@@ -243,6 +230,7 @@ export default function ProjectsPage() {
                           src={project.thumbnail}
                           alt={project.title}
                           fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
