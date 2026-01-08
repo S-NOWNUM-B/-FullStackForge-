@@ -92,6 +92,10 @@ const ProjectSchema: Schema<IProject> = new Schema(
       type: String,
       maxlength: [2000, 'Максимум 2000 символов'],
     },
+    challenges: {
+      type: String,
+      maxlength: [2000, 'Максимум 2000 символов'],
+    },
     results: {
       type: String,
       maxlength: [2000, 'Максимум 2000 символов'],
