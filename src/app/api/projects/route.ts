@@ -17,9 +17,6 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category') || '';
     const tech = searchParams.get('tech') || '';
     const sort = searchParams.get('sort') || 'newest';
-
-    // На публичной странице показываем только опубликованные проекты
-    const showAll = searchParams.get('showAll') === 'true';
     
     // Умный поиск с приоритетами
     if (search && search.trim().length >= 2) {
@@ -29,7 +26,6 @@ export async function GET(request: NextRequest) {
       const pipeline: any[] = [
         {
           $match: {
-            ...(showAll ? {} : { status: 'published' }),
             ...(category && category !== 'all' ? { category } : {}),
             ...(tech && tech !== 'all' ? { technologies: { $in: [tech] } } : {}),
             $or: [
@@ -76,11 +72,10 @@ export async function GET(request: NextRequest) {
           }
         },
         { $sort: { relevance: 1, createdAt: sort === 'oldest' ? 1 : -1 } },
-        { $project: { title: 1, shortDescription: 1, category: 1, technologies: 1, createdAt: 1, thumbnail: 1 } }
+        { $project: { title: 1, shortDescription: 1, category: 1, technologies: 1, createdAt: 1, startedAt: 1, thumbnail: 1 } }
       ];
 
       const total = await Project.countDocuments({
-        ...(showAll ? {} : { status: 'published' }),
         ...(category && category !== 'all' ? { category } : {}),
         ...(tech && tech !== 'all' ? { technologies: { $in: [tech] } } : {}),
         $or: [
@@ -107,7 +102,6 @@ export async function GET(request: NextRequest) {
 
     // Обычный поиск без текстового запроса
     const query: Record<string, unknown> = {
-      ...(showAll ? {} : { status: 'published' }),
       ...(category && category !== 'all' ? { category } : {}),
       ...(tech && tech !== 'all' ? { technologies: { $in: [tech] } } : {}),
     };
@@ -115,7 +109,7 @@ export async function GET(request: NextRequest) {
     const sortOrder = sort === 'oldest' ? 1 : -1;
     const total = await Project.countDocuments(query);
     const projects = await Project.find(query)
-      .select('title shortDescription category technologies createdAt thumbnail')
+      .select('title shortDescription category technologies createdAt startedAt thumbnail')
       .sort({ createdAt: sortOrder })
       .limit(limit)
       .skip((page - 1) * limit)
