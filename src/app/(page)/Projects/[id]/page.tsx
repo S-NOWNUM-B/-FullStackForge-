@@ -121,12 +121,8 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
       <main className="relative z-10 w-full py-20 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto max-w-7xl">
           {/* Кнопка назад */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="mb-8"
-          >
-          </motion.div>
+          <div className="mb-8">
+          </div>
 
           {/* Заголовок и мета-информация */}
           <div className="text-center mb-12">
