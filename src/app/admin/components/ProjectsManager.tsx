@@ -3,17 +3,13 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit, Trash2, Eye, Star, Archive, Send, Search, X } from 'lucide-react';
+import { Trash2, Eye, Star, Search, X } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Project } from '@/types/api';
-import ProjectEditor from './ProjectEditor';
 
 export default function ProjectsManager() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(false);
-  const [showEditor, setShowEditor] = useState(false);
-  const [editingProject, setEditingProject] = useState<Project | null>(null);
-  const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft'>('all');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -55,16 +51,6 @@ export default function ProjectsManager() {
     }
   };
 
-  const handleEdit = (project: Project) => {
-    setEditingProject(project);
-    setShowEditor(true);
-  };
-
-  const handleCreate = () => {
-    setEditingProject(null);
-    setShowEditor(true);
-  };
-
   const handleDelete = async (id: string) => {
     if (!confirm('Удалить этот проект?')) return;
 
@@ -82,27 +68,6 @@ export default function ProjectsManager() {
     } catch (error) {
       console.error('Ошибка удаления:', error);
       toast.error('Ошибка при удалении');
-    }
-  };
-
-  const handleStatusChange = async (project: Project, newStatus: 'draft' | 'published') => {
-    if (!project) return;
-    try {
-      const res = await fetch(`/api/projects/${project._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ _id: project._id, status: newStatus }),
-      });
-
-      if (res.ok) {
-        toast.success('Статус обновлен');
-        fetchProjects();
-      } else {
-        toast.error('Не удалось обновить статус');
-      }
-    } catch (error) {
-      console.error('Ошибка обновления статуса:', error);
-      toast.error('Ошибка при обновлении');
     }
   };
 
@@ -130,9 +95,6 @@ export default function ProjectsManager() {
 
   const filteredProjects = (projects || [])
     .filter(p => {
-      // Фильтр по статусу
-      if (filterStatus !== 'all' && p.status !== filterStatus) return false;
-      
       // Фильтр по поиску
       if (search) {
         const searchLower = search.toLowerCase();
@@ -161,27 +123,18 @@ export default function ProjectsManager() {
     setSearch('');
     setSelectedCategory('all');
     setSelectedTech('all');
-    setFilterStatus('all');
     setSortOrder('newest');
   };
 
-  const hasActiveFilters = search !== '' || selectedCategory !== 'all' || selectedTech !== 'all' || filterStatus !== 'all' || sortOrder !== 'newest';
+  const hasActiveFilters = search !== '' || selectedCategory !== 'all' || selectedTech !== 'all' || sortOrder !== 'newest';
 
   return (
     <div className="space-y-6">
       {/* Controls */}
       <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
         <div className="space-y-4">
-          {/* Первая строка: Кнопка создания + Поиск */}
+          {/* Строка поиска */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <button
-              onClick={handleCreate}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-lg shadow-red-600/20 font-medium"
-            >
-              <Plus className="w-5 h-5" />
-              Создать проект
-            </button>
-
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
@@ -195,18 +148,7 @@ export default function ProjectsManager() {
           </div>
 
           {/* Вторая строка: Фильтры */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-            {/* Статус */}
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value as 'all' | 'published' | 'draft')}
-              className="px-4 py-2.5 rounded-lg border border-gray-700 bg-gray-900/50 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
-            >
-              <option value="all">Все статусы</option>
-              <option value="published">Опубликованные</option>
-              <option value="draft">Черновики</option>
-            </select>
-
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {/* Категория */}
             <select
               value={selectedCategory}
@@ -280,16 +222,11 @@ export default function ProjectsManager() {
                   />
                   <div className="absolute top-2 right-2 flex gap-2">
                     {project.featured && (
-                      <span className="px-2 py-1 bg-yellow-500/90 backdrop-blur-sm text-white text-xs font-bold rounded">
-                        <Star className="w-3 h-3 inline" />
+                      <span className="px-2 py-1 bg-yellow-500/90 backdrop-blur-sm text-white text-xs font-bold rounded flex items-center gap-1">
+                        <Star className="w-3 h-3 fill-current" />
+                        Избранное
                       </span>
                     )}
-                    <span className={`px-2 py-1 text-xs font-bold rounded backdrop-blur-sm ${
-                      project.status === 'published' ? 'bg-green-500/90 text-white' :
-                      'bg-yellow-500/90 text-white'
-                    }`}>
-                      {project.status === 'published' ? 'Опубликован' : 'Черновик'}
-                    </span>
                   </div>
                 </div>
 
@@ -315,47 +252,25 @@ export default function ProjectsManager() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex gap-2 pt-2 border-t border-gray-700/50">
-                    <button
-                      onClick={() => handleEdit(project)}
-                      className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors border border-gray-700/50 hover:border-gray-600"
-                    >
-                      <Edit className="w-4 h-4" />
-                      Редактировать
-                    </button>
+                  <div className="space-y-2 pt-2 border-t border-gray-700/50">
                     <button
                       onClick={() => handleToggleFeatured(project)}
-                      className={`flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors border ${
+                      className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors border ${
                         project.featured 
-                          ? 'text-yellow-400 bg-yellow-900/30 border-yellow-600/30' 
-                          : 'text-gray-400 hover:bg-gray-700/30 border-gray-700/30'
+                          ? 'text-yellow-400 bg-yellow-900/30 border-yellow-600/50 hover:bg-yellow-900/40' 
+                          : 'text-gray-400 hover:text-yellow-400 hover:bg-yellow-900/20 border-gray-700/50 hover:border-yellow-600/30'
                       }`}
+                      title={project.featured ? 'Убрать из избранного' : 'Добавить в избранное'}
                     >
                       <Star className={`w-4 h-4 ${project.featured ? 'fill-current' : ''}`} />
+                      {project.featured ? 'Убрать из избранного' : 'Добавить в избранное'}
                     </button>
-                    {project.status === 'draft' && (
-                      <button
-                        onClick={() => handleStatusChange(project, 'published')}
-                        className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-green-400 hover:bg-green-900/30 rounded-lg transition-colors border border-green-600/30"
-                        title="Опубликовать"
-                      >
-                        <Send className="w-4 h-4" />
-                      </button>
-                    )}
-                    {project.status === 'published' && (
-                      <button
-                        onClick={() => handleStatusChange(project, 'draft')}
-                        className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-yellow-400 hover:bg-yellow-900/30 rounded-lg transition-colors border border-yellow-600/30"
-                        title="В черновики"
-                      >
-                        <Archive className="w-4 h-4" />
-                      </button>
-                    )}
                     <button
                       onClick={() => handleDelete(project._id)}
-                      className="flex items-center justify-center gap-1 px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900/30 rounded-lg transition-colors border border-red-600/30"
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-colors border border-red-600/30 hover:border-red-600/50"
                     >
                       <Trash2 className="w-4 h-4" />
+                      Удалить проект
                     </button>
                   </div>
                 </div>
@@ -367,29 +282,9 @@ export default function ProjectsManager() {
 
       {filteredProjects.length === 0 && !loading && (
         <div className="text-center py-12 bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl">
-          <p className="text-gray-400">
-            {filterStatus === 'all' ? 'Нет проектов' : 'Нет проектов с таким статусом'}
-          </p>
+          <p className="text-gray-400">Проекты не найдены</p>
         </div>
       )}
-
-      {/* Editor Modal */}
-      <AnimatePresence>
-        {showEditor && (
-          <ProjectEditor
-            project={editingProject}
-            onClose={() => {
-              setShowEditor(false);
-              setEditingProject(null);
-            }}
-            onSave={() => {
-              setShowEditor(false);
-              setEditingProject(null);
-              fetchProjects();
-            }}
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
 }

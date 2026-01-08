@@ -26,9 +26,9 @@ interface ProjectData {
   demoUrl?: string;
   status: 'draft' | 'published';
   featured: boolean;
+  startedAt?: string;
   completedAt?: string;
   clientName?: string;
-  projectDuration?: string;
   challenges?: string;
   results?: string;
   viewsCount?: number;
@@ -71,9 +71,9 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
         demoUrl: project.demoUrl || '',
         status: project.status || 'draft',
         featured: project.featured || false,
+        startedAt: project.startedAt ? new Date(project.startedAt).toISOString().split('T')[0] : '',
         completedAt: project.completedAt ? new Date(project.completedAt).toISOString().split('T')[0] : '',
         clientName: project.clientName || '',
-        projectDuration: project.projectDuration || '',
         challenges: project.challenges || '',
         results: project.results || '',
       };
@@ -91,9 +91,9 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       demoUrl: '',
       status: 'draft',
       featured: false,
+      startedAt: '',
       completedAt: '',
       clientName: '',
-      projectDuration: '',
       challenges: '',
       results: '',
     };
@@ -209,12 +209,14 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
         status: formData.status,
         featured: formData.featured,
         clientName: formData.clientName || '',
-        projectDuration: formData.projectDuration || '',
         challenges: formData.challenges || '',
         results: formData.results || '',
       };
 
-      // Преобразуем дату в ISO формат если она заполнена
+      // Преобразуем даты в ISO формат если они заполнены
+      if (formData.startedAt) {
+        dataToSave.startedAt = new Date(formData.startedAt).toISOString();
+      }
       if (formData.completedAt) {
         dataToSave.completedAt = new Date(formData.completedAt).toISOString();
       }
@@ -357,24 +359,23 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
+          <Label htmlFor="startedAt">Дата начала</Label>
+          <Input
+            type="date"
+            id="startedAt"
+            value={formData.startedAt}
+            onChange={(e) => setFormData(prev => ({ ...prev, startedAt: e.target.value }))}
+            className="mt-2"
+          />
+        </div>
+
+        <div>
           <Label htmlFor="completedAt">Дата завершения</Label>
           <Input
             type="date"
             id="completedAt"
             value={formData.completedAt}
             onChange={(e) => setFormData(prev => ({ ...prev, completedAt: e.target.value }))}
-            className="mt-2"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="projectDuration">Длительность проекта</Label>
-          <Input
-            id="projectDuration"
-            value={formData.projectDuration || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, projectDuration: e.target.value }))}
-            placeholder="2 месяца"
-            maxLength={50}
             className="mt-2"
           />
         </div>

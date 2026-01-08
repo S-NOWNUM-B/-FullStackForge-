@@ -14,9 +14,9 @@ export interface IProject extends Document {
   // Новые поля для расширенного функционала
   status: 'draft' | 'published';
   featured: boolean; // Избранный проект для главной
+  startedAt?: Date; // Дата начала проекта
   completedAt?: Date; // Дата завершения проекта
   clientName?: string; // Название клиента
-  projectDuration?: string; // "2 месяца", "3 недели" и т.д.
   challenges?: string; // Какие проблемы решались
   results?: string; // Какие результаты достигнуты
   viewsCount: number; // Счетчик просмотров
@@ -82,20 +82,13 @@ const ProjectSchema: Schema<IProject> = new Schema(
       type: Boolean,
       default: false,
     },
+    startedAt: {
+      type: Date,
+    },
     completedAt: {
       type: Date,
     },
     clientName: {
-      type: String,
-      trim: true,
-      maxlength: [100, 'Максимум 100 символов'],
-    },
-    projectDuration: {
-      type: String,
-      trim: true,
-      maxlength: [50, 'Максимум 50 символов'],
-    },
-    challenges: {
       type: String,
       maxlength: [2000, 'Максимум 2000 символов'],
     },
