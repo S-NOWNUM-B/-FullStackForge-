@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     if (search && search.trim().length >= 2) {
       // Создаем aggregation pipeline для поиска с весами
       const searchRegex = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Экранируем спецсимволы
-      const pipeline: any[] = [
+      const pipeline: Record<string, unknown>[] = [
         {
           $match: {
             ...(showAll ? {} : { status: 'published' }),

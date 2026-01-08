@@ -135,7 +135,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       const base64 = await convertToBase64(file);
       setFormData(prev => ({ ...prev, thumbnail: base64 }));
       toast.success('Главное изображение загружено');
-    } catch (error) {
+    } catch {
       toast.error('Ошибка загрузки изображения');
     }
   }, []);
@@ -149,7 +149,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       try {
         const base64 = await convertToBase64(file);
         setFormData(prev => ({ ...prev, images: [...prev.images, base64] }));
-      } catch (error) {
+      } catch {
         toast.error(`Ошибка загрузки ${file.name}`);
       }
     }
@@ -241,7 +241,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
         const error = await res.json();
         toast.error(error.error || 'Ошибка сохранения проекта');
       }
-    } catch (error) {
+    } catch {
       toast.error('Ошибка сохранения проекта');
     } finally {
       setIsLoading(false);

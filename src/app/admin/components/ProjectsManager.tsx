@@ -116,35 +116,8 @@ export default function ProjectsManager() {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
-  const stats = {
-    total: projects.length,
-    published: projects.filter(p => p.status === 'published').length,
-    draft: projects.filter(p => p.status === 'draft').length,
-    featured: projects.filter(p => p.featured).length,
-  };
-
   return (
     <div className="space-y-6">
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
-          <div className="text-3xl font-bold text-white">{stats.total}</div>
-          <div className="text-sm text-gray-400">Всего проектов</div>
-        </div>
-        <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
-          <div className="text-3xl font-bold text-white">{stats.published}</div>
-          <div className="text-sm text-gray-400">Опубликовано</div>
-        </div>
-        <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
-          <div className="text-3xl font-bold text-white">{stats.draft}</div>
-          <div className="text-sm text-gray-400">Черновики</div>
-        </div>
-        <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
-          <div className="text-3xl font-bold text-white">{stats.featured}</div>
-          <div className="text-sm text-gray-400">Избранные</div>
-        </div>
-      </div>
-
       {/* Controls */}
       <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">

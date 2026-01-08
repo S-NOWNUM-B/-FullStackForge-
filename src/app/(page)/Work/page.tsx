@@ -3,7 +3,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { 
-  Code,
   Rocket,
   FileText,
   CheckCircle2,
@@ -15,9 +14,7 @@ import {
   Send,
   Shield,
   Target,
-  Database,
-  Layers,
-  GitBranch
+  Database
 } from "lucide-react";
 
 const projectTypes = [
