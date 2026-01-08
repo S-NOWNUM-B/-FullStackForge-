@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit, Trash2, Eye, Star, Archive, Send } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, Star, Archive, Send, Search, X } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Project } from '@/types/api';
 import ProjectEditor from './ProjectEditor';
@@ -14,11 +14,30 @@ export default function ProjectsManager() {
   const [showEditor, setShowEditor] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft'>('all');
-  const [sortBy, setSortBy] = useState<'date' | 'views'>('date');
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
+  const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedTech, setSelectedTech] = useState<string>('all');
+  const [categories, setCategories] = useState<string[]>([]);
+  const [technologies, setTechnologies] = useState<string[]>([]);
 
   useEffect(() => {
     fetchProjects();
+    fetchFilters();
   }, []);
+
+  const fetchFilters = async () => {
+    try {
+      const res = await fetch('/api/projects/filters');
+      const data = await res.json();
+      if (data.success) {
+        setCategories(data.categories || []);
+        setTechnologies(data.technologies || []);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки фильтров:', error);
+    }
+  };
 
   const fetchProjects = async () => {
     setLoading(true);
@@ -110,46 +129,127 @@ export default function ProjectsManager() {
   };
 
   const filteredProjects = (projects || [])
-    .filter(p => filterStatus === 'all' || p.status === filterStatus)
+    .filter(p => {
+      // Фильтр по статусу
+      if (filterStatus !== 'all' && p.status !== filterStatus) return false;
+      
+      // Фильтр по поиску
+      if (search) {
+        const searchLower = search.toLowerCase();
+        const matchTitle = p.title.toLowerCase().includes(searchLower);
+        const matchDesc = p.shortDescription.toLowerCase().includes(searchLower);
+        const matchTech = p.technologies.some(t => t.toLowerCase().includes(searchLower));
+        if (!matchTitle && !matchDesc && !matchTech) return false;
+      }
+      
+      // Фильтр по категории
+      if (selectedCategory !== 'all' && p.category !== selectedCategory) return false;
+      
+      // Фильтр по технологии
+      if (selectedTech !== 'all' && !p.technologies.includes(selectedTech)) return false;
+      
+      return true;
+    })
     .sort((a, b) => {
-      if (sortBy === 'views') return (b.viewsCount || 0) - (a.viewsCount || 0);
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      // Сортировка по дате
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
     });
+
+  const resetFilters = () => {
+    setSearch('');
+    setSelectedCategory('all');
+    setSelectedTech('all');
+    setFilterStatus('all');
+    setSortOrder('newest');
+  };
+
+  const hasActiveFilters = search !== '' || selectedCategory !== 'all' || selectedTech !== 'all' || filterStatus !== 'all' || sortOrder !== 'newest';
 
   return (
     <div className="space-y-6">
       {/* Controls */}
       <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          <div className="flex gap-2">
+        <div className="space-y-4">
+          {/* Первая строка: Кнопка создания + Поиск */}
+          <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={handleCreate}
-              className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-lg shadow-red-600/20"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-lg shadow-red-600/20 font-medium"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-5 h-5" />
               Создать проект
             </button>
+
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Поиск по названию, описанию или технологиям..."
+                className="w-full pl-12 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all"
+              />
+            </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          {/* Вторая строка: Фильтры */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            {/* Статус */}
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as 'all' | 'published' | 'draft')}
-              className="px-3 py-2 rounded-lg border border-gray-700/50 bg-gray-800/40 backdrop-blur-sm text-gray-300 text-sm focus:border-gray-600 focus:outline-none"
+              className="px-4 py-2.5 rounded-lg border border-gray-700 bg-gray-900/50 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
             >
               <option value="all">Все статусы</option>
               <option value="published">Опубликованные</option>
               <option value="draft">Черновики</option>
             </select>
 
+            {/* Категория */}
             <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'date' | 'views')}
-              className="px-3 py-2 rounded-lg border border-gray-700/50 bg-gray-800/40 backdrop-blur-sm text-gray-300 text-sm focus:border-gray-600 focus:outline-none"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="px-4 py-2.5 rounded-lg border border-gray-700 bg-gray-900/50 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
             >
-              <option value="date">По дате</option>
-              <option value="views">По просмотрам</option>
+              <option value="all">Все категории</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
             </select>
+
+            {/* Технология */}
+            <select
+              value={selectedTech}
+              onChange={(e) => setSelectedTech(e.target.value)}
+              className="px-4 py-2.5 rounded-lg border border-gray-700 bg-gray-900/50 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
+            >
+              <option value="all">Все технологии</option>
+              {technologies.map((tech) => (
+                <option key={tech} value={tech}>{tech}</option>
+              ))}
+            </select>
+
+            {/* Сортировка */}
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as 'newest' | 'oldest')}
+              className="px-4 py-2.5 rounded-lg border border-gray-700 bg-gray-900/50 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
+            >
+              <option value="newest">Сначала новые</option>
+              <option value="oldest">Сначала старые</option>
+            </select>
+
+            {/* Кнопка сброса */}
+            <button
+              onClick={resetFilters}
+              disabled={!hasActiveFilters}
+              className="px-4 py-2.5 bg-gray-900/50 border border-gray-700 rounded-lg text-white hover:border-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 text-sm"
+            >
+              <X className="w-4 h-4" />
+              Сбросить
+            </button>
           </div>
         </div>
       </div>
