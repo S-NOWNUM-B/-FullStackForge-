@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Loader2, Eye, Search, Calendar, SlidersHorizontal, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { TECHNOLOGY_NAMES } from '@/lib/technologies';
 
 interface Project {
   _id: string;
@@ -37,13 +36,13 @@ export default function ProjectsPage() {
       const data = await res.json();
       if (data.success) {
         setCategories(data.categories || []);
-        // Используем статический список технологий вместо динамического
-        setTechnologies(TECHNOLOGY_NAMES);
+        // Используем динамический список технологий из базы данных
+        setTechnologies(data.technologies || []);
       }
     } catch (error) {
       console.error('Ошибка загрузки фильтров:', error);
-      // В случае ошибки используем статический список
-      setTechnologies(TECHNOLOGY_NAMES);
+      // В случае ошибки используем пустой массив
+      setTechnologies([]);
     }
   };
 
@@ -61,8 +60,8 @@ export default function ProjectsPage() {
       if (selectedTech !== 'all') params.append('tech', selectedTech);
 
       const res = await fetch(`/api/projects?${params.toString()}`, {
-        // Используем кэш браузера
-        next: { revalidate: 60 }
+        // Отключаем кэш для корректной работы поиска и фильтров
+        cache: 'no-store'
       });
       const data = await res.json();
 
