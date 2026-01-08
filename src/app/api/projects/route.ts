@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
             }
           }
         },
-        { $sort: { relevance: 1, createdAt: sort === 'oldest' ? 1 : -1 } },
+        { $sort: { relevance: 1, startedAt: sort === 'oldest' ? 1 : -1, createdAt: sort === 'oldest' ? 1 : -1 } },
         { $project: { title: 1, shortDescription: 1, category: 1, technologies: 1, createdAt: 1, startedAt: 1, thumbnail: 1 } }
       ];
 
@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
     const total = await Project.countDocuments(query);
     const projects = await Project.find(query)
       .select('title shortDescription category technologies createdAt startedAt thumbnail')
-      .sort({ createdAt: sortOrder })
+      .sort({ startedAt: sortOrder, createdAt: sortOrder })
       .limit(limit)
       .skip((page - 1) * limit)
       .lean();

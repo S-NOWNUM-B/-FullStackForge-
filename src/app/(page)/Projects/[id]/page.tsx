@@ -3,7 +3,6 @@
 import { useState, useEffect, use, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { ArrowLeft, Github, ExternalLink, Loader2, Calendar, FolderOpen, Code2, Globe, FileText, Cpu, Target, Award, Info } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
@@ -130,12 +129,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
           </motion.div>
 
           {/* Заголовок и мета-информация */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
+          <div className="text-center mb-12">
             <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
               <span className="px-4 py-1.5 bg-red-600/10 text-red-400 rounded-full text-sm font-medium border border-red-600/20">
                 {project.category}
@@ -197,16 +191,11 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                 </div>
               )}
             </div>
-          </motion.div>
+          </div>
 
           {/* Галерея изображений - полная ширина */}
           {allImages.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="mb-12"
-            >
+            <div className="mb-12">
               <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8">
                 <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
                   <FolderOpen className="w-6 h-6 text-red-600" />
@@ -248,18 +237,13 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                   )}
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Модульная сетка: Описание и Функционал */}
           <div className="grid lg:grid-cols-2 gap-8 mb-8">
             {/* Описание проекта */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8"
-            >
+            <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8">
               <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
                 <FileText className="w-6 h-6 text-red-600" />
                 О проекте
@@ -269,15 +253,10 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                   {project.fullDescription}
                 </p>
               </div>
-            </motion.div>
+            </div>
 
             {/* Функционал */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8"
-            >
+            <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8">
               <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
                 <Code2 className="w-6 h-6 text-red-600" />
                 Функционал
@@ -287,34 +266,26 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                   {project.functionality || 'Информация о функционале будет добавлена позже.'}
                 </p>
               </div>
-            </motion.div>
+            </div>
           </div>
 
           {/* Технологии - полная ширина */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8 mb-8"
-          >
+          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8 mb-8">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
               <Cpu className="w-6 h-6 text-red-600" />
               Технологии
             </h2>
             <div className="flex flex-wrap gap-3">
-              {project.technologies.map((tech, index) => (
-                <motion.span
+              {project.technologies.map((tech) => (
+                <span
                   key={tech}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.5 + index * 0.05 }}
                   className="px-4 py-2 bg-gray-800/50 text-gray-300 rounded-lg text-sm font-medium border border-gray-700/50 hover:border-red-600/50 hover:text-white transition-all"
                 >
                   {tech}
-                </motion.span>
+                </span>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Дополнительная информация */}
           {(project.challenges || project.results || project.clientName || project.startedAt || project.completedAt) && (
