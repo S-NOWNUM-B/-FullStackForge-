@@ -231,12 +231,9 @@ export default function ProjectsPage() {
             <>
               {/* Сетка проектов */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-8">
-                {projects.map((project, index) => (
-                  <motion.div
+                {projects.map((project) => (
+                  <div
                     key={project._id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
                     className="group bg-gray-800/30 border border-gray-700/50 rounded-lg overflow-hidden hover:border-red-600 transition-all backdrop-blur-sm hover:shadow-lg hover:shadow-red-600/10 flex flex-col h-[480px]"
                   >
                     {/* Изображение */}
@@ -289,7 +286,7 @@ export default function ProjectsPage() {
                         </Link>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
 

@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Eye, Search, X, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Project } from '@/types/api';
@@ -189,14 +188,9 @@ export default function ProjectsManager() {
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <AnimatePresence mode="popLayout">
             {filteredProjects.map((project) => (
-              <motion.div
+              <div
                 key={project._id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
                 className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl overflow-hidden hover:border-gray-600 transition-all"
               >
                 {/* Image */}
@@ -240,9 +234,8 @@ export default function ProjectsManager() {
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
-          </AnimatePresence>
         </div>
       )}
 
