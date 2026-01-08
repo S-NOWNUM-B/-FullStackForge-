@@ -14,6 +14,7 @@ interface Project {
   technologies: string[];
   category: string;
   createdAt: string;
+  startedAt?: string;
 }
 
 export default function ProjectsPage() {
@@ -238,10 +239,10 @@ export default function ProjectsPage() {
                           <Eye className="w-12 h-12" />
                         </div>
                       )}
-                      {/* Дата создания */}
+                      {/* Дата начала проекта */}
                       <div className="absolute top-3 right-3 px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs text-gray-300 flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
-                        {new Date(project.createdAt).toLocaleDateString('ru-RU', {
+                        {new Date(project.startedAt || project.createdAt).toLocaleDateString('ru-RU', {
                           year: 'numeric',
                           month: 'short',
                         })}

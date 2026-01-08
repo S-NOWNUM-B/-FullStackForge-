@@ -321,12 +321,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
             <div className="grid lg:grid-cols-2 gap-8 mb-8">
               {/* Вызовы и проблемы */}
               {project.challenges && (
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.45 }}
-                  className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8"
-                >
+                <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8">
                   <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
                     <Target className="w-6 h-6 text-red-600" />
                     Вызовы и проблемы
@@ -334,17 +329,12 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                   <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
                     {project.challenges}
                   </p>
-                </motion.div>
+                </div>
               )}
 
               {/* Результаты */}
               {project.results && (
-                <motion.div
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.45 }}
-                  className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8"
-                >
+                <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8">
                   <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
                     <Award className="w-6 h-6 text-red-600" />
                     Результаты
@@ -352,17 +342,12 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                   <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
                     {project.results}
                   </p>
-                </motion.div>
+                </div>
               )}
 
               {/* Информация о клиенте и продолжительности */}
               {(project.clientName || (project.startedAt && project.completedAt) || project.completedAt) && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.5 }}
-                  className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8 lg:col-span-2"
-                >
+                <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 md:p-8 lg:col-span-2">
                   <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
                     <Info className="w-6 h-6 text-red-600" />
                     Информация о проекте
@@ -398,19 +383,14 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                       </div>
                     )}
                   </div>
-                </motion.div>
+                </div>
               )}
             </div>
           )}
 
           {/* Кнопка назад внизу */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="flex justify-center"
-          >
-          </motion.div>
+          <div className="flex justify-center">
+          </div>
         </div>
       </main>
     </div>
