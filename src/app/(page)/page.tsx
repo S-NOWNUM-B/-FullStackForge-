@@ -47,17 +47,17 @@ export default function HomePage() {
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-slide-up-delay-2">
             <Link href="/Projects">
-              <Button variant="secondary" size="xl" className="group min-w-[200px]">
+              <Button variant="secondary" size="xl" className="group min-w-[208px]">
                 Мои проекты
               </Button>
             </Link>
             <Link href="/About">
-              <Button variant="secondary" size="xl" className="min-w-[200px]">
+              <Button variant="secondary" size="xl" className="min-w-[208px]">
                 Обо мне
               </Button>
             </Link>
             <Link href="/Work">
-              <Button variant="secondary" size="xl" className="min-w-[200px]">
+              <Button variant="secondary" size="xl" className="min-w-[208px]">
                 Условия работы
               </Button>
             </Link>
