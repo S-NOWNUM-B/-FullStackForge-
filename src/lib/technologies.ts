@@ -1,39 +1,39 @@
 // Полный список доступных технологий с иконками и цветами
-import { 
-  FaPython, 
-  FaJava, 
-  FaNodeJs, 
-  FaHtml5, 
-  FaCss3Alt, 
-  FaDocker, 
-  FaGitAlt, 
-  FaAws, 
-  FaFigma 
+import {
+    FaPython,
+    FaNodeJs,
+    FaHtml5,
+    FaCss3Alt,
+    FaDocker,
+    FaGitAlt,
+    FaAws,
+    FaFigma
 } from "react-icons/fa";
 
-import { 
-  SiFastapi, 
-  SiKotlin,
-  SiNestjs,
-  SiTypescript, 
-  SiNextdotjs, 
-  SiJavascript, 
-  SiPostgresql, 
-  SiMysql, 
-  SiMongodb, 
-  SiRedis,
-  SiRabbitmq,
-  SiApachekafka,
-  SiAdobephotoshop,
-  SiPostman
+import {
+    SiFastapi,
+    SiDart,
+    SiFlutter,
+    SiNestjs,
+    SiTypescript,
+    SiNextdotjs,
+    SiJavascript,
+    SiPostgresql,
+    SiMysql,
+    SiMongodb,
+    SiRedis,
+    SiRabbitmq,
+    SiApachekafka,
+    SiAdobephotoshop,
+    SiPostman
 } from "react-icons/si";
 
 export const TECHNOLOGIES = [
     // Языки программирования / Backend - Ряд 1
     { name: "PYTHON", color: "bg-[#3776AB] hover:bg-[#3776AB]/90", icon: FaPython },
     { name: "FASTAPI", color: "bg-[#009688] hover:bg-[#009688]/90", icon: SiFastapi },
-    { name: "JAVA", color: "bg-[#ED8B00] hover:bg-[#ED8B00]/90", icon: FaJava },
-    { name: "KOTLIN", color: "bg-[#7F52FF] hover:bg-[#7F52FF]/90", icon: SiKotlin },
+    { name: "DART", color: "bg-[#0175C2] hover:bg-[#0175C2]/90", icon: SiDart },
+    { name: "FLUTTER", color: "bg-[#02569B] hover:bg-[#02569B]/90", icon: SiFlutter },
     { name: "NODE.JS", color: "bg-[#339933] hover:bg-[#339933]/90", icon: FaNodeJs },
     { name: "NESTJS", color: "bg-[#E0234E] hover:bg-[#E0234E]/90", icon: SiNestjs },
 
