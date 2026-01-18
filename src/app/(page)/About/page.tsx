@@ -12,7 +12,8 @@ import {
   Building2,
   Palette,
   HardHat,
-  Ticket
+  Ticket,
+  Download
 } from "lucide-react";
 import Image from "next/image";
 
@@ -138,7 +139,7 @@ export default function AboutPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:col-span-1"
           >
-            <div className="relative aspect-square rounded-2xl overflow-hidden border border-red-600/30 bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm shadow-2xl shadow-red-600/10">
+            <div className="relative aspect-square rounded-2xl overflow-hidden border border-red-600/30 bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm shadow-2xl shadow-red-600/10 mb-6">
               {/* ФОТО ПРОФИЛЯ */}
               <Image 
                 src="/profile.jpeg" 
@@ -148,6 +149,23 @@ export default function AboutPage() {
                 priority
               />
             </div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex justify-center"
+            >
+              <motion.a
+                href="/resume.pdf"
+                download="Resume_Mamaev_Stanislav.pdf"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-full px-6 py-3 bg-[#212936] hover:bg-red-700 text-white rounded-lg transition-all font-medium flex items-center justify-center gap-2 border border-gray-700/50 shadow-lg"
+              >
+                <Download className="w-5 h-5" />
+                Скачать резюме
+              </motion.a>
+            </motion.div>
           </motion.div>
 
           {/* About Text */}
