@@ -7,7 +7,8 @@ import {
     FaDocker,
     FaGitAlt,
     FaAws,
-    FaFigma
+    FaFigma,
+    FaJava
 } from "react-icons/fa";
 
 import {
@@ -25,8 +26,10 @@ import {
     SiRabbitmq,
     SiApachekafka,
     SiAdobephotoshop,
-    SiPostman
+    SiPostman,
+    SiKotlin
 } from "react-icons/si";
+
 
 export const TECHNOLOGIES = [
     // Языки программирования / Backend - Ряд 1
@@ -34,6 +37,8 @@ export const TECHNOLOGIES = [
     { name: "FASTAPI", color: "bg-[#009688] hover:bg-[#009688]/90", icon: SiFastapi },
     { name: "DART", color: "bg-[#0175C2] hover:bg-[#0175C2]/90", icon: SiDart },
     { name: "FLUTTER", color: "bg-[#02569B] hover:bg-[#02569B]/90", icon: SiFlutter },
+    { name: "JAVA", color: "bg-[#ED8B00] hover:bg-[#ED8B00]/90", icon: FaJava },
+    { name: "KOTLIN", color: "bg-[#7F52FF] hover:bg-[#7F52FF]/90", icon: SiKotlin },
     { name: "NODE.JS", color: "bg-[#339933] hover:bg-[#339933]/90", icon: FaNodeJs },
     { name: "NESTJS", color: "bg-[#E0234E] hover:bg-[#E0234E]/90", icon: SiNestjs },
 
