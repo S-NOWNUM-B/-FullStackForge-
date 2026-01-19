@@ -12,23 +12,27 @@ import {
 } from "react-icons/fa";
 
 import {
-  SiFastapi,
-  SiDart,
-  SiFlutter,
-  SiNestjs,
-  SiTypescript,
-  SiNextdotjs,
-  SiJavascript,
-  SiPostgresql,
-  SiMysql,
-  SiMongodb,
-  SiRedis,
-  SiRabbitmq,
-  SiApachekafka,
-  SiAdobephotoshop,
-  SiPostman,
-  SiKotlin,
-  SiSwift
+    SiFastapi,
+    SiDart,
+    SiFlutter,
+    SiNestjs,
+    SiTypescript,
+    SiNextdotjs,
+    SiJavascript,
+    SiPostgresql,
+    SiMysql,
+    SiMongodb,
+    SiRedis,
+    SiRabbitmq,
+    SiApachekafka,
+    SiAdobephotoshop,
+    SiPostman,
+    SiKotlin,
+    SiSwift,
+    SiVuedotjs,      // исправлено: VueDotJs -> Vuedotjs
+    SiAngular,       // это корректно
+    SiFastify,       // это корректно
+    SiDjango 
 } from "react-icons/si";
 
 
@@ -46,12 +50,16 @@ export const TECHNOLOGIES = [
     { name: "HTML", color: "bg-[#E34F26] hover:bg-[#E34F26]/90", icon: FaHtml5 },
     { name: "CSS", color: "bg-[#1572B6] hover:bg-[#1572B6]/90", icon: FaCss3Alt },
     { name: "FLUTTER", color: "bg-[#02569B] hover:bg-[#02569B]/90", icon: SiFlutter },
+    { name: "VUE", color: "bg-[#41B883] hover:bg-[#41B883]/90", icon: SiVuedotjs },
     { name: "NEXT.JS", color: "bg-[#000000] hover:bg-[#000000]/90", icon: SiNextdotjs },
+    { name: "ANGULAR", color: "bg-[#B52E31] hover:bg-[#B52E31]/90", icon: SiAngular },
     
     // Backend - Ряд 3
     { name: "NODE.JS", color: "bg-[#339933] hover:bg-[#339933]/90", icon: FaNodeJs },
     { name: "FASTAPI", color: "bg-[#009688] hover:bg-[#009688]/90", icon: SiFastapi },
+    { name: "FASTIFY", color: "bg-[#1C1E21] hover:bg-[#1C1E21]/90", icon: SiFastify },
     { name: "NESTJS", color: "bg-[#E0234E] hover:bg-[#E0234E]/90", icon: SiNestjs },
+    { name: "DJANGO", color: "bg-[#092E20] hover:bg-[#092E20]/90", icon: SiDjango },
     
     // Databases & Queues - Ряд 4
     { name: "MYSQL", color: "bg-[#4479A1] hover:bg-[#4479A1]/90", icon: SiMysql },
