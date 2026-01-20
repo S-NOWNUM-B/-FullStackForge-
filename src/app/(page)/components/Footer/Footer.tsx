@@ -87,7 +87,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
           <p className="text-gray-500 text-sm">
-            © {currentYear} DevPortfolio. Все права защищены.
+            © {currentYear} FullStackForge. Все права защищены.
           </p>
         </div>
       </div>
