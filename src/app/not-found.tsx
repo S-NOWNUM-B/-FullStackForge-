@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { ArrowLeft, Home } from 'lucide-react';
+import { Home } from 'lucide-react';
 
 export default function NotFound() {
   return (
@@ -26,12 +26,6 @@ export default function NotFound() {
             <Button variant="secondary" size="lg" className="group">
               <Home className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
               На главную
-            </Button>
-          </Link>
-          <Link href="/Projects">
-            <Button variant="secondary" size="lg" className="group">
-              <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
-              К проектам
             </Button>
           </Link>
         </div>
