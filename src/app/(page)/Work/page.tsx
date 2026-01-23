@@ -165,11 +165,11 @@ export default function WorkPage() {
           >
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-              Работаю над проектами, <span className="text-red-600">которые меняют мир</span>
+              Пишу код, который решает <span className="text-red-600"><br />реальные проблемы</span>
             </h1>
             
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Создаю веб-решения, которые работают быстро и нравятся пользователям
+              Full-stack разработчик: от MVP до масштабируемых веб-приложений
             </p>
           </motion.div>
 
