@@ -73,7 +73,7 @@ const competencies = [
   "Frontend-разработка с React, Next.js, TypeScript, HTML/CSS и адаптивной версткой",
   "Backend-разработка на Node.js/NestJS и Spring Boot с проектированием REST API",
   "UX/UI дизайн и прототипирование в Figma и Photoshop",
-  "Работа с облачными платформами (AWS), контейнеризацией (Docker) и системами очередей (RabbitMQ)",
+  "Работа с контейнеризацией (Docker) и системами очередей (RabbitMQ)",
   "Настройка CI/CD процессов и автоматизация развертывания",
   "Использование Git, GitHub, Postman для командной разработки и тестирования",
   "Изучение и внедрение современных архитектурных паттернов и best practices",
