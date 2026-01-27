@@ -6,7 +6,6 @@ import {
     FaCss3Alt,
     FaDocker,
     FaGitAlt,
-    FaAws,
     FaFigma,
     FaJava
 } from "react-icons/fa";
@@ -24,16 +23,13 @@ import {
     SiMongodb,
     SiRedis,
     SiRabbitmq,
-    SiApachekafka,
     SiAdobephotoshop,
     SiPostman,
     SiKotlin,
     SiSwift,
-    SiVuedotjs,
-    SiAngular,
     SiDjango,
-    SiReact,       // Добавлено
-    SiSpringboot   // Добавлено
+    SiReact,
+    SiSpringboot
 } from "react-icons/si";
 
 
@@ -50,10 +46,8 @@ export const TECHNOLOGIES = [
     // Frontend & Mobile - Ряд 2 (от разметки к тяжелым фреймворкам)
     { name: "HTML", color: "bg-[#E34F26] hover:bg-[#E34F26]/90", icon: FaHtml5 },
     { name: "CSS", color: "bg-[#1572B6] hover:bg-[#1572B6]/90", icon: FaCss3Alt },
-    { name: "VUE", color: "bg-[#41B883] hover:bg-[#41B883]/90", icon: SiVuedotjs },
-    { name: "REACT", color: "bg-[#61DAFB] hover:bg-[#61DAFB]/90", icon: SiReact }, // Добавлено
+    { name: "REACT", color: "bg-[#61DAFB] hover:bg-[#61DAFB]/90", icon: SiReact },
     { name: "NEXT.JS", color: "bg-[#000000] hover:bg-[#000000]/90", icon: SiNextdotjs },
-    { name: "ANGULAR", color: "bg-[#B52E31] hover:bg-[#B52E31]/90", icon: SiAngular },
     { name: "FLUTTER", color: "bg-[#02569B] hover:bg-[#02569B]/90", icon: SiFlutter },
     
     // Backend - Ряд 3 (от легковесных к энтерпрайз решениям)
@@ -61,7 +55,7 @@ export const TECHNOLOGIES = [
     { name: "NODE.JS", color: "bg-[#339933] hover:bg-[#339933]/90", icon: FaNodeJs },
     { name: "DJANGO", color: "bg-[#092E20] hover:bg-[#092E20]/90", icon: SiDjango },
     { name: "NESTJS", color: "bg-[#E0234E] hover:bg-[#E0234E]/90", icon: SiNestjs },
-    { name: "SPRING BOOT", color: "bg-[#6DB33F] hover:bg-[#6DB33F]/90", icon: SiSpringboot }, // Добавлено
+    { name: "SPRING BOOT", color: "bg-[#6DB33F] hover:bg-[#6DB33F]/90", icon: SiSpringboot },
     
     // Databases & Queues - Ряд 4
     { name: "MYSQL", color: "bg-[#4479A1] hover:bg-[#4479A1]/90", icon: SiMysql },
@@ -69,13 +63,11 @@ export const TECHNOLOGIES = [
     { name: "MONGODB", color: "bg-[#47A248] hover:bg-[#47A248]/90", icon: SiMongodb },
     { name: "REDIS", color: "bg-[#DC382D] hover:bg-[#DC382D]/90", icon: SiRedis },
     { name: "RABBITMQ", color: "bg-[#FF6600] hover:bg-[#FF6600]/90", icon: SiRabbitmq },
-    { name: "APACHE KAFKA", color: "bg-[#231F20] hover:bg-[#231F20]/90", icon: SiApachekafka },
     
     // Infrastructure & Tools - Ряд 5
     { name: "GIT", color: "bg-[#F05032] hover:bg-[#F05032]/90", icon: FaGitAlt },
     { name: "POSTMAN", color: "bg-[#FF6C37] hover:bg-[#FF6C37]/90", icon: SiPostman },
     { name: "DOCKER", color: "bg-[#2496ED] hover:bg-[#2496ED]/90", icon: FaDocker },
-    { name: "AWS", color: "bg-[#232F3E] hover:bg-[#232F3E]/90", icon: FaAws },
     
     // Design - Ряд 6
     { name: "FIGMA", color: "bg-[#F24E1E] hover:bg-[#F24E1E]/90", icon: FaFigma },
