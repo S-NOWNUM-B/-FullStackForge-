@@ -35,7 +35,6 @@ import {
 
 export const TECHNOLOGIES = [
     // Языки программирования - Ряд 1 (от простых к системным)
-    { name: "PYTHON", color: "bg-[#3776AB] hover:bg-[#3776AB]/90", icon: FaPython },
     { name: "JAVASCRIPT", color: "bg-[#F7DF1E] hover:bg-[#F7DF1E]/90", icon: SiJavascript },
     { name: "TYPESCRIPT", color: "bg-[#3178C6] hover:bg-[#3178C6]/90", icon: SiTypescript },
     { name: "DART", color: "bg-[#0175C2] hover:bg-[#0175C2]/90", icon: SiDart },
@@ -51,14 +50,11 @@ export const TECHNOLOGIES = [
     { name: "FLUTTER", color: "bg-[#02569B] hover:bg-[#02569B]/90", icon: SiFlutter },
     
     // Backend - Ряд 3 (от легковесных к энтерпрайз решениям)
-    { name: "FASTAPI", color: "bg-[#009688] hover:bg-[#009688]/90", icon: SiFastapi },
     { name: "NODE.JS", color: "bg-[#339933] hover:bg-[#339933]/90", icon: FaNodeJs },
-    { name: "DJANGO", color: "bg-[#092E20] hover:bg-[#092E20]/90", icon: SiDjango },
     { name: "NESTJS", color: "bg-[#E0234E] hover:bg-[#E0234E]/90", icon: SiNestjs },
     { name: "SPRING BOOT", color: "bg-[#6DB33F] hover:bg-[#6DB33F]/90", icon: SiSpringboot },
     
     // Databases & Queues - Ряд 4
-    { name: "MYSQL", color: "bg-[#4479A1] hover:bg-[#4479A1]/90", icon: SiMysql },
     { name: "POSTGRESQL", color: "bg-[#316192] hover:bg-[#316192]/90", icon: SiPostgresql },
     { name: "MONGODB", color: "bg-[#47A248] hover:bg-[#47A248]/90", icon: SiMongodb },
     { name: "REDIS", color: "bg-[#DC382D] hover:bg-[#DC382D]/90", icon: SiRedis },
