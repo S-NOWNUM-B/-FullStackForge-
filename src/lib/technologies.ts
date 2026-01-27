@@ -1,6 +1,5 @@
 // Полный список доступных технологий с иконками и цветами
 import {
-    FaPython,
     FaNodeJs,
     FaHtml5,
     FaCss3Alt,
@@ -11,7 +10,6 @@ import {
 } from "react-icons/fa";
 
 import {
-    SiFastapi,
     SiDart,
     SiFlutter,
     SiNestjs,
@@ -19,7 +17,6 @@ import {
     SiNextdotjs,
     SiJavascript,
     SiPostgresql,
-    SiMysql,
     SiMongodb,
     SiRedis,
     SiRabbitmq,
@@ -27,9 +24,10 @@ import {
     SiPostman,
     SiKotlin,
     SiSwift,
-    SiDjango,
     SiReact,
-    SiSpringboot
+    SiSpringboot,
+    SiTailwindcss,
+    SiAdobeillustrator
 } from "react-icons/si";
 
 
@@ -45,6 +43,7 @@ export const TECHNOLOGIES = [
     // Frontend & Mobile - Ряд 2 (от разметки к тяжелым фреймворкам)
     { name: "HTML", color: "bg-[#E34F26] hover:bg-[#E34F26]/90", icon: FaHtml5 },
     { name: "CSS", color: "bg-[#1572B6] hover:bg-[#1572B6]/90", icon: FaCss3Alt },
+    { name: "TAILWIND", color: "bg-[#06B6D4] hover:bg-[#06B6D4]/90", icon: SiTailwindcss },
     { name: "REACT", color: "bg-[#61DAFB] hover:bg-[#61DAFB]/90", icon: SiReact },
     { name: "NEXT.JS", color: "bg-[#000000] hover:bg-[#000000]/90", icon: SiNextdotjs },
     { name: "FLUTTER", color: "bg-[#02569B] hover:bg-[#02569B]/90", icon: SiFlutter },
@@ -68,6 +67,7 @@ export const TECHNOLOGIES = [
     // Design - Ряд 6
     { name: "FIGMA", color: "bg-[#F24E1E] hover:bg-[#F24E1E]/90", icon: FaFigma },
     { name: "PHOTOSHOP", color: "bg-[#31A8FF] hover:bg-[#31A8FF]/90", icon: SiAdobephotoshop },
+    { name: "ILLUSTRATOR", color: "bg-[#FF9A00] hover:bg-[#FF9A00]/90", icon: SiAdobeillustrator },
 ] as const;
 
 export const TECHNOLOGY_NAMES = TECHNOLOGIES.map(t => t.name);
