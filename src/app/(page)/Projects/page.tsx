@@ -110,7 +110,7 @@ export default function ProjectsPage() {
                 Мои <span className="text-red-600 font-semibold">проекты</span>
             </h1>
             <p className="text-gray-400 text-lg md:text-xl">
-              Здесь собраны мои работы и разработки
+              Здесь собраны лучшие работы и разработки
             </p>
           </div>
 

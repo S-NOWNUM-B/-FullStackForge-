@@ -41,7 +41,7 @@ export default function HomePage() {
 
           {/* Subtitle */}
           <p className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto animate-slide-up-delay">
-            Создаю надёжные и современные веб-решения для бизнеса и людей
+            Помогаю бизнесу и людям через создание надёжных и современных цифровых решений
           </p>
 
           {/* CTAs */}
