@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Textarea } from '@/components/ui/Textarea';
-import { TECHNOLOGY_NAMES } from '@/lib/technologies';
+import { PROJECT_TECHNOLOGY_NAMES } from '@/lib/project-technologies';
 
 interface ProjectData {
   _id?: string;
@@ -529,7 +529,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       <div>
         <Label>Технологии * ({formData.technologies.length} выбрано)</Label>
         <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-64 overflow-y-auto p-2 bg-gray-800/50 rounded-xl border-2 border-gray-700">
-          {TECHNOLOGY_NAMES.map(tech => (
+          {PROJECT_TECHNOLOGY_NAMES.map(tech => (
             <button
               key={tech}
               type="button"

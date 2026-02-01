@@ -1,0 +1,29 @@
+export const PROJECT_TECHNOLOGIES = [
+  'JAVASCRIPT',
+  'TYPESCRIPT',
+  'DART',
+  'KOTLIN',
+  'SWIFT',
+  'JAVA',
+  'HTML',
+  'CSS',
+  'TAILWIND',
+  'REACT',
+  'NEXT.JS',
+  'FLUTTER',
+  'NODE.JS',
+  'NESTJS',
+  'SPRING BOOT',
+  'POSTGRESQL',
+  'FIREBASE',
+  'REDIS',
+  'RABBITMQ',
+  'GIT',
+  'POSTMAN',
+  'DOCKER',
+  'FIGMA',
+  'PHOTOSHOP',
+  'ILLUSTRATOR'
+] as const;
+
+export const PROJECT_TECHNOLOGY_NAMES = [...PROJECT_TECHNOLOGIES];

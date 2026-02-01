@@ -30,6 +30,7 @@ export interface Project {
   // Новые поля
   status: 'draft' | 'published';
   featured: boolean;
+  startedAt?: string;
   completedAt?: string;
   clientName?: string;
   projectDuration?: string;

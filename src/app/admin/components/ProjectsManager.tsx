@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Trash2, Eye, Search, X, Plus } from 'lucide-react';
+import { Trash2, Eye, Search, X, Plus, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Project } from '@/types/api';
 import ProjectEditor from './ProjectEditor';
@@ -17,6 +17,8 @@ export default function ProjectsManager() {
   const [categories, setCategories] = useState<string[]>([]);
   const [technologies, setTechnologies] = useState<string[]>([]);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [loadingProject, setLoadingProject] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -72,6 +74,31 @@ export default function ProjectsManager() {
     }
   };
 
+  const handleCreate = () => {
+    setSelectedProject(null);
+    setIsEditorOpen(true);
+  };
+
+  const handleEdit = async (id: string) => {
+    setLoadingProject(true);
+    try {
+      const res = await fetch(`/api/projects/${id}`);
+      const data = await res.json();
+
+      if (data.success && data.data) {
+        setSelectedProject(data.data as Project);
+        setIsEditorOpen(true);
+      } else {
+        toast.error(data.error || 'Не удалось загрузить проект');
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки проекта:', error);
+      toast.error('Ошибка при загрузке проекта');
+    } finally {
+      setLoadingProject(false);
+    }
+  };
+
   const filteredProjects = (projects || [])
     .filter(p => {
       // Фильтр по поиску
@@ -115,7 +142,7 @@ export default function ProjectsManager() {
           {/* Первая строка: Кнопка создания + Поиск */}
           <div className="flex flex-col sm:flex-row gap-4">
             <button
-              onClick={() => setIsEditorOpen(true)}
+              onClick={handleCreate}
               className="flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-lg shadow-red-600/20 font-medium whitespace-nowrap"
             >
               <Plus className="w-5 h-5" />
@@ -226,13 +253,21 @@ export default function ProjectsManager() {
                   </div>
 
                   {/* Actions */}
-                  <div className="pt-2 border-t border-gray-700/50">
+                  <div className="pt-2 border-t border-gray-700/50 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button
+                      onClick={() => handleEdit(project._id)}
+                      disabled={loadingProject}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white hover:text-white hover:bg-gray-800/70 rounded-lg transition-colors border border-gray-600/50 hover:border-gray-500"
+                    >
+                      <Pencil className="w-4 h-4" />
+                      Редактировать
+                    </button>
                     <button
                       onClick={() => handleDelete(project._id)}
                       className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-colors border border-red-600/30 hover:border-red-600/50"
                     >
                       <Trash2 className="w-4 h-4" />
-                      Удалить проект
+                      Удалить
                     </button>
                   </div>
                 </div>
@@ -250,10 +285,15 @@ export default function ProjectsManager() {
       {/* Project Editor Modal */}
       {isEditorOpen && (
         <ProjectEditor
-          onClose={() => setIsEditorOpen(false)}
+          project={selectedProject}
+          onClose={() => {
+            setIsEditorOpen(false);
+            setSelectedProject(null);
+          }}
           onSave={() => {
             fetchProjects();
             setIsEditorOpen(false);
+            setSelectedProject(null);
           }}
         />
       )}
