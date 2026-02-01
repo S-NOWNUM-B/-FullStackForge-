@@ -17,7 +17,7 @@ import {
     SiNextdotjs,
     SiJavascript,
     SiPostgresql,
-    SiMongodb,
+    SiFirebase,
     SiRedis,
     SiRabbitmq,
     SiAdobephotoshop,
@@ -55,7 +55,7 @@ export const TECHNOLOGIES = [
     
     // Databases & Queues - Ряд 4
     { name: "POSTGRESQL", color: "bg-[#316192] hover:bg-[#316192]/90", icon: SiPostgresql },
-    { name: "MONGODB", color: "bg-[#47A248] hover:bg-[#47A248]/90", icon: SiMongodb },
+    { name: "FIREBASE", color: "bg-[#FFCA28] hover:bg-[#FFCA28]/90", icon: SiFirebase },
     { name: "REDIS", color: "bg-[#DC382D] hover:bg-[#DC382D]/90", icon: SiRedis },
     { name: "RABBITMQ", color: "bg-[#FF6600] hover:bg-[#FF6600]/90", icon: SiRabbitmq },
     
