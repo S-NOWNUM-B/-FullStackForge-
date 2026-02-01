@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Textarea } from '@/components/ui/Textarea';
-import { PROJECT_TECHNOLOGY_NAMES } from '@/lib/project-technologies';
+import { PROJECT_TECHNOLOGY_NAMES } from '@/constants/project-technologies';
 
 interface ProjectData {
   _id?: string;

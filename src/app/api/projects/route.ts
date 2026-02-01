@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, COLLECTIONS } from '@/lib/firebase';
+import { db, COLLECTIONS } from '@/services/firebase';
 import type { Project } from '@/types/api';
 
 // Кэширование на 60 секунд - мгновенная загрузка!

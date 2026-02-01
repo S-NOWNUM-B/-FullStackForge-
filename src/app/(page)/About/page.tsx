@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
-import { TECHNOLOGIES } from "@/lib/technologies";
+import { TECHNOLOGIES } from "@/constants/technologies";
 
 const technologiesData = TECHNOLOGIES;
 
