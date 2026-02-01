@@ -74,32 +74,11 @@ export async function PUT(request: NextRequest) {
     }
     
     const updatedDoc = await db.collection(COLLECTIONS.WORK_INFO).doc(docId).get();
-    const workInfo = { _id: updatedDoc.id, ...updatedDoc.data() };
-
-    const data: WorkInfoType = {
-      _id: workInfo._id.toString(),
-      headline: workInfo.headline,
-      subheadline: workInfo.subheadline,
-      description: workInfo.description,
-      availability: workInfo.availability,
-      minBudget: workInfo.minBudget,
-      workingHours: workInfo.workingHours,
-      responseTime: workInfo.responseTime,
-      pricingPlans: workInfo.pricingPlans,
-      workProcess: workInfo.workProcess,
-      benefits: workInfo.benefits,
-      faqs: workInfo.faqs,
-      email: workInfo.email,
-      phone: workInfo.phone,
-      location: workInfo.location,
-      timezone: workInfo.timezone,
-      createdAt: workInfo.createdAt.toISOString(),
-      updatedAt: workInfo.updatedAt.toISOString(),
-    };
+    const docData = updatedDoc.data();
 
     return NextResponse.json({
       success: true,
-      data,
+      data: { _id: updatedDoc.id, ...docData },
       message: 'Информация успешно обновлена',
     });
   } catch (error) {

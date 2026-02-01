@@ -74,21 +74,11 @@ export async function PUT(request: NextRequest) {
     }
     
     const updatedDoc = await db.collection(COLLECTIONS.SOCIAL_LINKS).doc(docId).get();
-    const socialLinks = { _id: updatedDoc.id, ...updatedDoc.data() };
-
-    const data: SocialLinksType = {
-      _id: socialLinks._id.toString(),
-      links: socialLinks.links,
-      showOnHeader: socialLinks.showOnHeader,
-      showOnFooter: socialLinks.showOnFooter,
-      showOnWorkPage: socialLinks.showOnWorkPage,
-      createdAt: socialLinks.createdAt.toISOString(),
-      updatedAt: socialLinks.updatedAt.toISOString(),
-    };
+    const docData = updatedDoc.data();
 
     return NextResponse.json({
       success: true,
-      data,
+      data: { _id: updatedDoc.id, ...docData },
       message: 'Соц-сети успешно обновлены',
     });
   } catch (error) {
