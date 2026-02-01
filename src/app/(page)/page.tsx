@@ -21,17 +21,28 @@ export default function HomePage() {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto text-center animate-fade-in">
-          {/* Icon Features - упростили анимацию */}
-          <div className="flex justify-center items-center space-x-4 mb-8">
-            {[Code, Sparkles, Zap].map((Icon, index) => (
-              <div
-                key={index}
-                className="p-3 bg-gray-800/50 rounded-lg border border-gray-700/50 backdrop-blur-sm transform transition-transform hover:scale-110"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <Icon className="w-6 h-6 text-red-600" />
+          {/* Quick Access - интерактивные иконки */}
+          <div className="flex justify-center items-center gap-4 mb-12 flex-wrap">
+            <Link href="/Projects" className="group">
+              <div className="p-4 bg-gray-800/50 hover:bg-gray-700/70 rounded-xl border border-gray-700/50 hover:border-red-600/50 backdrop-blur-sm transition-all duration-300 transform hover:scale-105 hover:-translate-y-1">
+                <Code className="w-6 h-6 text-red-600 group-hover:text-red-500 transition-colors" />
+                <p className="text-xs text-gray-400 group-hover:text-gray-300 mt-2">Проекты</p>
               </div>
-            ))}
+            </Link>
+            
+            <Link href="/About" className="group">
+              <div className="p-4 bg-gray-800/50 hover:bg-gray-700/70 rounded-xl border border-gray-700/50 hover:border-red-600/50 backdrop-blur-sm transition-all duration-300 transform hover:scale-105 hover:-translate-y-1">
+                <Sparkles className="w-6 h-6 text-red-600 group-hover:text-red-500 transition-colors" />
+                <p className="text-xs text-gray-400 group-hover:text-gray-300 mt-2">Обо мне</p>
+              </div>
+            </Link>
+            
+            <Link href="/Work" className="group">
+              <div className="p-4 bg-gray-800/50 hover:bg-gray-700/70 rounded-xl border border-gray-700/50 hover:border-red-600/50 backdrop-blur-sm transition-all duration-300 transform hover:scale-105 hover:-translate-y-1">
+                <Zap className="w-6 h-6 text-red-600 group-hover:text-red-500 transition-colors" />
+                <p className="text-xs text-gray-400 group-hover:text-gray-300 mt-2">Работа</p>
+              </div>
+            </Link>
           </div>
 
           {/* Main Title */}
