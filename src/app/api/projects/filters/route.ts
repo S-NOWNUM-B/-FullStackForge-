@@ -1,18 +1,27 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/data/db';
-import Project from '@/data/models/Project';
+import { db, COLLECTIONS } from '@/lib/firebase';
 
 export async function GET() {
   try {
-    await dbConnect();
+    const snapshot = await db.collection(COLLECTIONS.PROJECTS).get();
+    
+    const categories = new Set<string>();
+    const technologies = new Set<string>();
 
-    const categories = await Project.distinct('category');
-    const technologies = await Project.distinct('technologies');
+    snapshot.docs.forEach(doc => {
+      const data = doc.data();
+      if (data.category) {
+        categories.add(data.category);
+      }
+      if (data.technologies && Array.isArray(data.technologies)) {
+        data.technologies.forEach((tech: string) => technologies.add(tech));
+      }
+    });
 
     return NextResponse.json({
       success: true,
-      categories,
-      technologies,
+      categories: Array.from(categories).sort(),
+      technologies: Array.from(technologies).sort(),
     });
   } catch (error) {
     console.error('Ошибка при получении фильтров:', error);

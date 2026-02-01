@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/data/db';
-import Project from '@/data/models/Project';
-import mongoose from 'mongoose';
+import { db, COLLECTIONS } from '@/lib/firebase';
+import type { Project } from '@/types/api';
 
 // Кэширование на 60 секунд - мгновенная загрузка!
 export const revalidate = 60;
 
 export async function GET(request: NextRequest) {
   try {
-    await dbConnect();
-
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
@@ -18,106 +15,64 @@ export async function GET(request: NextRequest) {
     const tech = searchParams.get('tech') || '';
     const sort = searchParams.get('sort') || 'newest';
     
-    // Умный поиск с приоритетами
+    // Получаем коллекцию проектов
+    const projectsRef = db.collection(COLLECTIONS.PROJECTS);
+    let query = projectsRef.where('status', '==', 'published');
+
+    // Фильтр по категории
+    if (category && category !== 'all') {
+      query = query.where('category', '==', category);
+    }
+
+    // Фильтр по технологии
+    if (tech && tech !== 'all') {
+      query = query.where('technologies', 'array-contains', tech);
+    }
+
+    // Получаем все документы с фильтрами
+    const snapshot = await query.get();
+    let projects = snapshot.docs.map(doc => ({
+      _id: doc.id,
+      ...doc.data(),
+    })) as Project[];
+
+    // Фильтрация по поиску (клиентская)
     if (search && search.trim().length >= 2) {
-      // Создаем aggregation pipeline для поиска с весами
-      const searchRegex = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Экранируем спецсимволы
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const pipeline: any[] = [
-        {
-          $match: {
-            ...(category && category !== 'all' ? { category } : {}),
-            ...(tech && tech !== 'all' ? { technologies: { $in: [tech] } } : {}),
-            $or: [
-              { title: { $regex: searchRegex, $options: 'i' } },
-              { shortDescription: { $regex: searchRegex, $options: 'i' } },
-              { technologies: { $regex: searchRegex, $options: 'i' } },
-            ]
-          }
-        },
-        {
-          $addFields: {
-            // Вычисляем релевантность (чем меньше число, тем выше приоритет)
-            relevance: {
-              $cond: [
-                { $regexMatch: { input: '$title', regex: `^${searchRegex}`, options: 'i' } },
-                1, // Начинается с поискового запроса - высший приоритет
-                {
-                  $cond: [
-                    { $regexMatch: { input: '$title', regex: searchRegex, options: 'i' } },
-                    2, // Содержится в названии - высокий приоритет
-                    {
-                      $cond: [
-                        {
-                          $gt: [
-                            {
-                              $size: {
-                                $filter: {
-                                  input: '$technologies',
-                                  cond: { $regexMatch: { input: '$$this', regex: searchRegex, options: 'i' } }
-                                }
-                              }
-                            },
-                            0
-                          ]
-                        },
-                        3, // Найдено в технологиях - средний приоритет
-                        4  // Найдено в описании - низкий приоритет
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          }
-        },
-        { $sort: { relevance: 1, startedAt: sort === 'oldest' ? 1 : -1, createdAt: sort === 'oldest' ? 1 : -1 } },
-        { $project: { title: 1, shortDescription: 1, category: 1, technologies: 1, createdAt: 1, startedAt: 1, thumbnail: 1 } }
-      ];
+      const searchLower = search.toLowerCase();
+      projects = projects.filter(p => 
+        p.title.toLowerCase().includes(searchLower) ||
+        p.shortDescription.toLowerCase().includes(searchLower) ||
+        p.technologies.some(t => t.toLowerCase().includes(searchLower))
+      );
 
-      const total = await Project.countDocuments({
-        ...(category && category !== 'all' ? { category } : {}),
-        ...(tech && tech !== 'all' ? { technologies: { $in: [tech] } } : {}),
-        $or: [
-          { title: { $regex: searchRegex, $options: 'i' } },
-          { shortDescription: { $regex: searchRegex, $options: 'i' } },
-          { technologies: { $regex: searchRegex, $options: 'i' } },
-        ]
-      });
-
-      const projects = await Project.aggregate([
-        ...pipeline,
-        { $skip: (page - 1) * limit },
-        { $limit: limit }
-      ]);
-
-      return NextResponse.json({
-        success: true,
-        projects,
-        totalPages: Math.ceil(total / limit),
-        currentPage: page,
-        total,
+      // Сортировка по релевантности
+      projects.sort((a, b) => {
+        const aTitle = a.title.toLowerCase().startsWith(searchLower) ? 1 : 
+                      a.title.toLowerCase().includes(searchLower) ? 2 : 
+                      a.technologies.some(t => t.toLowerCase().includes(searchLower)) ? 3 : 4;
+        const bTitle = b.title.toLowerCase().startsWith(searchLower) ? 1 : 
+                      b.title.toLowerCase().includes(searchLower) ? 2 : 
+                      b.technologies.some(t => t.toLowerCase().includes(searchLower)) ? 3 : 4;
+        return aTitle - bTitle;
       });
     }
 
-    // Обычный поиск без текстового запроса
-    const query: Record<string, unknown> = {
-      ...(category && category !== 'all' ? { category } : {}),
-      ...(tech && tech !== 'all' ? { technologies: { $in: [tech] } } : {}),
-    };
+    // Сортировка по дате
+    projects.sort((a, b) => {
+      const dateA = new Date(a.startedAt || a.createdAt).getTime();
+      const dateB = new Date(b.startedAt || b.createdAt).getTime();
+      return sort === 'oldest' ? dateA - dateB : dateB - dateA;
+    });
 
-    const sortOrder = sort === 'oldest' ? 1 : -1;
-    const total = await Project.countDocuments(query);
-    const projects = await Project.find(query)
-      .select('title shortDescription category technologies createdAt startedAt thumbnail')
-      .sort({ startedAt: sortOrder, createdAt: sortOrder })
-      .limit(limit)
-      .skip((page - 1) * limit)
-      .lean();
+    // Пагинация
+    const total = projects.length;
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedProjects = projects.slice(startIndex, endIndex);
 
     return NextResponse.json({
       success: true,
-      projects,
+      projects: paginatedProjects,
       totalPages: Math.ceil(total / limit),
       currentPage: page,
       total,
@@ -131,14 +86,21 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
     const body = await request.json();
     
-    const project = await Project.create(body);
+    // Добавляем timestamps
+    const projectData = {
+      ...body,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    
+    const docRef = await db.collection(COLLECTIONS.PROJECTS).add(projectData);
+    const doc = await docRef.get();
     
     return NextResponse.json({
       success: true,
-      data: project,
+      data: { _id: doc.id, ...doc.data() },
       message: 'Проект создан успешно',
     }, { status: 201 });
   } catch (error) {
@@ -150,31 +112,32 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    await dbConnect();
     const body = await request.json();
     const { _id, ...updateData } = body;
     
     if (!_id) {
       return NextResponse.json({ success: false, error: 'ID не указан' }, { status: 400 });
     }
-    
-    // Проверяем, является ли ID валидным ObjectId
-    if (!mongoose.Types.ObjectId.isValid(_id)) {
-      return NextResponse.json(
-        { success: false, error: 'Неверный формат ID проекта' },
-        { status: 400 }
-      );
-    }
 
-    const project = await Project.findByIdAndUpdate(_id, updateData, { new: true, runValidators: true });
-    
-    if (!project) {
+    // Добавляем timestamp обновления
+    const dataToUpdate = {
+      ...updateData,
+      updatedAt: new Date().toISOString(),
+    };
+
+    const docRef = db.collection(COLLECTIONS.PROJECTS).doc(_id);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
       return NextResponse.json({ success: false, error: 'Проект не найден' }, { status: 404 });
     }
 
+    await docRef.update(dataToUpdate);
+    const updatedDoc = await docRef.get();
+
     return NextResponse.json({
       success: true,
-      data: project,
+      data: { _id: updatedDoc.id, ...updatedDoc.data() },
       message: 'Проект обновлен успешно',
     });
   } catch (error) {
@@ -186,27 +149,21 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    await dbConnect();
     const body = await request.json();
     const id = body._id || body.id;
     
     if (!id) {
       return NextResponse.json({ success: false, error: 'ID не указан' }, { status: 400 });
     }
-    
-    // Проверяем, является ли ID валидным ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { success: false, error: 'Неверный формат ID проекта' },
-        { status: 400 }
-      );
-    }
 
-    const project = await Project.findByIdAndDelete(id);
-    
-    if (!project) {
+    const docRef = db.collection(COLLECTIONS.PROJECTS).doc(id);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
       return NextResponse.json({ success: false, error: 'Проект не найден' }, { status: 404 });
     }
+
+    await docRef.delete();
 
     return NextResponse.json({
       success: true,

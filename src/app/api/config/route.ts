@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/data/db';
-import Config, { ConfigKey } from '@/data/models/Config';
+import { db, COLLECTIONS } from '@/lib/firebase';
+import { ConfigKey } from '@/types/api';
 
 /**
  * GET /api/config?key=home|about|contact
@@ -9,15 +9,16 @@ import Config, { ConfigKey } from '@/data/models/Config';
  */
 export async function GET(request: NextRequest) {
   try {
-    await dbConnect();
-    
     const { searchParams } = new URL(request.url);
     const key = searchParams.get('key') as ConfigKey | null;
 
     if (key) {
-      const config = await Config.findOne({ key }).lean();
+      const snapshot = await db.collection(COLLECTIONS.CONFIG)
+        .where('key', '==', key)
+        .limit(1)
+        .get();
       
-      if (!config) {
+      if (snapshot.empty) {
         return NextResponse.json(
           {
             success: false,
@@ -27,13 +28,19 @@ export async function GET(request: NextRequest) {
         );
       }
 
+      const doc = snapshot.docs[0];
       return NextResponse.json({
         success: true,
-        data: config,
+        data: { _id: doc.id, ...doc.data() },
       });
     } else {
       // Получить все конфигурации
-      const configs = await Config.find({}).lean();
+      const snapshot = await db.collection(COLLECTIONS.CONFIG).get();
+      const configs = snapshot.docs.map(doc => ({
+        _id: doc.id,
+        ...doc.data(),
+      }));
+      
       return NextResponse.json({
         success: true,
         data: configs,
@@ -58,8 +65,6 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
-    
     const body = await request.json();
     const { key, title, subtitle, content } = body;
 
@@ -84,16 +89,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Обновить существующую или создать новую конфигурацию
-    const config = await Config.findOneAndUpdate(
-      { key },
-      { title, subtitle, content },
-      { new: true, upsert: true, runValidators: true }
-    );
+    // Проверяем, существует ли конфигурация с таким ключом
+    const snapshot = await db.collection(COLLECTIONS.CONFIG)
+      .where('key', '==', key)
+      .limit(1)
+      .get();
+
+    const configData = {
+      key,
+      title,
+      subtitle,
+      content,
+      updatedAt: new Date().toISOString(),
+    };
+
+    let docRef;
+    if (snapshot.empty) {
+      // Создаём новую конфигурацию
+      docRef = await db.collection(COLLECTIONS.CONFIG).add(configData);
+    } else {
+      // Обновляем существующую
+      const doc = snapshot.docs[0];
+      await doc.ref.update(configData);
+      docRef = doc.ref;
+    }
+
+    const updatedDoc = await docRef.get();
 
     return NextResponse.json({
       success: true,
-      data: config,
+      data: { _id: updatedDoc.id, ...updatedDoc.data() },
       message: 'Конфигурация успешно обновлена',
     });
   } catch (error: unknown) {
@@ -114,8 +139,6 @@ export async function POST(request: NextRequest) {
  */
 export async function PUT(request: NextRequest) {
   try {
-    await dbConnect();
-    
     const body = await request.json();
     const { key, title, subtitle, content } = body;
 
@@ -129,18 +152,12 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const updateData: Partial<{ title: string; subtitle: string; content: string }> = {};
-    if (title !== undefined) updateData.title = title;
-    if (subtitle !== undefined) updateData.subtitle = subtitle;
-    if (content !== undefined) updateData.content = content;
+    const snapshot = await db.collection(COLLECTIONS.CONFIG)
+      .where('key', '==', key)
+      .limit(1)
+      .get();
 
-    const config = await Config.findOneAndUpdate(
-      { key },
-      updateData,
-      { new: true, runValidators: true }
-    );
-
-    if (!config) {
+    if (snapshot.empty) {
       return NextResponse.json(
         {
           success: false,
@@ -150,9 +167,20 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    const updateData: Record<string, unknown> = {
+      updatedAt: new Date().toISOString(),
+    };
+    if (title !== undefined) updateData.title = title;
+    if (subtitle !== undefined) updateData.subtitle = subtitle;
+    if (content !== undefined) updateData.content = content;
+
+    const docRef = snapshot.docs[0].ref;
+    await docRef.update(updateData);
+    const updatedDoc = await docRef.get();
+
     return NextResponse.json({
       success: true,
-      data: config,
+      data: { _id: updatedDoc.id, ...updatedDoc.data() },
       message: 'Конфигурация успешно обновлена',
     });
   } catch (error: unknown) {

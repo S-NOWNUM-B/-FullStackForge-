@@ -1,28 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/data/db';
-import Project from '@/data/models/Project';
-import mongoose from 'mongoose';
+import { db, COLLECTIONS } from '@/lib/firebase';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await dbConnect();
-    
     const { id } = await params;
     
-    // Проверяем, является ли ID валидным ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { success: false, error: 'Неверный формат ID проекта' },
-        { status: 400 }
-      );
-    }
-    
-    const project = await Project.findById(id).lean();
+    const docRef = db.collection(COLLECTIONS.PROJECTS).doc(id);
+    const doc = await docRef.get();
 
-    if (!project) {
+    if (!doc.exists) {
       return NextResponse.json(
         { success: false, error: 'Проект не найден' },
         { status: 404 }
@@ -31,7 +20,7 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      data: project,
+      data: { _id: doc.id, ...doc.data() },
     });
   } catch (error) {
     console.error('Ошибка при получении проекта:', error);
@@ -48,39 +37,35 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await dbConnect();
-    
     const { id } = await params;
-    
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { success: false, error: 'Неверный формат ID проекта' },
-        { status: 400 }
-      );
-    }
-    
     const body = await request.json();
     
     // Убираем _id из body, чтобы не перезаписывать его
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, ...updateData } = body;
     
-    const updatedProject = await Project.findByIdAndUpdate(
-      id,
-      { $set: updateData },
-      { new: true, runValidators: true }
-    );
+    const docRef = db.collection(COLLECTIONS.PROJECTS).doc(id);
+    const doc = await docRef.get();
 
-    if (!updatedProject) {
+    if (!doc.exists) {
       return NextResponse.json(
         { success: false, error: 'Проект не найден' },
         { status: 404 }
       );
     }
 
+    // Добавляем timestamp обновления
+    const dataToUpdate = {
+      ...updateData,
+      updatedAt: new Date().toISOString(),
+    };
+
+    await docRef.update(dataToUpdate);
+    const updatedDoc = await docRef.get();
+
     return NextResponse.json({
       success: true,
-      data: updatedProject,
+      data: { _id: updatedDoc.id, ...updatedDoc.data() },
     });
   } catch (error) {
     console.error('Ошибка при обновлении проекта:', error);
@@ -97,25 +82,19 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await dbConnect();
-    
     const { id } = await params;
     
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { success: false, error: 'Неверный формат ID проекта' },
-        { status: 400 }
-      );
-    }
-    
-    const deletedProject = await Project.findByIdAndDelete(id);
+    const docRef = db.collection(COLLECTIONS.PROJECTS).doc(id);
+    const doc = await docRef.get();
 
-    if (!deletedProject) {
+    if (!doc.exists) {
       return NextResponse.json(
         { success: false, error: 'Проект не найден' },
         { status: 404 }
       );
     }
+
+    await docRef.delete();
 
     return NextResponse.json({
       success: true,
