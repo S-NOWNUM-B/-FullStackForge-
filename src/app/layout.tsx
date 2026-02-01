@@ -13,10 +13,10 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   title: {
-    default: "FullStackForge | Fullstack Developer",
+    default: " Главная | FullStackForge",
     template: "%s | FullStackForge"
   },
-  description: "Создаю надёжные и современные веб-решения для бизнеса и людей. Fullstack разработка на React, Next.js, Node.js, MongoDB.",
+  description: "Создаю надёжные и современные веб-решения для бизнеса и людей. Fullstack разработка на React, Next.js, Node.js, Firebase.",
   keywords: [
     "fullstack developer",
     "веб-разработка",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     "Next.js", 
     "Node.js",
     "TypeScript",
-    "MongoDB",
+    "Firebase",
     "портфолио разработчика",
     "создание сайтов",
     "разработка веб-приложений"

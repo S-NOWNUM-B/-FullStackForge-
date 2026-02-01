@@ -54,7 +54,7 @@ export async function PUT(request: NextRequest) {
     }
     
     const body = await request.json();
-    const { _id, ...updateData } = body;
+    const { ...updateData } = body;
     
     updateData.updatedAt = new Date().toISOString();
     

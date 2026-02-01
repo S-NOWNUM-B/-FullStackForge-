@@ -13,7 +13,7 @@ const getSecret = () => {
     console.warn('⚠️  Generate one with: openssl rand -base64 32');
     
     // Возвращаем фиксированный fallback (НЕ безопасно для production, но позволит работать)
-    return 'CHANGE-THIS-TO-RANDOM-SECRET-IN-PRODUCTION-' + (process.env.MONGODB_URI?.slice(0, 20) || 'fallback');
+    return 'CHANGE-THIS-TO-RANDOM-SECRET-IN-PRODUCTION-' + (process.env.NEXTAUTH_SECRET || 'fallback-secret-key');
   }
   
   return secret;

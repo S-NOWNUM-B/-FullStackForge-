@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { 
   User,
@@ -103,12 +103,22 @@ const experience = [
   }
 ];
 
-export default function AboutPage() {
+function AboutContent() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div className="relative min-h-screen flex items-start justify-center overflow-hidden">
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-black to-gray-900" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f20_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f20_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+      <div className="absolute inset-0 bg-linear-to-b from-gray-900 via-black to-gray-900" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f20_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f20_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
       <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-red-600/10 rounded-full blur-2xl" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-400/10 rounded-full blur-2xl" />
 
@@ -139,7 +149,7 @@ export default function AboutPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:col-span-1"
           >
-            <div className="relative aspect-square rounded-2xl overflow-hidden border border-red-600/30 bg-gradient-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm shadow-2xl shadow-red-600/10 mb-6">
+            <div className="relative aspect-square rounded-2xl overflow-hidden border border-red-600/30 bg-linear-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm shadow-2xl shadow-red-600/10 mb-6">
               {/* ФОТО ПРОФИЛЯ */}
               <Image 
                 src="/profile.jpeg" 
@@ -175,12 +185,10 @@ export default function AboutPage() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="lg:col-span-2 flex flex-col justify-center"
           >
-            <div className="h-full p-8 rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
+            <div className="h-full p-8 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
               <h2 className="text-3xl font-bold text-white mb-6">О себе</h2>
               <p className="text-gray-300 leading-relaxed text-lg">
-                Разработчик, который создаёт масштабируемые и надёжные приложения, от современных web‑сайтов до кроссплатформенного ПО. Люблю проходить весь цикл: продумывать архитектуру, настраивать работу с данными и делать интерфейсы, которыми реально удобно пользоваться.
-                По духу я осознанный «ботан»: играю в видеоигры, читаю книги, коллекционирую фигурки и люблю глубокие вселенные вроде Warhammer 40 000 и Mass Effect. Интересуюсь разными темами, от физики и истории до SMM, это помогает шире смотреть на задачи и находить нестандартные решения.
-                Меня вдохновляет моя девушка, которая поддерживает и мотивирует расти профессионально. А ещё важную роль играет музыка Noize MC, за умные тексты, иронию и живые истории, которые помогают по‑новому смотреть на вещи и влияют на мой подход к разработке.
+                Разрабатываю масштабируемые приложения: от веб-сайтов до кроссплатформенного ПО. Люблю полный цикл: от архитектуры и работы с данными до удобных интерфейсов. По духу я «осознанный ботан»: увлекаюсь видеоиграми, книгами и глубокими вселенными вроде Warhammer 40,000 или Mass Effect. Широкий кругозор — от физики до истории — помогает мне находить нестандартные решения в коде. Меня вдохновляет поддержка моей девушки и музыка Noize MC: его умные тексты и ирония напрямую влияют на мой творческий подход к разработке
               </p>
             </div>
           </motion.div>
@@ -194,17 +202,17 @@ export default function AboutPage() {
           className="mb-20"
         >
           <h2 className="text-3xl font-bold text-white mb-8">Текущий фокус</h2>
-          <div className="p-8 rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
+          <div className="p-8 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
             <ul className="grid md:grid-cols-2 gap-4">
               {focusAreas.map((area, index) => (
                 <motion.li
                   key={index}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.8 + index * 0.1 }}
-                  className="flex items-start gap-3 group"
+                  transition={{ delay: 0.1 * index }}
+                  className="group flex items-start gap-3"
                 >
-                  <div className="mt-1.5 w-2 h-2 rounded-full bg-red-600 flex-shrink-0 group-hover:scale-150 transition-transform" />
+                  <div className="mt-1.5 w-2 h-2 rounded-full bg-red-600 shrink-0 group-hover:scale-150 transition-transform" />
                   <span className="text-gray-300 group-hover:text-white transition-colors">{area}</span>
                 </motion.li>
               ))}
@@ -220,7 +228,7 @@ export default function AboutPage() {
           className="mb-20"
         >
           <h2 className="text-3xl font-bold text-white mb-8">Технологический стек</h2>
-          <div className="p-8 rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
+          <div className="p-8 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
             <div className="flex flex-wrap justify-center gap-3">
               {technologiesData.map((tech, index) => {
                 const Icon = tech.icon;
@@ -264,9 +272,9 @@ export default function AboutPage() {
                   transition={{ delay: 1.2 + index * 0.1 }}
                   className="group"
                 >
-                  <div className="h-full p-6 rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm hover:border-red-500/50 transition-all hover:shadow-xl hover:shadow-red-500/10">
+                  <div className="h-full p-6 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm hover:border-red-500/50 transition-all hover:shadow-xl hover:shadow-red-500/10">
                     <div className="flex items-start gap-4">
-                      <div className="p-3 rounded-full border-2 border-red-500/50 bg-red-500/5 flex-shrink-0 group-hover:bg-red-500/10 group-hover:border-red-500 transition-all">
+                      <div className="p-3 rounded-full border-2 border-red-500/50 bg-red-500/5 shrink-0 group-hover:bg-red-500/10 group-hover:border-red-500 transition-all">
                         <Icon className="w-7 h-7 text-red-500" />
                       </div>
                       <div>
@@ -293,7 +301,7 @@ export default function AboutPage() {
           className="mb-20"
         >
           <h2 className="text-3xl font-bold text-white mb-8">Ключевые компетенции</h2>
-          <div className="p-8 rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
+          <div className="p-8 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
             <ul className="grid md:grid-cols-2 gap-4">
               {competencies.map((competency, index) => (
                 <motion.li
@@ -303,7 +311,7 @@ export default function AboutPage() {
                   transition={{ delay: 1.6 + index * 0.08 }}
                   className="flex items-start gap-3 group"
                 >
-                  <div className="mt-1.5 w-2 h-2 rounded-full bg-red-600 flex-shrink-0 group-hover:scale-150 transition-transform" />
+                  <div className="mt-1.5 w-2 h-2 rounded-full bg-red-600 shrink-0 group-hover:scale-150 transition-transform" />
                   <span className="text-gray-300 group-hover:text-white transition-colors">{competency}</span>
                 </motion.li>
               ))}
@@ -319,7 +327,7 @@ export default function AboutPage() {
           className="mb-20"
         >
           <h2 className="text-3xl font-bold text-white mb-8">Профессиональный опыт</h2>
-          <div className="p-8 rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
+          <div className="p-8 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
             <h3 className="text-2xl font-bold text-white mb-8">Ключевые проекты</h3>
             <div className="space-y-8">
               {experience.map((exp, index) => {
@@ -353,4 +361,8 @@ export default function AboutPage() {
       </div>
     </div>
   );
+}
+
+export default function AboutPage() {
+  return <AboutContent />;
 }

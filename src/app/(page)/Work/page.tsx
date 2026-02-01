@@ -147,8 +147,8 @@ export default function WorkPage() {
   return (
     <div className="relative min-h-screen flex items-start justify-center overflow-hidden">
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-black to-gray-900" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f20_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f20_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+      <div className="absolute inset-0 bg-linear-to-b from-gray-900 via-black to-gray-900" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f20_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f20_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
       <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-red-600/10 rounded-full blur-2xl" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-400/10 rounded-full blur-2xl" />
 
@@ -194,7 +194,7 @@ export default function WorkPage() {
                     transition={{ delay: 0.4 + index * 0.1 }}
                     className="group"
                   >
-                    <div className="h-full p-6 rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm hover:border-red-500/50 transition-all">
+                    <div className="h-full p-6 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm hover:border-red-500/50 transition-all">
                       <div className="p-3 rounded-full border-2 border-red-500/50 bg-red-500/5 w-fit mb-4 group-hover:bg-red-500/10 transition-all">
                         <Icon className="w-6 h-6 text-red-500" />
                       </div>
@@ -208,7 +208,7 @@ export default function WorkPage() {
 
             {/* Формат работы и ограничения */}
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
+              <div className="p-6 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-red-500" />
                   Формат работы
@@ -216,14 +216,14 @@ export default function WorkPage() {
                 <ul className="space-y-2">
                   {workFormats.map((format, index) => (
                     <li key={index} className="flex items-start gap-2 text-gray-300">
-                      <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 flex-shrink-0" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 shrink-0" />
                       <span>{format}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="p-6 rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
+              <div className="p-6 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                   <XCircle className="w-5 h-5 text-red-500" />
                   С чем не работаю
@@ -231,7 +231,7 @@ export default function WorkPage() {
                 <ul className="space-y-2">
                   {limitations.map((limit, index) => (
                     <li key={index} className="flex items-start gap-2 text-gray-400">
-                      <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 flex-shrink-0" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 shrink-0" />
                       <span>{limit}</span>
                     </li>
                   ))}
@@ -257,9 +257,9 @@ export default function WorkPage() {
                   transition={{ delay: 0.6 + index * 0.1 }}
                   className="group"
                 >
-                  <div className="flex gap-6 p-6 rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm hover:border-red-500/50 transition-all">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center font-bold text-white">
+                  <div className="flex gap-6 p-6 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm hover:border-red-500/50 transition-all">
+                    <div className="shrink-0">
+                      <div className="w-12 h-12 rounded-full bg-linear-to-br from-red-600 to-red-800 flex items-center justify-center font-bold text-white">
                         {step.step}
                       </div>
                     </div>
@@ -294,7 +294,7 @@ export default function WorkPage() {
                     transition={{ delay: 0.8 + index * 0.1 }}
                     className="group"
                   >
-                    <div className="h-full p-6 rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm hover:border-red-500/50 transition-all">
+                    <div className="h-full p-6 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm hover:border-red-500/50 transition-all">
                       <Icon className="w-8 h-8 text-red-500 mb-4" />
                       <h3 className="text-sm font-medium text-gray-400 mb-2">{item.title}</h3>
                       <div className="text-2xl font-bold text-white mb-3">{item.value}</div>
@@ -305,9 +305,9 @@ export default function WorkPage() {
               })}
             </div>
             
-            <div className="mt-6 p-6 rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
+            <div className="mt-6 p-6 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
               <div className="flex items-start gap-3">
-                <Globe className="w-5 h-5 text-red-500 mt-1 flex-shrink-0" />
+                <Globe className="w-5 h-5 text-red-500 mt-1 shrink-0" />
                 <div>
                   <h3 className="font-semibold text-white mb-2">Языки общения</h3>
                   <p className="text-gray-400">Русский (Родной), Английский (Pre-Intermediate)</p>
@@ -326,7 +326,7 @@ export default function WorkPage() {
             <h2 className="text-3xl font-bold text-white mb-8">Что входит, а что нет</h2>
             <div className="grid md:grid-cols-2 gap-6">
               {/* Что входит */}
-              <div className="p-8 rounded-2xl bg-gradient-to-br from-green-900/20 to-gray-900/40 border border-green-700/30 backdrop-blur-sm">
+              <div className="p-8 rounded-2xl bg-linear-to-br from-green-900/20 to-gray-900/40 border border-green-700/30 backdrop-blur-sm">
                 <h3 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
                   <CheckCircle2 className="w-6 h-6 text-red-500" />
                   Входит в стоимость
@@ -334,7 +334,7 @@ export default function WorkPage() {
                 <ul className="space-y-3">
                   {includedServices.map((service, index) => (
                     <li key={index} className="flex items-start gap-3 text-gray-300">
-                      <CheckCircle2 className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                      <CheckCircle2 className="w-5 h-5 text-red-500 mt-0.5 shrink-0" />
                       <span>{service}</span>
                     </li>
                   ))}
@@ -342,7 +342,7 @@ export default function WorkPage() {
               </div>
 
               {/* Что не входит */}
-              <div className="p-8 rounded-2xl bg-gradient-to-br from-red-900/20 to-gray-900/40 border border-red-700/30 backdrop-blur-sm">
+              <div className="p-8 rounded-2xl bg-linear-to-br from-red-900/20 to-gray-900/40 border border-red-700/30 backdrop-blur-sm">
                 <h3 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
                   <XCircle className="w-6 h-6 text-red-500" />
                   Не входит в стоимость
@@ -350,7 +350,7 @@ export default function WorkPage() {
                 <ul className="space-y-3">
                   {excludedServices.map((service, index) => (
                     <li key={index} className="flex items-start gap-3 text-gray-400">
-                      <XCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                      <XCircle className="w-5 h-5 text-red-500 mt-0.5 shrink-0" />
                       <span>{service}</span>
                     </li>
                   ))}
@@ -370,11 +370,11 @@ export default function WorkPage() {
               Как проходит работа
             </h2>
 
-            <div className="rounded-2xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm overflow-hidden">
+            <div className="rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm overflow-hidden">
               <div className="p-6 space-y-4">
                 <div className="flex items-start gap-3">
                   <div className="mt-1 p-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <CheckCircle2 className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-red-500 shrink-0" />
                   </div>
                   <div>
                     <div className="font-medium text-white mb-1">Регулярные демонстрации прогресса</div>
@@ -384,7 +384,7 @@ export default function WorkPage() {
 
                 <div className="flex items-start gap-3">
                   <div className="mt-1 p-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <CheckCircle2 className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-red-500 shrink-0" />
                   </div>
                   <div>
                     <div className="font-medium text-white mb-1">Фиксация требований в начале проекта</div>
@@ -394,7 +394,7 @@ export default function WorkPage() {
 
                 <div className="flex items-start gap-3">
                   <div className="mt-1 p-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <CheckCircle2 className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-red-500 shrink-0" />
                   </div>
                   <div>
                     <div className="font-medium text-white mb-1">Структурированный процесс правок</div>
@@ -404,7 +404,7 @@ export default function WorkPage() {
 
                 <div className="flex items-start gap-3">
                   <div className="mt-1 p-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <CheckCircle2 className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-red-500 shrink-0" />
                   </div>
                   <div>
                     <div className="font-medium text-white mb-1">Прозрачная поэтапная оплата</div>
@@ -414,7 +414,7 @@ export default function WorkPage() {
 
                 <div className="flex items-start gap-3">
                   <div className="mt-1 p-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <CheckCircle2 className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-red-500 shrink-0" />
                   </div>
                   <div>
                     <div className="font-medium text-white mb-1">Согласование перед каждым этапом</div>
@@ -424,7 +424,7 @@ export default function WorkPage() {
 
                 <div className="flex items-start gap-3">
                   <div className="mt-1 p-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <CheckCircle2 className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-red-500 shrink-0" />
                   </div>
                   <div>
                     <div className="font-medium text-white mb-1">Документирование всех договоренностей</div>
@@ -434,7 +434,7 @@ export default function WorkPage() {
 
                 <div className="flex items-start gap-3">
                   <div className="mt-1 p-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <CheckCircle2 className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-red-500 shrink-0" />
                   </div>
                   <div>
                     <div className="font-medium text-white mb-1">3 дня технической поддержки</div>
@@ -444,7 +444,7 @@ export default function WorkPage() {
 
                 <div className="flex items-start gap-3">
                   <div className="mt-1 p-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <CheckCircle2 className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-red-500 shrink-0" />
                   </div>
                   <div>
                     <div className="font-medium text-white mb-1">Постоянная связь на всех этапах</div>
@@ -455,7 +455,7 @@ export default function WorkPage() {
 
               <div className="p-4 bg-red-900/10 border-t border-red-700/30">
                 <div className="flex items-start gap-2 text-sm">
-                  <Shield className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                  <Shield className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
                   <div className="text-gray-300">
                     <span className="font-semibold text-white">Гарантия качества:</span> Если результат не соответствует согласованному ТЗ — дорабатываю бесплатно. 
                     При изменении требований после согласования — обсуждаем дополнительное время и стоимость
@@ -477,7 +477,7 @@ export default function WorkPage() {
               Готовы обсудить проект?
             </h2>
 
-            <div className="p-8 rounded-2xl bg-gradient-to-br from-red-900/20 via-gray-800/40 to-gray-900/40 border border-red-700/30 backdrop-blur-sm">
+            <div className="p-8 rounded-2xl bg-linear-to-br from-red-900/20 via-gray-800/40 to-gray-900/40 border border-red-700/30 backdrop-blur-sm">
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10 max-w-lg mx-auto">
                 <a
                   href="mailto:mamayev.stas@gmail.com"
@@ -506,15 +506,15 @@ export default function WorkPage() {
                 </div>
                 <ul className="space-y-2.5 text-left">
                   <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle2 className="w-4 h-4 text-red-500 mt-1 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-red-500 mt-1 shrink-0" />
                     <span>Кратко опишите задачу и цели проекта</span>
                   </li>
                   <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle2 className="w-4 h-4 text-red-500 mt-1 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-red-500 mt-1 shrink-0" />
                     <span>Приложите ссылки на прототип или примеры референсов</span>
                   </li>
                   <li className="flex items-start gap-2 text-gray-300">
-                    <CheckCircle2 className="w-4 h-4 text-red-500 mt-1 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-red-500 mt-1 shrink-0" />
                     <span>Укажите желаемые сроки и примерный бюджет</span>
                   </li>
                 </ul>

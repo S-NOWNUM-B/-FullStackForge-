@@ -37,7 +37,7 @@ export default function AdminPage() {
   // Показываем загрузку пока проверяется сессия
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 via-black to-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-gray-900 via-black to-gray-900">
         <Loader2 className="w-8 h-8 text-red-600 animate-spin" />
       </div>
     );
@@ -50,7 +50,7 @@ export default function AdminPage() {
 
   // Форма входа
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 via-black to-gray-900 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-gray-900 via-black to-gray-900 px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

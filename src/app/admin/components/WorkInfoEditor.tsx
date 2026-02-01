@@ -274,7 +274,7 @@ export default function WorkInfoEditor() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-100">
         <div className="text-gray-500 dark:text-gray-400">Loading work info...</div>
       </div>
     );
@@ -283,13 +283,13 @@ export default function WorkInfoEditor() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+        <h2 className="text-2xl font-bold bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
           Work Info Editor
         </h2>
         <Button
           onClick={handleSave}
           disabled={saving}
-          className="bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+          className="bg-linear-to-r from-purple-600 to-blue-600 text-white"
         >
           {saving ? 'Saving...' : 'Save Changes'}
         </Button>
@@ -588,7 +588,7 @@ export default function WorkInfoEditor() {
           ))}
           <Button
             onClick={addPricingPlan}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+            className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white"
           >
             + Add Pricing Plan
           </Button>
@@ -681,7 +681,7 @@ export default function WorkInfoEditor() {
           ))}
           <Button
             onClick={addWorkProcessStep}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+            className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white"
           >
             + Add Process Step
           </Button>
@@ -753,7 +753,7 @@ export default function WorkInfoEditor() {
           ))}
           <Button
             onClick={addBenefit}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+            className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white"
           >
             + Add Benefit
           </Button>
@@ -815,7 +815,7 @@ export default function WorkInfoEditor() {
           ))}
           <Button
             onClick={addFAQ}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+            className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white"
           >
             + Add FAQ
           </Button>

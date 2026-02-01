@@ -47,7 +47,6 @@ export const db = firestoreInstance as Firestore;
 // Названия коллекций
 export const COLLECTIONS = {
   PROJECTS: 'projects',
-  CONTACT_MESSAGES: 'contactMessages',
   CONFIG: 'config',
   WORK_INFO: 'workInfo',
   SOCIAL_LINKS: 'socialLinks',

@@ -55,7 +55,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-gray-900/50 border-t border-gray-800/50 backdrop-blur-sm py-8 md:py-12">
+    <footer className="relative bg-black py-8 md:py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-center mb-8">
           {/* Social Links */}
@@ -82,7 +82,7 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent mb-6" />
+        <div className="h-px bg-linear-to-r from-transparent via-gray-700 to-transparent mb-6" />
 
         {/* Copyright */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
@@ -93,7 +93,7 @@ export default function Footer() {
       </div>
 
       {/* Decorative gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-600/30 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-red-600/30 to-transparent" />
     </footer>
   );
 }

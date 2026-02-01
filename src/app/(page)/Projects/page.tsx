@@ -96,8 +96,8 @@ export default function ProjectsPage() {
   return (
     <div className="relative min-h-screen flex items-start justify-center overflow-hidden">
       {/* Background Effects - такой же как на главной */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-black to-gray-900" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f20_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f20_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+      <div className="absolute inset-0 bg-linear-to-b from-gray-900 via-black to-gray-900" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f20_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f20_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
       <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-red-600/10 rounded-full blur-2xl" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-400/10 rounded-full blur-2xl" />
 
@@ -116,7 +116,7 @@ export default function ProjectsPage() {
 
           {/* Поиск и фильтры */}
           <div className="mb-8">
-            <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
+            <div className="bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
               <div className="space-y-4">
                 {/* Первая строка: Поиск */}
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -222,10 +222,10 @@ export default function ProjectsPage() {
                 {projects.map((project) => (
                   <div
                     key={project._id}
-                    className="group bg-gray-800/30 border border-gray-700/50 rounded-lg overflow-hidden hover:border-red-600 transition-all backdrop-blur-sm hover:shadow-lg hover:shadow-red-600/10 flex flex-col h-[480px]"
+                    className="group bg-gray-800/30 border border-gray-700/50 rounded-lg overflow-hidden hover:border-red-600 transition-all backdrop-blur-sm hover:shadow-lg hover:shadow-red-600/10 flex flex-col h-120"
                   >
                     {/* Изображение */}
-                    <div className="relative w-full h-48 flex-shrink-0 overflow-hidden bg-gray-900/50">
+                    <div className="relative w-full h-48 shrink-0 overflow-hidden bg-gray-900/50">
                       {project.thumbnail ? (
                         <Image
                           src={project.thumbnail}
@@ -259,10 +259,10 @@ export default function ProjectsPage() {
                         </span>
                       </div>
 
-                      <h3 className="text-lg font-bold mb-2 text-white group-hover:text-red-400 transition-colors line-clamp-2 min-h-[3.5rem]">
+                      <h3 className="text-lg font-bold mb-2 text-white group-hover:text-red-400 transition-colors line-clamp-2 min-h-14">
                         {project.title}
                       </h3>
-                      <p className="text-gray-400 mb-4 text-sm line-clamp-3 min-h-[4rem]">
+                      <p className="text-gray-400 mb-4 text-sm line-clamp-3 min-h-16">
                         {project.shortDescription}
                       </p>
 

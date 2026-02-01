@@ -233,7 +233,7 @@ export default function SocialLinksEditor() {
       </div>
 
       {/* Display Settings */}
-      <div className="bg-gradient-to-br from-red-900/20 via-red-800/10 to-red-700/20 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
+      <div className="bg-linear-to-br from-red-900/20 via-red-800/10 to-red-700/20 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
         <h3 className="text-lg font-semibold text-white mb-4">Настройки отображения</h3>
         <div className="space-y-3">
           <label className="flex items-center gap-3">
@@ -276,7 +276,7 @@ export default function SocialLinksEditor() {
       </div>
 
       {/* Social Links List */}
-      <div className="bg-gradient-to-br from-red-900/20 via-red-800/10 to-red-700/20 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
+      <div className="bg-linear-to-br from-red-900/20 via-red-800/10 to-red-700/20 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-white">Список соц-сетей</h3>
           <button
@@ -320,7 +320,7 @@ export default function SocialLinksEditor() {
 
       {/* Preview */}
       {socialLinks.links && socialLinks.links.length > 0 && (
-        <div className="bg-gradient-to-br from-red-900/20 via-red-800/10 to-red-700/20 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
+        <div className="bg-linear-to-br from-red-900/20 via-red-800/10 to-red-700/20 backdrop-blur-sm rounded-xl p-6 border border-red-600/30">
           <h3 className="text-lg font-semibold text-white mb-4">Предпросмотр</h3>
           <div className="flex flex-wrap gap-3">
             {socialLinks.links

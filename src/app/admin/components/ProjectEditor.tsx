@@ -1,11 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
-import { X, Upload, Trash2, ChevronLeft, ChevronRight, Check, Image as ImageIcon } from 'lucide-react';
+import { X, Upload, Trash2, ChevronLeft, ChevronRight, Check, Image as ImageIcon, AlertCircle, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
@@ -54,6 +54,8 @@ const STEPS = [
 const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
   
   const [formData, setFormData] = useState<ProjectData>(() => {
     if (project) {
@@ -98,6 +100,54 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       results: '',
     };
   });
+
+  // Auto-save draft каждые 30 секунд
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (formData.title && formData.shortDescription) {
+        setAutoSaveStatus('saving');
+        setTimeout(() => setAutoSaveStatus('saved'), 500);
+        setTimeout(() => setAutoSaveStatus('idle'), 2000);
+      }
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [formData]);
+
+  // Real-time валидация
+  const validateField = (field: string, value: string) => {
+    const newErrors = { ...validationErrors };
+
+    switch (field) {
+      case 'title':
+        if (!value || value.trim().length === 0) {
+          newErrors.title = 'Название обязательно';
+        } else if (value.length > 100) {
+          newErrors.title = 'Название не должно быть длиннее 100 символов';
+        } else {
+          delete newErrors.title;
+        }
+        break;
+      case 'shortDescription':
+        if (!value || value.trim().length === 0) {
+          newErrors.shortDescription = 'Краткое описание обязательно';
+        } else if (value.length > 200) {
+          newErrors.shortDescription = 'Максимум 200 символов';
+        } else {
+          delete newErrors.shortDescription;
+        }
+        break;
+      case 'category':
+        if (!value) {
+          newErrors.category = 'Выберите категорию';
+        } else {
+          delete newErrors.category;
+        }
+        break;
+    }
+
+    setValidationErrors(newErrors);
+  };
 
   const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -304,14 +354,27 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     >
       <div>
         <Label htmlFor="title">Название проекта *</Label>
-        <Input
-          id="title"
-          value={formData.title}
-          onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-          placeholder="Мой потрясающий проект"
-          maxLength={100}
-          className="mt-2"
-        />
+        <div className="relative">
+          <Input
+            id="title"
+            value={formData.title}
+            onChange={(e) => {
+              setFormData(prev => ({ ...prev, title: e.target.value }));
+              validateField('title', e.target.value);
+            }}
+            placeholder="Мой потрясающий проект"
+            maxLength={100}
+            className={`mt-2 ${validationErrors.title ? 'border-red-500 focus:border-red-500' : ''}`}
+          />
+          {validationErrors.title && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 mt-1">
+              <AlertCircle className="w-5 h-5 text-red-500" />
+            </div>
+          )}
+        </div>
+        {validationErrors.title && (
+          <p className="text-xs text-red-500 mt-1">{validationErrors.title}</p>
+        )}
         <p className="text-xs text-gray-500 mt-1">{(formData.title || '').length}/100</p>
       </div>
 
@@ -321,13 +384,19 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
           <select
             id="category"
             value={formData.category}
-            onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-            className="mt-2 w-full px-4 py-2 bg-gray-800 border-2 border-gray-700 rounded-lg text-white focus:border-red-500 focus:outline-none transition-all"
+            onChange={(e) => {
+              setFormData(prev => ({ ...prev, category: e.target.value }));
+              validateField('category', e.target.value);
+            }}
+            className={`mt-2 w-full px-4 py-2 bg-gray-800 border-2 rounded-lg text-white focus:border-red-500 focus:outline-none transition-all ${validationErrors.category ? 'border-red-500' : 'border-gray-700'}`}
           >
             {CATEGORIES.map(cat => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
+          {validationErrors.category && (
+            <p className="text-xs text-red-500 mt-1">{validationErrors.category}</p>
+          )}
         </div>
       </div>
 
@@ -378,15 +447,23 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     >
       <div>
         <Label htmlFor="shortDescription">Краткое описание *</Label>
-        <Textarea
-          id="shortDescription"
-          value={formData.shortDescription}
-          onChange={(e) => setFormData(prev => ({ ...prev, shortDescription: e.target.value }))}
-          placeholder="Краткое описание проекта для карточки"
-          maxLength={200}
-          rows={3}
-          className="mt-2"
-        />
+        <div className="relative">
+          <Textarea
+            id="shortDescription"
+            value={formData.shortDescription}
+            onChange={(e) => {
+              setFormData(prev => ({ ...prev, shortDescription: e.target.value }));
+              validateField('shortDescription', e.target.value);
+            }}
+            placeholder="Краткое описание проекта для карточки"
+            maxLength={200}
+            rows={3}
+            className={`mt-2 ${validationErrors.shortDescription ? 'border-red-500 focus:border-red-500' : ''}`}
+          />
+        </div>
+        {validationErrors.shortDescription && (
+          <p className="text-xs text-red-500 mt-1">{validationErrors.shortDescription}</p>
+        )}
         <p className="text-xs text-gray-500 mt-1">{(formData.shortDescription || '').length}/200</p>
       </div>
 
@@ -577,83 +654,101 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-      onClick={onClose}
+      className="w-full"
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         transition={{ type: 'spring', damping: 20 }}
-        className="bg-gradient-to-br from-gray-900 via-black to-gray-900 rounded-2xl shadow-2xl border border-red-600/30 w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
-        onClick={(e) => e.stopPropagation()}
+        className="bg-linear-to-br from-gray-900 via-black to-gray-900 rounded-2xl shadow-2xl border border-red-600/30 w-full overflow-visible flex flex-col"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-red-600/20">
+          <h2 className="text-lg font-bold text-white">
+            {project ? 'Редактировать проект' : 'Создать новый проект'}
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-900/20 rounded-lg transition-all"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-red-600/20">
-              <h2 className="text-2xl font-bold text-white">
-                {project ? 'Редактировать проект' : 'Создать новый проект'}
-              </h2>
-              <button
-                onClick={onClose}
-                className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-900/20 rounded-lg transition-all"
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Step Indicator */}
+        <div className="px-6 pt-6">
+          {renderStepIndicator()}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6">
+          <AnimatePresence mode="wait">
+            {currentStep === 1 && <div key="step1">{renderStep1()}</div>}
+            {currentStep === 2 && <div key="step2">{renderStep2()}</div>}
+            {currentStep === 3 && <div key="step3">{renderStep3()}</div>}
+            {currentStep === 4 && <div key="step4">{renderStep4()}</div>}
+          </AnimatePresence>
+        </div>
+
+        {/* Footer */}
+        <div className="p-6 border-t border-red-600/20 bg-black/50 backdrop-blur">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={prevStep}
+                disabled={currentStep === 1}
+                variant="secondary"
+                className="flex items-center gap-2"
               >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-
-            {/* Step Indicator */}
-            <div className="px-6 pt-6">
-              {renderStepIndicator()}
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 overflow-y-auto p-6">
-              <AnimatePresence mode="wait">
-                {currentStep === 1 && <div key="step1">{renderStep1()}</div>}
-                {currentStep === 2 && <div key="step2">{renderStep2()}</div>}
-                {currentStep === 3 && <div key="step3">{renderStep3()}</div>}
-                {currentStep === 4 && <div key="step4">{renderStep4()}</div>}
-              </AnimatePresence>
-            </div>
-
-            {/* Footer */}
-            <div className="p-6 border-t border-red-600/20 bg-black/50 backdrop-blur">
-              <div className="flex items-center justify-between gap-4">
-                <Button
-                  onClick={prevStep}
-                  disabled={currentStep === 1}
-                  variant="secondary"
-                  className="flex items-center gap-2"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  Назад
-                </Button>
-
-                <div className="flex gap-3">
-                  {currentStep === STEPS.length && (
-                    <Button
-                      onClick={() => handleSubmit()}
-                      disabled={isLoading}
-                      variant="neon"
-                    >
-                      {isLoading ? 'Сохранение...' : project ? 'Обновить' : 'Создать'}
-                    </Button>
+                <ChevronLeft className="w-4 h-4" />
+                Назад
+              </Button>
+              
+              {/* Auto-save status */}
+              {autoSaveStatus !== 'idle' && (
+                <div className="flex items-center gap-2 text-xs">
+                  {autoSaveStatus === 'saving' && (
+                    <>
+                      <div className="animate-spin w-3 h-3 border border-gray-500 border-t-gray-300 rounded-full" />
+                      <span className="text-gray-400">Сохраняю...</span>
+                    </>
                   )}
-                  {currentStep < STEPS.length && (
-                    <Button
-                      onClick={nextStep}
-                      variant="neon"
-                      className="flex items-center gap-2"
-                    >
-                      Далее
-                      <ChevronRight className="w-4 h-4" />
-                    </Button>
+                  {autoSaveStatus === 'saved' && (
+                    <>
+                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      <span className="text-green-500">Сохранено</span>
+                    </>
                   )}
                 </div>
-              </div>
+              )}
             </div>
-          </motion.div>
-        </motion.div>
+
+            <div className="flex gap-3">
+              {currentStep === STEPS.length && (
+                <Button
+                  onClick={() => handleSubmit()}
+                  disabled={isLoading || Object.keys(validationErrors).length > 0}
+                  variant="neon"
+                >
+                  {isLoading ? 'Сохранение...' : project ? 'Обновить' : 'Создать'}
+                </Button>
+              )}
+              {currentStep < STEPS.length && (
+                <Button
+                  onClick={nextStep}
+                  variant="neon"
+                  className="flex items-center gap-2"
+                >
+                  Далее
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

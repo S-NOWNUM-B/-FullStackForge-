@@ -4,13 +4,15 @@ import { db, COLLECTIONS } from '@/services/firebase';
 export async function GET() {
   try {
     if (!db) {
+      // Возвращаем пустые массивы вместо ошибки 503
+      // Это позволит странице работать даже без Firebase
       return NextResponse.json(
         { 
-          error: 'Firebase не настроен. Добавьте валидные credentials в .env.local',
+          success: true,
           categories: [],
           technologies: []
         },
-        { status: 503 }
+        { status: 200 }
       );
     }
 

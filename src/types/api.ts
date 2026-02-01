@@ -48,20 +48,8 @@ export interface ProjectsResponse {
   total: number;
 }
 
-// Contact types
-export interface ContactMessage {
-  _id: string;
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  projectType: string;
-  status: 'new' | 'read' | 'replied';
-  createdAt: string;
-}
-
 // Config types
-export type ConfigKey = 'home' | 'about' | 'contact';
+export type ConfigKey = 'home' | 'about';
 
 export interface Config {
   _id: string;

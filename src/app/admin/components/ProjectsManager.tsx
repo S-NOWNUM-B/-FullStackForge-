@@ -4,8 +4,8 @@
 import { useState, useEffect } from 'react';
 import { Trash2, Search, X, Plus, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
+import Link from 'next/link';
 import type { Project } from '@/types/api';
-import ProjectEditor from './ProjectEditor';
 
 export default function ProjectsManager() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -16,9 +16,6 @@ export default function ProjectsManager() {
   const [selectedTech, setSelectedTech] = useState<string>('all');
   const [categories, setCategories] = useState<string[]>([]);
   const [technologies, setTechnologies] = useState<string[]>([]);
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [loadingProject, setLoadingProject] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -74,30 +71,6 @@ export default function ProjectsManager() {
     }
   };
 
-  const handleCreate = () => {
-    setSelectedProject(null);
-    setIsEditorOpen(true);
-  };
-
-  const handleEdit = async (id: string) => {
-    setLoadingProject(true);
-    try {
-      const res = await fetch(`/api/projects/${id}`);
-      const data = await res.json();
-
-      if (data.success && data.data) {
-        setSelectedProject(data.data as Project);
-        setIsEditorOpen(true);
-      } else {
-        toast.error(data.error || 'Не удалось загрузить проект');
-      }
-    } catch (error) {
-      console.error('Ошибка загрузки проекта:', error);
-      toast.error('Ошибка при загрузке проекта');
-    } finally {
-      setLoadingProject(false);
-    }
-  };
 
   const filteredProjects = (projects || [])
     .filter(p => {
@@ -137,17 +110,16 @@ export default function ProjectsManager() {
   return (
     <div className="space-y-6">
       {/* Controls */}
-      <div className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
+      <div className="bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
         <div className="space-y-4">
           {/* Первая строка: Кнопка создания + Поиск */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <button
-              onClick={handleCreate}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-lg shadow-red-600/20 font-medium whitespace-nowrap"
-            >
-              <Plus className="w-5 h-5" />
-              Создать проект
-            </button>
+            <Link href="/admin/projects/new">
+              <button className="flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 active:scale-95 text-white rounded-lg transition-all shadow-lg shadow-red-600/20 font-medium whitespace-nowrap transform duration-200">
+                <Plus className="w-5 h-5" />
+                Создать проект
+              </button>
+            </Link>
 
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -212,29 +184,43 @@ export default function ProjectsManager() {
 
       {/* Projects Grid */}
       {loading ? (
-        <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-400"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 rounded-xl overflow-hidden">
+              <div className="h-48 bg-gray-700/50 animate-pulse" />
+              <div className="p-4 space-y-3">
+                <div className="h-6 bg-gray-700/50 rounded animate-pulse w-3/4" />
+                <div className="h-4 bg-gray-700/50 rounded animate-pulse w-full" />
+                <div className="h-4 bg-gray-700/50 rounded animate-pulse w-2/3" />
+                <div className="pt-4 grid grid-cols-2 gap-2">
+                  <div className="h-10 bg-gray-700/50 rounded animate-pulse" />
+                  <div className="h-10 bg-gray-700/50 rounded animate-pulse" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredProjects.map((project) => (
               <div
                 key={project._id}
-                className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl overflow-hidden hover:border-gray-600 transition-all"
+                className="group bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl overflow-hidden hover:border-red-600/50 transition-all duration-300 hover:shadow-xl hover:shadow-red-600/10 hover:-translate-y-1"
               >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
                   <img
                     src={project.thumbnail}
                     alt={project.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
                 </div>
 
                 {/* Content */}
                 <div className="p-4 space-y-3">
                   <div>
-                    <h3 className="font-bold text-lg text-white line-clamp-1">
+                    <h3 className="font-bold text-lg text-white line-clamp-1 group-hover:text-red-400 transition-colors duration-200">
                       {project.title}
                     </h3>
                     <p className="text-sm text-gray-400 line-clamp-2 mt-1">
@@ -250,17 +236,15 @@ export default function ProjectsManager() {
 
                   {/* Actions */}
                   <div className="pt-2 border-t border-gray-700/50 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <button
-                      onClick={() => handleEdit(project._id)}
-                      disabled={loadingProject}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white hover:text-white hover:bg-gray-800/70 rounded-lg transition-colors border border-gray-600/50 hover:border-gray-500"
-                    >
-                      <Pencil className="w-4 h-4" />
-                      Редактировать
-                    </button>
+                    <Link href={`/admin/projects/${project._id}/edit`}>
+                      <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gray-700/50 hover:bg-gray-600/70 active:scale-95 rounded-lg transition-all border border-gray-600 hover:border-gray-500 transform duration-200 shadow-md hover:shadow-lg">
+                        <Pencil className="w-4 h-4" />
+                        Редактировать
+                      </button>
+                    </Link>
                     <button
                       onClick={() => handleDelete(project._id)}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-colors border border-red-600/30 hover:border-red-600/50"
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-red-400 hover:text-red-300 bg-red-900/20 hover:bg-red-900/40 active:scale-95 rounded-lg transition-all border border-red-600/30 hover:border-red-600/50 transform duration-200 shadow-md hover:shadow-lg hover:shadow-red-900/20"
                     >
                       <Trash2 className="w-4 h-4" />
                       Удалить
@@ -273,25 +257,15 @@ export default function ProjectsManager() {
       )}
 
       {filteredProjects.length === 0 && !loading && (
-        <div className="text-center py-12 bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl">
-          <p className="text-gray-400">Проекты не найдены</p>
+        <div className="col-span-full">
+          <div className="text-center py-16 bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-800/50 mb-4">
+              <Search className="w-8 h-8 text-gray-500" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">Проекты не найдены</h3>
+            <p className="text-gray-500 mb-6">Попробуйте изменить фильтры или создайте новый проект</p>
+          </div>
         </div>
-      )}
-
-      {/* Project Editor Modal */}
-      {isEditorOpen && (
-        <ProjectEditor
-          project={selectedProject}
-          onClose={() => {
-            setIsEditorOpen(false);
-            setSelectedProject(null);
-          }}
-          onSave={() => {
-            fetchProjects();
-            setIsEditorOpen(false);
-            setSelectedProject(null);
-          }}
-        />
       )}
     </div>
   );
