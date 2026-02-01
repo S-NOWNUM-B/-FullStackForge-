@@ -3,6 +3,17 @@ import { db, COLLECTIONS } from '@/lib/firebase';
 
 export async function GET() {
   try {
+    if (!db) {
+      return NextResponse.json(
+        { 
+          error: 'Firebase не настроен. Добавьте валидные credentials в .env.local',
+          categories: [],
+          technologies: []
+        },
+        { status: 503 }
+      );
+    }
+
     const snapshot = await db.collection(COLLECTIONS.PROJECTS).get();
     
     const categories = new Set<string>();

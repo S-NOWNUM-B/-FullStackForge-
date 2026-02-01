@@ -7,6 +7,21 @@ export const revalidate = 60;
 
 export async function GET(request: NextRequest) {
   try {
+    // Проверка инициализации Firebase
+    if (!db) {
+      return NextResponse.json(
+        { 
+          error: 'Firebase не настроен. Добавьте валидные credentials в .env.local',
+          projects: [],
+          total: 0,
+          page: 1,
+          limit: 10,
+          totalPages: 0
+        },
+        { status: 503 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
@@ -86,6 +101,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json(
+        { error: 'Firebase не настроен. Добавьте валидные credentials в .env.local' },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json();
     
     // Добавляем timestamps
@@ -112,6 +134,13 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json(
+        { error: 'Firebase не настроен. Добавьте валидные credentials в .env.local' },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json();
     const { _id, ...updateData } = body;
     
@@ -149,6 +178,13 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json(
+        { error: 'Firebase не настроен. Добавьте валидные credentials в .env.local' },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json();
     const id = body._id || body.id;
     

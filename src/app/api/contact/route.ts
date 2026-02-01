@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/data/db';
-import ContactMessage from '@/data/models/ContactMessage';
+import { db, COLLECTIONS } from '@/lib/firebase';
 
 interface EmailData {
   name: string;
@@ -95,20 +94,29 @@ export async function POST(request: NextRequest) {
     }
 
     // Подключаемся к базе данных
-    await connectDB();
+    if (!db) {
+      return NextResponse.json(
+        { error: 'Firebase не настроен' },
+        { status: 503 }
+      );
+    }
 
-    // Сохраняем сообщение в MongoDB
-    const contactMessage = await ContactMessage.create({
+    // Сохраняем сообщение в Firestore
+    const messageData = {
       name,
       email,
       subject,
       message,
       projectType,
       status: 'new',
-    });
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    const docRef = await db.collection(COLLECTIONS.CONTACT_MESSAGES).add(messageData);
 
     console.log('✅ Сообщение сохранено в БД:', {
-      id: contactMessage._id,
+      id: docRef.id,
       name,
       email,
       projectType,

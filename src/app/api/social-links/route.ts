@@ -1,29 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/data/db';
-import SocialLinks from '@/data/models/SocialLinks';
+import { db, COLLECTIONS } from '@/lib/firebase';
 import type { SocialLinks as SocialLinksType } from '@/types/api';
 
 // GET - Получить соц-сети
 export async function GET() {
   try {
-    await connectDB();
-    
-    let socialLinks = await SocialLinks.findOne();
-    
-    // Если данных нет, создаем с дефолтными значениями
-    if (!socialLinks) {
-      socialLinks = await SocialLinks.create({});
+    if (!db) {
+      return NextResponse.json(
+        { error: 'Firebase не настроен' },
+        { status: 503 }
+      );
     }
-
-    const data: SocialLinksType = {
-      _id: socialLinks._id.toString(),
-      links: socialLinks.links,
-      showOnHeader: socialLinks.showOnHeader,
-      showOnFooter: socialLinks.showOnFooter,
-      showOnWorkPage: socialLinks.showOnWorkPage,
-      createdAt: socialLinks.createdAt.toISOString(),
-      updatedAt: socialLinks.updatedAt.toISOString(),
-    };
+    
+    const snapshot = await db.collection(COLLECTIONS.SOCIAL_LINKS).limit(1).get();
+    
+    let data: SocialLinksType;
+    
+    if (snapshot.empty) {
+      // Создаем с дефолтными значениями
+      const defaultData = {
+        links: [],
+        showOnHeader: true,
+        showOnFooter: true,
+        showOnWorkPage: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      const docRef = await db.collection(COLLECTIONS.SOCIAL_LINKS).add(defaultData);
+      data = { _id: docRef.id, ...defaultData };
+    } else {
+      const doc = snapshot.docs[0];
+      data = { _id: doc.id, ...doc.data() } as SocialLinksType;
+    }
 
     return NextResponse.json({ success: true, data });
   } catch (error) {
@@ -38,18 +46,35 @@ export async function GET() {
 // PUT - Обновить соц-сети (защищено middleware)
 export async function PUT(request: NextRequest) {
   try {
-    await connectDB();
+    if (!db) {
+      return NextResponse.json(
+        { error: 'Firebase не настроен' },
+        { status: 503 }
+      );
+    }
     
     const body = await request.json();
+    const { _id, ...updateData } = body;
     
-    let socialLinks = await SocialLinks.findOne();
+    updateData.updatedAt = new Date().toISOString();
     
-    if (!socialLinks) {
-      socialLinks = await SocialLinks.create(body);
+    const snapshot = await db.collection(COLLECTIONS.SOCIAL_LINKS).limit(1).get();
+    
+    let docId: string;
+    
+    if (snapshot.empty) {
+      // Создаем новый документ
+      updateData.createdAt = new Date().toISOString();
+      const docRef = await db.collection(COLLECTIONS.SOCIAL_LINKS).add(updateData);
+      docId = docRef.id;
     } else {
-      Object.assign(socialLinks, body);
-      await socialLinks.save();
+      // Обновляем существующий
+      docId = snapshot.docs[0].id;
+      await db.collection(COLLECTIONS.SOCIAL_LINKS).doc(docId).update(updateData);
     }
+    
+    const updatedDoc = await db.collection(COLLECTIONS.SOCIAL_LINKS).doc(docId).get();
+    const socialLinks = { _id: updatedDoc.id, ...updatedDoc.data() };
 
     const data: SocialLinksType = {
       _id: socialLinks._id.toString(),

@@ -6,6 +6,13 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!db) {
+      return NextResponse.json(
+        { error: 'Firebase не настроен. Добавьте валидные credentials в .env.local' },
+        { status: 503 }
+      );
+    }
+
     const { id } = await params;
     
     const docRef = db.collection(COLLECTIONS.PROJECTS).doc(id);
@@ -37,6 +44,13 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!db) {
+      return NextResponse.json(
+        { error: 'Firebase не настроен. Добавьте валидные credentials в .env.local' },
+        { status: 503 }
+      );
+    }
+
     const { id } = await params;
     const body = await request.json();
     
@@ -82,6 +96,13 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!db) {
+      return NextResponse.json(
+        { error: 'Firebase не настроен. Добавьте валидные credentials в .env.local' },
+        { status: 503 }
+      );
+    }
+
     const { id } = await params;
     
     const docRef = db.collection(COLLECTIONS.PROJECTS).doc(id);
