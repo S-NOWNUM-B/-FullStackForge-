@@ -35,7 +35,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
 
         // Получаем хешированный пароль из переменных окружения
-        const hashedPassword = process.env.ADMIN_PASSWORD_HASH;
+        const rawHash = process.env.ADMIN_PASSWORD_HASH;
+        const hashedPassword = rawHash
+          ? rawHash.replace(/\\\$/g, '$').replace(/\$\$/g, '$')
+          : undefined;
         
         if (!hashedPassword) {
           console.error('❌ ADMIN_PASSWORD_HASH не установлен в переменных окружения');

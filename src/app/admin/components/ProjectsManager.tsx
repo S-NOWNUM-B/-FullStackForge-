@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Trash2, Eye, Search, X, Plus, Pencil } from 'lucide-react';
+import { Trash2, Search, X, Plus, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Project } from '@/types/api';
 import ProjectEditor from './ProjectEditor';
@@ -243,10 +243,6 @@ export default function ProjectsManager() {
                   </div>
 
                   <div className="flex items-center gap-4 text-xs text-gray-400">
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3 h-3" />
-                      {project.viewsCount || 0}
-                    </span>
                     <span className="flex-1 text-right">
                       {new Date(project.createdAt).toLocaleDateString('ru')}
                     </span>
