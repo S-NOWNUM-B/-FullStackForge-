@@ -1,303 +1,128 @@
-<div align="center">
+# FullStackForge
 
-## FullStackForge
+Портфолио-сайт на Next.js 16 + Firebase Firestore.
 
-### Современный и элегантный веб-сайт для презентации профессионального портфолио
-
-**Интуитивный интерфейс · Современные технологии · Полный контроль**
-
-</div>
+Production: https://fullstackforge.onrender.com
 
 ---
 
-## Содержание
+## Технологии
 
-- [Быстрый запуск для новых устройств](#быстрый-запуск-для-новых-устройств)
-- [Быстрый запуск (обычный)](#быстрый-запуск-обычный)
-- [Системные требования](#системные-требования)
-- [Технологический стек](#технологический-стек)
-- [Основные возможности](#основные-возможности)
-- [Конфигурация проекта](#конфигурация-проекта)
-- [Команды разработки](#команды-разработки)
-- [Решение проблем](#решение-проблем)
+Frontend: Next.js 16 (App Router), TypeScript, Tailwind CSS, Framer Motion, Radix UI
+
+Backend: Firebase Firestore, NextAuth.js v5, bcrypt
+
+Hosting: Render.com, pnpm
 
 ---
 
-## Быстрый запуск для новых устройств
-
-> **Первый раз запускаете проект? Начните здесь!**
-
-### 1. Клонируйте репозиторий
+## Установка
 
 ```bash
-git clone <repository-url> Buisnes-website
-cd Buisnes-website
-```
-
-### 2. Установите зависимости
-
-```bash
+git clone https://github.com/S-NOWNUM-B/-FullStackForge-.git
+cd fullStackForge
 pnpm install
-```
-
-**Если pnpm не установлен:**
-```bash
-npm install -g pnpm
-```
-
-### 3. Настройте переменные окружения
-
-```bash
-cp .env.example .env.local
-```
-
-**Отредактируйте `.env.local`:**
-```env
-# MongoDB Connection
-MONGODB_URI=mongodb://localhost:27017/portfolio
-
-# Admin Panel Password
-ADMIN_PASSWORD=your_secure_password
-```
-
-### 4. Запуск проекта
-
-```bash
 pnpm dev
 ```
 
-### 5. Откройте браузер
-
-```
 http://localhost:3000
-```
-
-**Готово!** Проект полностью настроен и готов к работе.
 
 ---
 
-## Быстрый запуск (обычный)
-
-> **Стандартный процесс запуска приложения**
-
-### Способ 1: Режим разработки (Рекомендуется)
+## Команды
 
 ```bash
+pnpm dev                # Dev сервер
+pnpm build              # Production сборка
+pnpm lint               # ESLint
+pnpm update             # Обновить зависимости
+
+git add .
+git commit -m "msg"
+git push origin main
+```
+
+---
+
+## Ссылки
+
+Deployment:
+- https://fullstackforge.onrender.com (Live)
+- https://dashboard.render.com (Render Dashboard)
+- https://github.com/S-NOWNUM-B/-FullStackForge- (GitHub)
+
+Firebase:
+- https://console.firebase.google.com (Firebase Console)
+- https://console.firebase.google.com/project/fullstackforge-6618e/firestore (Firestore)
+- https://console.firebase.google.com/project/fullstackforge-6618e/settings/serviceaccounts/adminsdk (Service Accounts)
+
+---
+
+## Переменные окружения
+
+.env.local:
+
+```env
+FIREBASE_PROJECT_ID=fullstackforge-6618e
+FIREBASE_CLIENT_EMAIL=firebase-adminsdk-fbsvc@fullstackforge-6618e.iam.gserviceaccount.com
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+AUTH_SECRET=your_secret
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD_HASH=$2b$10$...
+NEXTAUTH_URL=http://localhost:3000
+```
+
+Render.com: То же самое, NEXTAUTH_URL=https://fullstackforge.onrender.com
+
+---
+
+## Структура
+
+```
+src/
+├── app/           Pages, API routes
+├── components/    React компоненты
+├── config/        Auth config
+├── constants/     Constants
+├── services/      Firebase
+├── utils/         Utilities
+├── types/         TypeScript types
+└── hooks/         Custom hooks
+```
+
+---
+
+## Админ-панель
+
+/admin (NextAuth.js защита)
+
+Функции: управление проектами, работой, социальными ссылками
+
+---
+
+## Решение проблем
+
+React Error #418 / 503 на /Projects:
+- Проверить .env.local - все 3 Firebase переменные должны быть
+- На Render: добавить переменные в Environment
+- Перезапустить сервис
+
+Dev не запускается:
+```bash
+rm -rf .next node_modules
+pnpm install
 pnpm dev
 ```
 
-Откройте [http://localhost:3000](http://localhost:3000) — изменения применяются автоматически.
-
-### Способ 2: Production режим
-
+Ошибка Firebase:
 ```bash
-pnpm build
-pnpm start
+echo $FIREBASE_PRIVATE_KEY
+# Проверить что содержит \n между BEGIN и END
 ```
 
-Оптимизированная сборка для продакшена.
-
 ---
 
-## Системные требования
-
-<div align="center">
-
-| Компонент | Минимум | Рекомендуется | Проверка |
-|:---------:|:-------:|:-------------:|:--------:|
-| **Node.js**  | 18.0+    | 20.0+         | `node --version`  |
-| **pnpm** | 9.0+ | 10.0+           | `pnpm --version`    |
-| **npm**     | 10+      | 10+           | `npm --version`     |
-| **Порты** | 3000 | Свободен | Автоматическая проверка |
-| **RAM** | 512 MB | 2 GB+ | — |
-| **Диск** | 200 MB | 500 MB+ | Зависимости + данные |
-
-</div>
-
----
-
-## Технологический стек
-
-<table>
-<tr>
-<td width="50%">
-
-### Frontend
-
-- **Next.js** — React фреймворк для production
-- **React** — библиотека для построения UI
-- **TypeScript** — типизированный JavaScript
-- **Tailwind CSS** — utility-first CSS фреймворк
-- **Framer Motion** — библиотека анимаций
-- **Radix UI** — unstyled UI компоненты
-- **Lucide React** — набор иконок
-
-</td>
-<td width="50%">
-
-### Backend & Tools
-
-- **Next.js API Routes** — серверные API endpoints
-- **MongoDB** — NoSQL база данных
-- **Mongoose** — ODM для MongoDB
-- **JWT** — токены авторизации
-- **React Hook Form** — управление формами
-- **Zod** — валидация схем данных
-- **Axios** — HTTP клиент
-- **pnpm** — менеджер пакетов
-- **ESLint** — линтер для кода
-
-</td>
-</tr>
-</table>
-
----
-
-## Основные возможности
-
-<table>
-<tr>
-<td width="50%">
-
-### Главная страница
-
-- **Привлекательный дизайн**  
-  Современная hero-секция с призывами к действию
-  
-- **Плавные анимации**  
-  Framer Motion для плавных переходов
-  
-- **Адаптивный макет**  
-  Отлично выглядит на всех устройствах
-  
-- **Оптимизация производительности**  
-  Быстрая загрузка и отзывчивость
-  
-- **SEO-оптимизация**  
-  Правильная структура для поисковых систем
-  
-- **Темная/светлая тема**  
-  Поддержка переключения тем
-
-</td>
-<td width="50%">
-
-### Страница "О себе"
-
-- **Детальная информация**  
-  Профессиональные навыки и опыт
-  
-- **Технологические стеки**  
-  Визуализация технологий с иконками
-  
-- **Интерактивные элементы**  
-  Hover-эффекты и анимации
-  
-- **Загрузка с MongoDB**  
-  Динамическое обновление контента
-  
-- **Модульная архитектура**  
-  Переиспользуемые компоненты
-  
-- **TypeScript типизация**  
-  Безопасность типов на всех уровнях
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-### Портфолио проектов
-
-- **Интерактивная галерея**  
-  Карточки проектов с превью
-  
-- **Фильтрация по технологиям**  
-  Быстрый поиск нужных проектов
-  
-- **Детальные страницы**  
-  Полное описание каждого проекта
-  
-- **Ссылки на демо и GitHub**  
-  Прямой доступ к проектам
-  
-- **Адаптивная сетка**  
-  Оптимальное отображение на любых экранах
-  
-- **Lazy loading**  
-  Оптимизация загрузки изображений
-
-</td>
-<td width="50%">
-
-### Контакты и обратная связь
-
-- **Контактная форма**  
-  React Hook Form с валидацией
-  
-- **Отправка сообщений**  
-  Сохранение в MongoDB
-  
-- **Валидация с Zod**  
-  Проверка на клиенте и сервере
-  
-- **Toast-уведомления**  
-  Обратная связь для пользователя
-  
-- **Часто задаваемые вопросы**  
-  Раздел FAQ с ответами
-  
-- **Социальные сети**  
-  Ссылки на профили
-
-</td>
-</tr>
-</table>
-
-### Административная панель
-
-<div align="center">
-
-| Функция | Описание |
-|:--------|:---------|
-| **Управление проектами** | Добавление, редактирование и удаление проектов |
-| **Настройки сайта** | Изменение основной информации и контента |
-| **Просмотр сообщений** | Доступ к сообщениям из контактной формы |
-| **Защита паролем** | JWT-авторизация для безопасности |
-| **Интуитивный интерфейс** | Простое управление без технических знаний |
-
-</div>
-
----
-
-## Конфигурация проекта
-
-### Структура .env файлов
-
-<div align="center">
-
-| Файл | Назначение | Обязательность |
-|:-----|:-----------|:--------------:|
-| `.env.local` | MongoDB URI, пароль админ-панели | Да |
-| `.env.example` | Шаблон для переменных окружения | Рекомендуется |
-
-</div>
-
-### Настройка переменных окружения
-
-<details>
-<summary><b>Развернуть для настройки .env</b></summary>
-
-<br>
-
-#### .env.local
-```env
-# MongoDB Connection (ОБЯЗАТЕЛЬНО!)
-MONGODB_URI=mongodb://localhost:27017/portfolio
-# Для MongoDB Atlas:
-# MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/portfolio?retryWrites=true&w=majority
-
-# Admin Panel Authentication (ОБЯЗАТЕЛЬНО!)
+Автодеплой на Render при push. Firebase Firestore: 1GB, 50K reads/day. Коллекции: projects, contactMessages, workInfo, socialLinks.
 ADMIN_PASSWORD=your_secure_password_here
 
 # JWT Secret (опционально, генерируется автоматически)
