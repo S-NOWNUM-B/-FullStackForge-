@@ -88,45 +88,45 @@ export default function ProjectDetailPage() {
       <main className="relative z-10 w-full">
         {/* Hero Section */}
         <section className="border-b border-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-14">
             {/* Back Button */}
-            <Link href="/Projects" className="inline-block mb-8">
-              <button className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
-                <ArrowLeft className="w-5 h-5" />
+            <Link href="/Projects" className="inline-block mb-4 sm:mb-6 lg:mb-8">
+              <button className="flex items-center gap-2 text-sm sm:text-base text-gray-400 hover:text-white transition-colors">
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Вернуться к проектам</span>
               </button>
             </Link>
 
             {/* Project Header */}
-            <div className="mb-6">
-              <div className="flex flex-wrap items-center gap-3 mb-6">
-                <span className="px-4 py-1.5 bg-red-600/10 text-red-400 rounded-full text-sm font-medium border border-red-600/20">
+            <div className="mb-4 sm:mb-6">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                <span className="px-3 py-1 sm:px-4 sm:py-1.5 bg-red-600/10 text-red-400 rounded-full text-xs sm:text-sm font-medium border border-red-600/20">
                   {project.category}
                 </span>
                 {project.clientName && (
-                  <span className="px-4 py-1.5 bg-gray-800/50 text-gray-300 rounded-full text-sm font-medium border border-gray-700/50 flex items-center gap-2">
-                    <Globe className="w-4 h-4" />
+                  <span className="px-3 py-1 sm:px-4 sm:py-1.5 bg-gray-800/50 text-gray-300 rounded-full text-xs sm:text-sm font-medium border border-gray-700/50 flex items-center gap-1.5 sm:gap-2">
+                    <Globe className="w-3 h-3 sm:w-4 sm:h-4" />
                     {project.clientName}
                   </span>
                 )}
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
                 {project.title}
               </h1>
 
-              <p className="text-lg md:text-xl text-gray-300 max-w-3xl mb-8 leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mb-6 sm:mb-8 leading-relaxed">
                 {project.shortDescription}
               </p>
 
               {/* Meta Info */}
-              <div className="flex flex-wrap gap-6 mb-6">
+              <div className="flex flex-wrap gap-4 sm:gap-6 mb-4 sm:mb-6">
                 {project.startedAt && project.completedAt && (
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-blue-400" />
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 shrink-0" />
                     <div>
                       <div className="text-xs text-gray-400 uppercase tracking-wide">Длительность</div>
-                      <div className="text-white font-semibold">
+                      <div className="text-sm sm:text-base text-white font-semibold">
                         {new Date(project.startedAt).toLocaleDateString('ru-RU', {
                           month: 'short',
                           year: 'numeric',
@@ -144,17 +144,17 @@ export default function ProjectDetailPage() {
               </div>
 
               {/* Links */}
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
                 {project.githubUrl && (
                   <a
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900/50 border border-gray-800 rounded-lg text-white hover:border-red-600/50 hover:bg-gray-800 transition-all"
+                    className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-gray-900/50 border border-gray-800 rounded-lg text-sm sm:text-base text-white hover:border-red-600/50 hover:bg-gray-800 transition-all"
                   >
-                    <Github className="w-5 h-5" />
-                    Посмотреть код
-                    <ExternalLink className="w-4 h-4" />
+                    <Github className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="whitespace-nowrap">Посмотреть код</span>
+                    <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </a>
                 )}
 
@@ -163,11 +163,11 @@ export default function ProjectDetailPage() {
                     href={project.demoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 border border-red-600 rounded-lg text-white hover:bg-red-700 transition-all font-semibold"
+                    className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-red-600 border border-red-600 rounded-lg text-sm sm:text-base text-white hover:bg-red-700 transition-all font-semibold"
                   >
-                    <Globe className="w-5 h-5" />
-                    Открыть проект
-                    <ExternalLink className="w-4 h-4" />
+                    <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="whitespace-nowrap">Открыть проект</span>
+                    <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </a>
                 )}
               </div>
@@ -178,16 +178,16 @@ export default function ProjectDetailPage() {
         {/* Tabs Navigation */}
         <div className="border-b border-gray-800 sticky top-0 bg-black/50 backdrop-blur-md z-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex gap-0 overflow-x-auto">
+            <div className="flex gap-0 overflow-x-auto scrollbar-hide">
               <button
                 onClick={() => setActiveTab('overview')}
-                className={`px-6 py-4 font-semibold transition-all whitespace-nowrap border-b-2 ${
+                className={`px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base font-semibold transition-all whitespace-nowrap border-b-2 ${
                   activeTab === 'overview'
                     ? 'text-white border-red-600'
                     : 'text-gray-400 border-transparent hover:text-gray-300'
                 }`}
               >
-                <FileText className="w-4 h-4 inline-block mr-2" />
+                <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline-block mr-1.5 sm:mr-2" />
                 Обзор
               </button>
 
@@ -221,13 +221,13 @@ export default function ProjectDetailPage() {
         </div>
 
         {/* Tab Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
           {/* Overview Tab */}
           {activeTab === 'overview' && (
-            <div className="space-y-12">
+            <div className="space-y-6 sm:space-y-8 lg:space-y-12">
               {project.thumbnail && (
-                <div className="bg-gray-900/40 border border-gray-800 rounded-xl overflow-hidden">
-                  <div className="relative w-full h-80 md:h-100 lg:h-125 bg-gray-800">
+                <div className="bg-gray-900/40 border border-gray-800 rounded-lg sm:rounded-xl overflow-hidden">
+                  <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-125 bg-gray-800">
                     <Image
                       src={project.thumbnail}
                       alt={project.title}
@@ -239,12 +239,12 @@ export default function ProjectDetailPage() {
               )}
               {/* Main Description */}
               {project.fullDescription && (
-                <div className="bg-gray-900/40 border border-gray-800 rounded-xl p-8">
-                  <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <FileText className="w-6 h-6 text-red-600" />
+                <div className="bg-gray-900/40 border border-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+                    <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 shrink-0" />
                     О проекте
                   </h2>
-                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap text-lg">
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap text-base sm:text-lg">
                     {project.fullDescription}
                   </p>
                 </div>
@@ -252,12 +252,12 @@ export default function ProjectDetailPage() {
 
               {/* Functionality */}
               {project.functionality && (
-                <div className="bg-gray-900/40 border border-gray-800 rounded-xl p-8">
-                  <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <Code2 className="w-6 h-6 text-red-600" />
+                <div className="bg-gray-900/40 border border-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+                    <Code2 className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 shrink-0" />
                     Основной функционал
                   </h2>
-                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap text-lg">
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap text-base sm:text-lg">
                     {project.functionality}
                   </p>
                 </div>
@@ -265,29 +265,42 @@ export default function ProjectDetailPage() {
 
               {/* Challenges */}
               {project.challenges && (
-                <div className="bg-gray-900/40 border border-gray-800 rounded-xl p-8">
-                  <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <TrendingUp className="w-6 h-6 text-red-600" />
+                <div className="bg-gray-900/40 border border-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+                    <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 shrink-0" />
                     Вызовы и решения
                   </h2>
-                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap text-lg">
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap text-base sm:text-lg">
                     {project.challenges}
+                  </p>
+                </div>
+              )}
+
+              {/* Results */}
+              {project.results && (
+                <div className="bg-gray-900/40 border border-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+                    <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 shrink-0" />
+                    Результаты и итоги
+                  </h2>
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap text-base sm:text-lg">
+                    {project.results}
                   </p>
                 </div>
               )}
 
               {/* Technologies */}
               {project.technologies && project.technologies.length > 0 && (
-                <div className="bg-gray-900/40 border border-gray-800 rounded-xl p-8">
-                  <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <Cpu className="w-6 h-6 text-red-600" />
+                <div className="bg-gray-900/40 border border-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+                    <Cpu className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 shrink-0" />
                     Используемые технологии
                   </h2>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-2 sm:gap-3">
                     {project.technologies.map((tech) => (
                       <span
                         key={tech}
-                        className="px-4 py-2 bg-gray-800/50 text-gray-300 rounded-lg text-sm font-medium border border-gray-700/50 hover:border-red-600/50 hover:text-white transition-all"
+                        className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-800/50 text-gray-300 rounded-lg text-xs sm:text-sm font-medium border border-gray-700/50 hover:border-red-600/50 hover:text-white transition-all"
                       >
                         {tech}
                       </span>
@@ -300,32 +313,32 @@ export default function ProjectDetailPage() {
 
           {/* Process Tab */}
           {activeTab === 'process' && processSteps.length > 0 && (
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               <div className="relative">
                 {/* Timeline Line */}
-                <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-linear-to-b from-red-600/50 via-red-600/30 to-transparent transform md:-translate-x-1/2" />
+                <div className="absolute left-3 sm:left-4 md:left-1/2 top-0 bottom-0 w-0.5 sm:w-1 bg-linear-to-b from-red-600/50 via-red-600/30 to-transparent transform md:-translate-x-1/2" />
 
                 {/* Steps */}
-                <div className="space-y-8 md:space-y-12">
+                <div className="space-y-6 sm:space-y-8 md:space-y-12">
                   {processSteps.map((step, idx) => (
                     <div
                       key={step.id}
-                      className={`relative flex gap-6 md:gap-0 ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
+                      className={`relative flex gap-4 sm:gap-6 md:gap-0 ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
                     >
                       {/* Timeline Dot */}
-                      <div className="absolute left-0 md:left-1/2 top-6 md:top-0 w-9 h-9 bg-red-600 rounded-full border-4 border-black transform md:-translate-x-1/2 flex items-center justify-center">
-                        <CheckCircle2 className="w-5 h-5 text-white" />
+                      <div className="absolute left-0 sm:left-0 md:left-1/2 top-4 sm:top-6 md:top-0 w-7 h-7 sm:w-9 sm:h-9 bg-red-600 rounded-full border-2 sm:border-4 border-black transform md:-translate-x-1/2 flex items-center justify-center">
+                        <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                       </div>
 
                       {/* Content */}
-                      <div className={`flex-1 pl-16 md:pl-0 ${idx % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
-                        <div className="bg-gray-900/40 border border-gray-800 rounded-xl p-6">
-                          <div className="flex items-start justify-between gap-4 mb-4">
-                            <div>
-                              <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
+                      <div className={`flex-1 pl-12 sm:pl-16 md:pl-0 ${idx % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
+                        <div className="bg-gray-900/40 border border-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6">
+                          <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
+                            <div className="flex-1">
+                              <h3 className="text-lg sm:text-xl font-bold text-white mb-2">{step.title}</h3>
                               {step.startDate && step.endDate && (
-                                <div className="text-sm text-gray-400 flex items-center gap-2">
-                                  <Calendar className="w-4 h-4" />
+                                <div className="text-xs sm:text-sm text-gray-400 flex items-center gap-1.5 sm:gap-2">
+                                  <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                                   {new Date(step.startDate).toLocaleDateString('ru-RU', {
                                     month: 'short',
                                     day: 'numeric',
@@ -354,7 +367,7 @@ export default function ProjectDetailPage() {
                                   : 'Запланировано'}
                             </span>
                           </div>
-                          <p className="text-gray-300 leading-relaxed">{step.description}</p>
+                          <p className="text-sm sm:text-base text-gray-300 leading-relaxed">{step.description}</p>
                         </div>
                       </div>
                     </div>
@@ -366,18 +379,18 @@ export default function ProjectDetailPage() {
 
           {/* Results Tab */}
           {activeTab === 'results' && resultMetrics.length > 0 && (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {resultMetrics.map((metric) => (
                 <div
                   key={metric.id}
-                  className="bg-gray-900/40 border border-gray-800 rounded-xl p-8 text-center hover:border-red-600/50 transition-all"
+                  className="bg-gray-900/40 border border-gray-800 rounded-lg sm:rounded-xl p-6 sm:p-8 text-center hover:border-red-600/50 transition-all"
                 >
-                  <div className="text-4xl md:text-5xl font-bold text-red-600 mb-3">
+                  <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-red-600 mb-2 sm:mb-3">
                     {metric.value}
                     {metric.type === 'percentage' && '%'}
                     {metric.type === 'currency' && '₽'}
                   </div>
-                  <p className="text-gray-300 text-lg font-semibold">{metric.label}</p>
+                  <p className="text-gray-300 text-base sm:text-lg font-semibold">{metric.label}</p>
                   {metric.type && (
                     <p className="text-gray-400 text-xs uppercase tracking-widest mt-3">
                       {metric.type === 'percentage' && 'Процент'}
@@ -390,37 +403,6 @@ export default function ProjectDetailPage() {
               ))}
             </div>
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="border-t border-gray-800 py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-
-            {(project.githubUrl || project.demoUrl) && (
-              <div className="flex gap-4">
-                {project.githubUrl && (
-                  <a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 text-white bg-gray-800/30 hover:bg-gray-800 border border-gray-700 hover:border-gray-600 rounded-lg transition-all"
-                  >
-                    <Github className="w-5 h-5" />
-                  </a>
-                )}
-                {project.demoUrl && (
-                  <a
-                    href={project.demoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 text-white bg-red-600 hover:bg-red-700 border border-red-600 rounded-lg transition-all font-semibold"
-                  >
-                    <Globe className="w-5 h-5" />
-                  </a>
-                )}
-              </div>
-            )}
-          </div>
         </div>
       </main>
     </div>
