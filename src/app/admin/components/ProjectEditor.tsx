@@ -5,13 +5,12 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
-import { X, Upload, Trash2, ChevronLeft, ChevronRight, Check, Image as ImageIcon, AlertCircle, CheckCircle, Database, Cloud } from 'lucide-react';
+import { X, Upload, Trash2, ChevronLeft, ChevronRight, Check, Image as ImageIcon, AlertCircle, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Textarea } from '@/components/ui/Textarea';
 import { PROJECT_TECHNOLOGY_NAMES } from '@/constants/project-technologies';
-import { useUploadThing } from '@/utils/uploadthing';
 
 interface ProjectData {
   _id?: string;
@@ -57,16 +56,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
   const [isLoading, setIsLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
-  
-  // UploadThing hook
-  const { startUpload, isUploading } = useUploadThing("projectImageUploader", {
-    onClientUploadComplete: () => {
-      toast.success("Изображения успешно загружены!");
-    },
-    onUploadError: (error: Error) => {
-      toast.error(`Ошибка загрузки: ${error.message}`);
-    },
-  });
   
   const [formData, setFormData] = useState<ProjectData>(() => {
     if (project) {
@@ -230,15 +219,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     });
   };
 
-  const convertToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
   const validateFile = (file: File): boolean => {
     const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg'];
 
@@ -257,26 +237,24 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     if (!validateFile(file)) return;
 
     try {
-      toast.loading('Загружаю изображение в облако...', { id: 'upload-thumb' });
+      toast.loading('Загружаю изображение...', { id: 'upload-thumb' });
       
       // Сжимаем перед загрузкой
       const compressedFile = await compressImage(file);
       
-      // Загружаем в UploadThing
-      const uploadedFiles = await startUpload([compressedFile]);
-      
-      if (uploadedFiles && uploadedFiles[0]) {
-        const imageUrl = uploadedFiles[0].url;
-        setFormData(prev => ({ ...prev, thumbnail: imageUrl }));
+      // Конвертируем в base64
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        setFormData(prev => ({ ...prev, thumbnail: base64 }));
         toast.success('Главное изображение загружено!', { id: 'upload-thumb' });
-      } else {
-        throw new Error('Не удалось получить URL изображения');
-      }
+      };
+      reader.readAsDataURL(compressedFile);
     } catch (error) {
       console.error('Ошибка загрузки:', error);
       toast.error('Ошибка загрузки изображения', { id: 'upload-thumb' });
     }
-  }, [startUpload]);
+  }, []);
 
   const onImagesDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
@@ -285,31 +263,43 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     if (validFiles.length === 0) return;
 
     try {
-      toast.loading(`Загружаю ${validFiles.length} изображений в облако...`, { id: 'upload-images' });
+      toast.loading(`Загружаю ${validFiles.length} изображений...`, { id: 'upload-images' });
       
       // Сжимаем все изображения перед загрузкой
       const compressedFiles = await Promise.all(
         validFiles.map(file => compressImage(file))
       );
       
-      // Загружаем все сразу в UploadThing
-      const uploadedFiles = await startUpload(compressedFiles);
+      // Конвертируем в base64
+      const newImages: string[] = [];
+      let processedCount = 0;
       
-      if (uploadedFiles && uploadedFiles.length > 0) {
-        const imageUrls = uploadedFiles.map(f => f.url);
-        setFormData(prev => ({ 
-          ...prev, 
-          images: [...prev.images, ...imageUrls] 
-        }));
-        toast.success(`Загружено ${uploadedFiles.length} изображений!`, { id: 'upload-images' });
-      } else {
-        throw new Error('Не удалось получить URL изображений');
+      const processFile = (file: File) => {
+        return new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            resolve(reader.result as string);
+          };
+          reader.readAsDataURL(file);
+        });
+      };
+      
+      for (const file of compressedFiles) {
+        const base64 = await processFile(file);
+        newImages.push(base64);
+        processedCount++;
       }
+      
+      setFormData(prev => ({ 
+        ...prev, 
+        images: [...prev.images, ...newImages] 
+      }));
+      toast.success(`Загружено ${processedCount} изображений!`, { id: 'upload-images' });
     } catch (error) {
       console.error('Ошибка загрузки:', error);
       toast.error('Ошибка загрузки изображений', { id: 'upload-images' });
     }
-  }, [startUpload]);
+  }, []);
 
   const thumbnailDropzone = useDropzone({
     onDrop: onThumbnailDrop,
@@ -810,23 +800,15 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
                 Назад
               </Button>
               
-              {/* Upload Status Indicator */}
-              {isUploading && (
-                <div className="flex items-center gap-2 text-xs">
-                  <Cloud className="w-4 h-4 text-blue-500 animate-pulse" />
-                  <span className="text-blue-500">Загрузка в облако...</span>
-                </div>
-              )}
-              
               {/* Images Count */}
-              {!isUploading && (formData.images.length > 0 || formData.thumbnail) && (
+              {formData.images.length > 0 || formData.thumbnail ? (
                 <div className="flex items-center gap-2 text-xs">
                   <ImageIcon className="w-3.5 h-3.5 text-green-500" />
                   <span className="text-gray-400">
                     {formData.thumbnail ? '1 главное' : ''}{formData.thumbnail && formData.images.length > 0 ? ' + ' : ''}{formData.images.length > 0 ? `${formData.images.length} доп.` : ''}
                   </span>
                 </div>
-              )}
+              ) : null}
               
               {/* Auto-save status */}
               {autoSaveStatus !== 'idle' && (

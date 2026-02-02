@@ -60,23 +60,7 @@ export default function EditProjectPage() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h1 className="text-sm font-bold text-white">Редактирование проекта</h1>
-              <p className="text-xs text-gray-500 mt-0.5">
-                {loading ? (
-                  <span className="inline-flex items-center gap-1">
-                    <Loader className="w-3 h-3 animate-spin" />
-                    Загрузка...
-                  </span>
-                ) : (
-                  project?.title || 'Проект не найден'
-                )}
-              </p>
-            </motion.div>
+            <div />
             
             <motion.button
               initial={{ opacity: 0, x: 20 }}
