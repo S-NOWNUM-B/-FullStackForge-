@@ -29,12 +29,18 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category') || '';
     const tech = searchParams.get('tech') || '';
     const sort = searchParams.get('sort') || 'newest';
+    const showAll = searchParams.get('showAll') === 'true'; // Для админ-панели
     
-    console.log('[API/Projects GET] Параметры:', { page, limit, search, category, tech, sort });
+    console.log('[API/Projects GET] Параметры:', { page, limit, search, category, tech, sort, showAll });
     
     // Получаем коллекцию проектов
     const projectsRef = db.collection(COLLECTIONS.PROJECTS);
-    let query = projectsRef.where('status', '==', 'published');
+    
+    // Если showAll=true (админ-панель), показываем все проекты
+    // Иначе только опубликованные
+    let query = showAll 
+      ? projectsRef 
+      : projectsRef.where('status', '==', 'published');
 
     // Фильтр по категории
     if (category && category !== 'all') {

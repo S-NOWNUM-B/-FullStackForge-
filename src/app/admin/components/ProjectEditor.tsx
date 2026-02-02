@@ -5,12 +5,13 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
-import { X, Upload, Trash2, ChevronLeft, ChevronRight, Check, Image as ImageIcon, AlertCircle, CheckCircle, Database } from 'lucide-react';
+import { X, Upload, Trash2, ChevronLeft, ChevronRight, Check, Image as ImageIcon, AlertCircle, CheckCircle, Database, Cloud } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Textarea } from '@/components/ui/Textarea';
 import { PROJECT_TECHNOLOGY_NAMES } from '@/constants/project-technologies';
+import { useUploadThing } from '@/utils/uploadthing';
 
 interface ProjectData {
   _id?: string;
@@ -57,6 +58,16 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
   
+  // UploadThing hook
+  const { startUpload, isUploading } = useUploadThing("projectImageUploader", {
+    onClientUploadComplete: () => {
+      toast.success("Изображения успешно загружены!");
+    },
+    onUploadError: (error: Error) => {
+      toast.error(`Ошибка загрузки: ${error.message}`);
+    },
+  });
+  
   const [formData, setFormData] = useState<ProjectData>(() => {
     if (project) {
       return {
@@ -91,7 +102,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       category: 'Web',
       githubUrl: '',
       demoUrl: '',
-      status: 'draft',
+      status: 'published',
       featured: false,
       startedAt: '',
       completedAt: '',
@@ -236,22 +247,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       return false;
     }
 
-    // Убираем проверку размера - теперь сжимаем автоматически
-    return true;
-  };
-
-  const validateTotalSize = (): boolean => {
-    const formDataString = JSON.stringify(formData);
-    const totalSize = new Blob([formDataString]).size;
-    const maxTotalSize = 800 * 1024; // 800KB (оставляем запас от 900KB лимита)
-
-    if (totalSize > maxTotalSize) {
-      const currentSizeKB = (totalSize / 1024).toFixed(2);
-      const maxSizeKB = (maxTotalSize / 1024).toFixed(2);
-      toast.error(`Общий размер проекта ${currentSizeKB}KB превышает лимит ${maxSizeKB}KB. Удалите некоторые изображения или используйте внешние ссылки.`);
-      return false;
-    }
-
     return true;
   };
 
@@ -262,45 +257,59 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     if (!validateFile(file)) return;
 
     try {
-      toast.loading('Сжимаю изображение...', { id: 'compress-thumb' });
-      const compressedFile = await compressImage(file);
-      const base64 = await convertToBase64(compressedFile);
+      toast.loading('Загружаю изображение в облако...', { id: 'upload-thumb' });
       
-      const sizeKB = (compressedFile.size / 1024).toFixed(1);
-      setFormData(prev => ({ ...prev, thumbnail: base64 }));
-      toast.success(`Главное изображение загружено (${sizeKB}KB)`, { id: 'compress-thumb' });
+      // Сжимаем перед загрузкой
+      const compressedFile = await compressImage(file);
+      
+      // Загружаем в UploadThing
+      const uploadedFiles = await startUpload([compressedFile]);
+      
+      if (uploadedFiles && uploadedFiles[0]) {
+        const imageUrl = uploadedFiles[0].url;
+        setFormData(prev => ({ ...prev, thumbnail: imageUrl }));
+        toast.success('Главное изображение загружено!', { id: 'upload-thumb' });
+      } else {
+        throw new Error('Не удалось получить URL изображения');
+      }
     } catch (error) {
-      console.error('Ошибка сжатия:', error);
-      toast.error('Ошибка загрузки изображения', { id: 'compress-thumb' });
+      console.error('Ошибка загрузки:', error);
+      toast.error('Ошибка загрузки изображения', { id: 'upload-thumb' });
     }
-  }, []);
+  }, [startUpload]);
 
   const onImagesDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
 
-    toast.loading(`Сжимаю ${acceptedFiles.length} изображений...`, { id: 'compress-images' });
-    let successCount = 0;
+    const validFiles = acceptedFiles.filter(validateFile);
+    if (validFiles.length === 0) return;
 
-    for (const file of acceptedFiles) {
-      if (!validateFile(file)) continue;
-
-      try {
-        const compressedFile = await compressImage(file);
-        const base64 = await convertToBase64(compressedFile);
-        setFormData(prev => ({ ...prev, images: [...prev.images, base64] }));
-        successCount++;
-      } catch (error) {
-        console.error('Ошибка сжатия:', error);
-        toast.error(`Ошибка загрузки ${file.name}`);
+    try {
+      toast.loading(`Загружаю ${validFiles.length} изображений в облако...`, { id: 'upload-images' });
+      
+      // Сжимаем все изображения перед загрузкой
+      const compressedFiles = await Promise.all(
+        validFiles.map(file => compressImage(file))
+      );
+      
+      // Загружаем все сразу в UploadThing
+      const uploadedFiles = await startUpload(compressedFiles);
+      
+      if (uploadedFiles && uploadedFiles.length > 0) {
+        const imageUrls = uploadedFiles.map(f => f.url);
+        setFormData(prev => ({ 
+          ...prev, 
+          images: [...prev.images, ...imageUrls] 
+        }));
+        toast.success(`Загружено ${uploadedFiles.length} изображений!`, { id: 'upload-images' });
+      } else {
+        throw new Error('Не удалось получить URL изображений');
       }
+    } catch (error) {
+      console.error('Ошибка загрузки:', error);
+      toast.error('Ошибка загрузки изображений', { id: 'upload-images' });
     }
-    
-    if (successCount > 0) {
-      toast.success(`Загружено ${successCount} изображений`, { id: 'compress-images' });
-    } else {
-      toast.error('Не удалось загрузить изображения', { id: 'compress-images' });
-    }
-  }, []);
+  }, [startUpload]);
 
   const thumbnailDropzone = useDropzone({
     onDrop: onThumbnailDrop,
@@ -340,12 +349,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      // Проверяем общий размер перед отправкой
-      if (!validateTotalSize()) {
-        setIsLoading(false);
-        return;
-      }
-
       // Подготавливаем данные для сохранения
       const dataToSave: Record<string, unknown> = {
         title: formData.title,
@@ -807,33 +810,23 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
                 Назад
               </Button>
               
-              {/* Document Size Indicator */}
-              {(() => {
-                const formDataString = JSON.stringify(formData);
-                const totalSize = new Blob([formDataString]).size;
-                const totalSizeKB = (totalSize / 1024).toFixed(1);
-                const maxSizeKB = 800;
-                const percentage = (totalSize / (maxSizeKB * 1024)) * 100;
-                const isWarning = percentage > 70;
-                const isDanger = percentage > 90;
-
-                return (
-                  <div className="flex items-center gap-2 text-xs">
-                    <div className="flex items-center gap-1.5">
-                      <Database className={`w-3.5 h-3.5 ${isDanger ? 'text-red-500' : isWarning ? 'text-yellow-500' : 'text-gray-400'}`} />
-                      <span className={isDanger ? 'text-red-500' : isWarning ? 'text-yellow-500' : 'text-gray-400'}>
-                        {totalSizeKB} / {maxSizeKB} KB
-                      </span>
-                    </div>
-                    <div className="w-32 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full transition-all ${isDanger ? 'bg-red-500' : isWarning ? 'bg-yellow-500' : 'bg-green-500'}`}
-                        style={{ width: `${Math.min(percentage, 100)}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })()}
+              {/* Upload Status Indicator */}
+              {isUploading && (
+                <div className="flex items-center gap-2 text-xs">
+                  <Cloud className="w-4 h-4 text-blue-500 animate-pulse" />
+                  <span className="text-blue-500">Загрузка в облако...</span>
+                </div>
+              )}
+              
+              {/* Images Count */}
+              {!isUploading && (formData.images.length > 0 || formData.thumbnail) && (
+                <div className="flex items-center gap-2 text-xs">
+                  <ImageIcon className="w-3.5 h-3.5 text-green-500" />
+                  <span className="text-gray-400">
+                    {formData.thumbnail ? '1 главное' : ''}{formData.thumbnail && formData.images.length > 0 ? ' + ' : ''}{formData.images.length > 0 ? `${formData.images.length} доп.` : ''}
+                  </span>
+                </div>
+              )}
               
               {/* Auto-save status */}
               {autoSaveStatus !== 'idle' && (
