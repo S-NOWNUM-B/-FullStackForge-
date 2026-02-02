@@ -23,7 +23,9 @@ export const PROJECT_TECHNOLOGIES = [
   'DOCKER',
   'FIGMA',
   'PHOTOSHOP',
-  'ILLUSTRATOR'
+  'ILLUSTRATOR',
+  'PYTHON',
+  'FASTAPI',
 ] as const;
 
 export const PROJECT_TECHNOLOGY_NAMES = [...PROJECT_TECHNOLOGIES];

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   try {
     // Проверка инициализации Firebase
     if (!db) {
-      // Возвращаем пустой массив вместо ошибки
+      console.warn('[API/Projects GET] Firebase не инициализирован, возвращаем пустой массив');
       return NextResponse.json(
         { 
           success: true,
@@ -30,6 +30,8 @@ export async function GET(request: NextRequest) {
     const tech = searchParams.get('tech') || '';
     const sort = searchParams.get('sort') || 'newest';
     
+    console.log('[API/Projects GET] Параметры:', { page, limit, search, category, tech, sort });
+    
     // Получаем коллекцию проектов
     const projectsRef = db.collection(COLLECTIONS.PROJECTS);
     let query = projectsRef.where('status', '==', 'published');
@@ -46,6 +48,8 @@ export async function GET(request: NextRequest) {
 
     // Получаем все документы с фильтрами
     const snapshot = await query.get();
+    console.log(`[API/Projects GET] Получено документов: ${snapshot.docs.length}`);
+    
     let projects = snapshot.docs.map(doc => ({
       _id: doc.id,
       ...doc.data(),
@@ -93,22 +97,32 @@ export async function GET(request: NextRequest) {
       total,
     });
   } catch (error) {
-    console.error('Ошибка при получении проектов:', error);
+    console.error('[API/Projects GET] Ошибка при получении проектов:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
+    const stack = error instanceof Error ? error.stack : '';
+    console.error('[API/Projects GET] Stack:', stack);
+    return NextResponse.json({ 
+      success: false, 
+      error: message,
+      details: process.env.NODE_ENV === 'development' ? stack : undefined
+    }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('[API/Projects POST] Начало создания проекта');
+    
     if (!db) {
+      console.error('[API/Projects POST] Firebase не настроен');
       return NextResponse.json(
-        { error: 'Firebase не настроен. Добавьте валидные credentials в .env.local' },
+        { error: 'Firebase не настроен. Добавьте валидные credentials в переменные окружения' },
         { status: 503 }
       );
     }
 
     const body = await request.json();
+    console.log('[API/Projects POST] Получены данные:', JSON.stringify(body, null, 2));
     
     // Добавляем timestamps
     const projectData = {
@@ -117,8 +131,11 @@ export async function POST(request: NextRequest) {
       updatedAt: new Date().toISOString(),
     };
     
+    console.log('[API/Projects POST] Добавление в Firestore...');
     const docRef = await db.collection(COLLECTIONS.PROJECTS).add(projectData);
     const doc = await docRef.get();
+    
+    console.log('[API/Projects POST] Проект создан с ID:', doc.id);
     
     return NextResponse.json({
       success: true,
@@ -126,9 +143,15 @@ export async function POST(request: NextRequest) {
       message: 'Проект создан успешно',
     }, { status: 201 });
   } catch (error) {
-    console.error('Ошибка при создании проекта:', error);
+    console.error('[API/Projects POST] Ошибка при создании проекта:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
+    const stack = error instanceof Error ? error.stack : '';
+    console.error('[API/Projects POST] Stack:', stack);
+    return NextResponse.json({ 
+      success: false, 
+      error: message,
+      details: process.env.NODE_ENV === 'development' ? stack : undefined
+    }, { status: 500 });
   }
 }
 

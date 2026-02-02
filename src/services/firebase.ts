@@ -35,11 +35,12 @@ if (!getApps().length && hasValidCredentials()) {
     console.log('Firebase Admin инициализирован');
   } catch (error) {
     console.error('Ошибка инициализации Firebase Admin:', error);
-    throw error;
+    // Не выбрасываем ошибку, чтобы не крашить сервер
+    firestoreInstance = null;
   }
 } else if (!hasValidCredentials()) {
-  console.warn('Firebase credentials не настроены. API routes будут возвращать ошибки.');
-  console.warn('   Добавьте валидные credentials в .env.local для работы с Firestore.');
+  console.warn('Firebase credentials не настроены. API routes будут возвращать заглушки.');
+  console.warn('Добавьте валидные credentials в переменные окружения для работы с Firestore.');
 }
 
 export const db = firestoreInstance as Firestore;
