@@ -27,7 +27,8 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      data: { _id: doc.id, ...doc.data() },
+      project: { _id: doc.id, ...doc.data() },
+      data: { _id: doc.id, ...doc.data() }, // Для обратной совместимости
     });
   } catch (error) {
     console.error('Ошибка при получении проекта:', error);

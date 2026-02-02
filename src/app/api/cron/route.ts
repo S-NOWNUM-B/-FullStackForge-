@@ -18,10 +18,10 @@ export async function GET(request: Request) {
   });
   
   // ВРЕМЕННО ЗАКОММЕНТИРОВАНО ДЛЯ ТЕСТА
-  // if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-  //   console.log('❌ Авторизация не прошла');
-  //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  // }
+   if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+     console.log('❌ Авторизация не прошла');
+     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+   }
 
   try {
     // Пингуем основную страницу
