@@ -149,7 +149,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     setValidationErrors(newErrors);
   };
 
-  const compressImage = async (file: File): Promise<File> => {
+  const compressImage = async (file: File, maxSizeKB: number = 200): Promise<File> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -167,49 +167,53 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
             return;
           }
 
-          // Максимальные размеры для разных типов изображений
-          const MAX_WIDTH = 1920;
-          const MAX_HEIGHT = 1920;
+          let width = img.width;
+          let height = img.height;
+          let quality = 0.8;
           
-          let { width, height } = img;
-          
-          // Вычисляем новые размеры с сохранением пропорций
-          if (width > MAX_WIDTH || height > MAX_HEIGHT) {
-            const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
-            width = Math.floor(width * ratio);
-            height = Math.floor(height * ratio);
-          }
-          
-          canvas.width = width;
-          canvas.height = height;
-          
-          // Рисуем изображение с новыми размерами
-          ctx.drawImage(img, 0, 0, width, height);
-          
-          // Конвертируем в blob с качеством 0.85 (хороший баланс качества/размера)
-          canvas.toBlob(
-            (blob) => {
-              if (!blob) {
-                reject(new Error('Не удалось создать blob'));
-                return;
-              }
+          // Постепенно уменьшаем размер и качество, пока не достигнем целевого размера
+          const compressToSize = (targetQuality: number): Promise<File> => {
+            return new Promise((resolveCompress, rejectCompress) => {
+              // Уменьшаем разрешение для более агрессивного сжатия
+              const ratio = Math.min(1600 / width, 1600 / height);
+              const newWidth = Math.floor(width * ratio);
+              const newHeight = Math.floor(height * ratio);
               
-              // Создаем новый File из blob
-              const compressedFile = new File([blob], file.name, {
-                type: 'image/webp',
-                lastModified: Date.now(),
-              });
+              canvas.width = newWidth;
+              canvas.height = newHeight;
+              ctx.drawImage(img, 0, 0, newWidth, newHeight);
               
-              const originalSizeKB = (file.size / 1024).toFixed(1);
-              const compressedSizeKB = (compressedFile.size / 1024).toFixed(1);
-              
-              console.log(`Сжатие: ${originalSizeKB}KB → ${compressedSizeKB}KB (${width}x${height})`);
-              
-              resolve(compressedFile);
-            },
-            'image/webp',
-            0.85
-          );
+              canvas.toBlob(
+                (blob) => {
+                  if (!blob) {
+                    rejectCompress(new Error('Не удалось создать blob'));
+                    return;
+                  }
+                  
+                  const compressedFile = new File([blob], file.name, {
+                    type: 'image/webp',
+                    lastModified: Date.now(),
+                  });
+                  
+                  const fileSizeKB = compressedFile.size / 1024;
+                  
+                  if (fileSizeKB > maxSizeKB && targetQuality > 0.3) {
+                    // Пытаемся еще сжать с более низким качеством
+                    compressToSize(targetQuality - 0.1);
+                  } else {
+                    const originalSizeKB = (file.size / 1024).toFixed(1);
+                    const compressedSizeKB = fileSizeKB.toFixed(1);
+                    console.log(`Сжатие: ${originalSizeKB}KB → ${compressedSizeKB}KB (${newWidth}x${newHeight}, quality: ${targetQuality})`);
+                    resolveCompress(compressedFile);
+                  }
+                },
+                'image/webp',
+                targetQuality
+              );
+            });
+          };
+          
+          compressToSize(quality).then(resolve).catch(reject);
         };
         
         img.onerror = () => reject(new Error('Не удалось загрузить изображение'));
@@ -369,6 +373,20 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
       // Для обновления добавляем _id
       if (project) {
         dataToSave._id = project._id;
+      }
+      
+      // Проверяем размер документа перед отправкой
+      const documentSizeBytes = new Blob([JSON.stringify(dataToSave)]).size;
+      const documentSizeMB = (documentSizeBytes / 1024 / 1024).toFixed(2);
+      
+      // Лимит Firestore - 1MB
+      if (documentSizeBytes > 900 * 1024) {
+        const imagesToRemove = Math.ceil((documentSizeBytes - 900 * 1024) / 50000); // Примерный расчет
+        toast.error(
+          `Размер документа ${documentSizeMB}MB превышает лимит. Уменьшите количество изображений на ${imagesToRemove}.`
+        );
+        setIsLoading(false);
+        return;
       }
       
       const url = project ? `/api/projects/${project._id}` : '/api/projects';
@@ -799,6 +817,38 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
                 <ChevronLeft className="w-4 h-4" />
                 Назад
               </Button>
+              
+              {/* Document Size Indicator */}
+              {(() => {
+                const dataToCheck = {
+                  title: formData.title,
+                  shortDescription: formData.shortDescription,
+                  fullDescription: formData.fullDescription,
+                  functionality: formData.functionality,
+                  thumbnail: formData.thumbnail,
+                  images: formData.images,
+                  technologies: formData.technologies,
+                  category: formData.category,
+                };
+                const docSizeBytes = new Blob([JSON.stringify(dataToCheck)]).size;
+                const docSizeMB = (docSizeBytes / 1024 / 1024).toFixed(2);
+                const percentUsed = Math.round((docSizeBytes / (1024 * 1024)) * 100);
+                const isWarning = docSizeBytes > 800 * 1024;
+                const isError = docSizeBytes > 900 * 1024;
+                
+                return (
+                  <div className={`flex items-center gap-2 text-xs px-3 py-1.5 rounded-lg ${
+                    isError 
+                      ? 'bg-red-900/50 text-red-400' 
+                      : isWarning 
+                      ? 'bg-yellow-900/50 text-yellow-400'
+                      : 'bg-gray-800/50 text-gray-400'
+                  }`}>
+                    <div className={`w-2 h-2 rounded-full ${isError ? 'bg-red-500' : isWarning ? 'bg-yellow-500' : 'bg-green-500'}`} />
+                    <span>{docSizeMB}MB ({percentUsed}%)</span>
+                  </div>
+                );
+              })()}
               
               {/* Images Count */}
               {formData.images.length > 0 || formData.thumbnail ? (
