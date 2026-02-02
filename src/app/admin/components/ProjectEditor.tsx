@@ -169,51 +169,42 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
 
           const width = img.width;
           const height = img.height;
-          const quality = 0.8;
           
-          // Постепенно уменьшаем размер и качество, пока не достигнем целевого размера
-          const compressToSize = (targetQuality: number): Promise<File> => {
-            return new Promise((resolveCompress, rejectCompress) => {
-              // Уменьшаем разрешение для более агрессивного сжатия
-              const ratio = Math.min(1600 / width, 1600 / height);
-              const newWidth = Math.floor(width * ratio);
-              const newHeight = Math.floor(height * ratio);
-              
-              canvas.width = newWidth;
-              canvas.height = newHeight;
-              ctx.drawImage(img, 0, 0, newWidth, newHeight);
-              
-              canvas.toBlob(
-                (blob) => {
-                  if (!blob) {
-                    rejectCompress(new Error('Не удалось создать blob'));
-                    return;
-                  }
-                  
-                  const compressedFile = new File([blob], file.name, {
-                    type: 'image/webp',
-                    lastModified: Date.now(),
-                  });
-                  
-                  const fileSizeKB = compressedFile.size / 1024;
-                  
-                  if (fileSizeKB > maxSizeKB && targetQuality > 0.3) {
-                    // Пытаемся еще сжать с более низким качеством
-                    compressToSize(targetQuality - 0.1);
-                  } else {
-                    const originalSizeKB = (file.size / 1024).toFixed(1);
-                    const compressedSizeKB = fileSizeKB.toFixed(1);
-                    console.log(`Сжатие: ${originalSizeKB}KB → ${compressedSizeKB}KB (${newWidth}x${newHeight}, quality: ${targetQuality})`);
-                    resolveCompress(compressedFile);
-                  }
-                },
-                'image/webp',
-                targetQuality
-              );
-            });
-          };
+          // Вычисляем размеры с агрессивным сжатием
+          let quality = 0.7;
+          let maxDimension = 1200;
           
-          compressToSize(quality).then(resolve).catch(reject);
+          const ratio = Math.min(maxDimension / width, maxDimension / height);
+          const newWidth = Math.floor(width * ratio);
+          const newHeight = Math.floor(height * ratio);
+          
+          canvas.width = newWidth;
+          canvas.height = newHeight;
+          ctx.drawImage(img, 0, 0, newWidth, newHeight);
+          
+          // Сжимаем в WebP с хорошим качеством
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                reject(new Error('Не удалось создать blob'));
+                return;
+              }
+              
+              const compressedFile = new File([blob], file.name, {
+                type: 'image/webp',
+                lastModified: Date.now(),
+              });
+              
+              const originalSizeKB = (file.size / 1024).toFixed(1);
+              const compressedSizeKB = (compressedFile.size / 1024).toFixed(1);
+              
+              console.log(`Сжатие: ${originalSizeKB}KB → ${compressedSizeKB}KB (${newWidth}x${newHeight})`);
+              
+              resolve(compressedFile);
+            },
+            'image/webp',
+            quality
+          );
         };
         
         img.onerror = () => reject(new Error('Не удалось загрузить изображение'));
