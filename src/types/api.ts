@@ -14,6 +14,35 @@ export interface PaginatedResponse<T> {
   total: number;
 }
 
+// Project Gallery Item with Description
+export interface GalleryImage {
+  url: string;
+  description: string;
+  title?: string;
+  type?: 'screenshot' | 'design' | 'result' | 'process';
+}
+
+// Project Development Process Step
+export interface ProcessStep {
+  id: string;
+  title: string;
+  description: string;
+  startDate?: string;
+  endDate?: string;
+  image?: string;
+  status: 'completed' | 'in-progress' | 'planned';
+}
+
+// Project Result Metric
+export interface ResultMetric {
+  id: string;
+  label: string;
+  value: string;
+  unit?: string;
+  icon?: string;
+  type?: 'percentage' | 'number' | 'time' | 'currency';
+}
+
 // Project types
 export interface Project {
   _id: string;
@@ -22,20 +51,34 @@ export interface Project {
   fullDescription: string;
   functionality: string;
   thumbnail: string;
-  images: string[];
+  
+  // New gallery system - replaces old images array
+  gallery: GalleryImage[];
+  
+  // Development process timeline
+  processSteps?: ProcessStep[];
+  
+  // Results and metrics
+  resultMetrics?: ResultMetric[];
+  
   technologies: string[];
   category: string;
   githubUrl?: string;
   demoUrl?: string;
-  // Новые поля
+  
+  // Project metadata
   status: 'draft' | 'published';
   featured: boolean;
   startedAt?: string;
   completedAt?: string;
   clientName?: string;
   projectDuration?: string;
+  
+  // Content sections
   challenges?: string;
   results?: string;
+  
+  // Analytics
   viewsCount?: number;
   createdAt: string;
   updatedAt: string;

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Loader } from 'lucide-react';
 import Link from 'next/link';
-import ProjectEditor from '@/app/admin/components/ProjectEditor';
+import ProjectEditorV2 from '@/app/admin/components/ProjectEditorV2';
 import type { Project } from '@/types/api';
 
 export default function EditProjectPage() {
@@ -93,7 +93,7 @@ export default function EditProjectPage() {
               </div>
             </div>
           ) : project ? (
-            <ProjectEditor
+            <ProjectEditorV2
               project={project}
               onClose={() => router.back()}
               onSave={() => router.push('/admin')}

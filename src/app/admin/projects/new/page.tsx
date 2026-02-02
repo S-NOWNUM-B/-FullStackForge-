@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import ProjectEditor from '@/app/admin/components/ProjectEditor';
+import ProjectEditorV2 from '@/app/admin/components/ProjectEditorV2';
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -65,7 +65,7 @@ export default function NewProjectPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
         >
-          <ProjectEditor
+          <ProjectEditorV2
             project={null}
             onClose={() => router.back()}
             onSave={() => router.push('/admin')}

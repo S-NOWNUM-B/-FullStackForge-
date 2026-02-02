@@ -110,12 +110,12 @@ export default function ProjectsManager() {
   return (
     <div className="space-y-6">
       {/* Controls */}
-      <div className="bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm rounded-xl p-6">
+      <div className="bg-linear-to-br from-gray-900/70 via-black/60 to-gray-950/70 border border-gray-800/70 backdrop-blur-sm rounded-2xl p-5 sm:p-6 shadow-2xl shadow-black/40">
         <div className="space-y-4">
           {/* Первая строка: Кнопка создания + Поиск */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href="/admin/projects/new">
-              <button className="flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 active:scale-95 text-white rounded-lg transition-all shadow-lg shadow-red-600/20 font-medium whitespace-nowrap transform duration-200">
+              <button className="flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 active:scale-95 text-white rounded-xl transition-all shadow-lg shadow-red-600/20 font-medium whitespace-nowrap transform duration-200">
                 <Plus className="w-5 h-5" />
                 Создать проект
               </button>
@@ -128,7 +128,7 @@ export default function ProjectsManager() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Поиск по названию, описанию или технологиям..."
-                className="w-full pl-12 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all"
+                className="w-full pl-12 pr-4 py-3 bg-black/40 border border-gray-800/70 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all"
               />
             </div>
           </div>
@@ -139,7 +139,7 @@ export default function ProjectsManager() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2.5 rounded-lg border border-gray-700 bg-gray-900/50 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
+              className="px-4 py-2.5 rounded-xl border border-gray-800/70 bg-black/40 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
             >
               <option value="all">Все категории</option>
               {categories.map((cat) => (
@@ -151,7 +151,7 @@ export default function ProjectsManager() {
             <select
               value={selectedTech}
               onChange={(e) => setSelectedTech(e.target.value)}
-              className="px-4 py-2.5 rounded-lg border border-gray-700 bg-gray-900/50 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
+              className="px-4 py-2.5 rounded-xl border border-gray-800/70 bg-black/40 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
             >
               <option value="all">Все технологии</option>
               {technologies.map((tech) => (
@@ -163,7 +163,7 @@ export default function ProjectsManager() {
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value as 'newest' | 'oldest')}
-              className="px-4 py-2.5 rounded-lg border border-gray-700 bg-gray-900/50 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
+              className="px-4 py-2.5 rounded-xl border border-gray-800/70 bg-black/40 text-white text-sm focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/20"
             >
               <option value="newest">Сначала новые</option>
               <option value="oldest">Сначала старые</option>
@@ -173,7 +173,7 @@ export default function ProjectsManager() {
             <button
               onClick={resetFilters}
               disabled={!hasActiveFilters}
-              className="px-4 py-2.5 bg-red-600 hover:bg-red-700 disabled:bg-gray-900/50 border border-red-600 hover:border-red-700 disabled:border-gray-700 rounded-lg text-white disabled:text-gray-500 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 text-sm font-medium"
+              className="px-4 py-2.5 bg-gray-900/60 hover:bg-red-600/90 disabled:bg-gray-900/40 border border-gray-800/70 hover:border-red-600 disabled:border-gray-800 rounded-xl text-white disabled:text-gray-500 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 text-sm font-medium"
             >
               <X className="w-4 h-4" />
               Сбросить
