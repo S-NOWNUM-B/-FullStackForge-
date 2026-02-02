@@ -167,9 +167,9 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
             return;
           }
 
-          let width = img.width;
-          let height = img.height;
-          let quality = 0.8;
+          const width = img.width;
+          const height = img.height;
+          const quality = 0.8;
           
           // Постепенно уменьшаем размер и качество, пока не достигнем целевого размера
           const compressToSize = (targetQuality: number): Promise<File> => {
