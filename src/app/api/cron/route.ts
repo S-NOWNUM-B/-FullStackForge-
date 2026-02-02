@@ -3,25 +3,23 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  // Временно отключаем проверку авторизации для теста
+  // Упрощенная версия без авторизации для совместимости с бесплатными cron сервисами
   const authHeader = request.headers.get('authorization');
   const cronSecret = process.env.CRON_SECRET;
   
   // Логирование для диагностики
   console.log('🔍 Cron ping получен:', {
+    timestamp: new Date().toISOString(),
     hasAuthHeader: !!authHeader,
     hasCronSecret: !!cronSecret,
-    authHeaderValue: authHeader || 'отсутствует',
-    cronSecretValue: cronSecret || 'не установлен',
-    expectedValue: cronSecret ? `Bearer ${cronSecret}` : 'не установлен',
-    match: authHeader === `Bearer ${cronSecret}`,
   });
   
-  // ВРЕМЕННО ЗАКОММЕНТИРОВАНО ДЛЯ ТЕСТА
-   if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-     console.log('❌ Авторизация не прошла');
-     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-   }
+  // Проверяем авторизацию только если секрет установлен И заголовок передан
+  // Это позволяет работать без авторизации на бесплатных сервисах
+  if (cronSecret && authHeader && authHeader !== `Bearer ${cronSecret}`) {
+    console.log('❌ Авторизация не прошла - неверный токен');
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
   try {
     // Пингуем основную страницу
