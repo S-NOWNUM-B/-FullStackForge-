@@ -149,7 +149,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     setValidationErrors(newErrors);
   };
 
-  const compressImage = async (file: File, maxSizeKB: number = 200): Promise<File> => {
+  const compressImage = async (file: File): Promise<File> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -171,8 +171,8 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
           const height = img.height;
           
           // Вычисляем размеры с агрессивным сжатием
-          let quality = 0.7;
-          let maxDimension = 1200;
+          const quality = 0.7;
+          const maxDimension = 1200;
           
           const ratio = Math.min(maxDimension / width, maxDimension / height);
           const newWidth = Math.floor(width * ratio);
