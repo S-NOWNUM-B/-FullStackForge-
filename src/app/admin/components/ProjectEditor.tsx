@@ -5,7 +5,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
-import { X, Upload, Trash2, ChevronLeft, ChevronRight, Check, Image as ImageIcon, AlertCircle, CheckCircle } from 'lucide-react';
+import { X, Upload, Trash2, ChevronLeft, ChevronRight, Check, Image as ImageIcon, AlertCircle, CheckCircle, Database } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
@@ -149,6 +149,76 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     setValidationErrors(newErrors);
   };
 
+  const compressImage = async (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target?.result as string;
+        
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          if (!ctx) {
+            reject(new Error('Не удалось получить контекст canvas'));
+            return;
+          }
+
+          // Максимальные размеры для разных типов изображений
+          const MAX_WIDTH = 1920;
+          const MAX_HEIGHT = 1920;
+          
+          let { width, height } = img;
+          
+          // Вычисляем новые размеры с сохранением пропорций
+          if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+            const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+            width = Math.floor(width * ratio);
+            height = Math.floor(height * ratio);
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          // Рисуем изображение с новыми размерами
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Конвертируем в blob с качеством 0.85 (хороший баланс качества/размера)
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                reject(new Error('Не удалось создать blob'));
+                return;
+              }
+              
+              // Создаем новый File из blob
+              const compressedFile = new File([blob], file.name, {
+                type: 'image/webp',
+                lastModified: Date.now(),
+              });
+              
+              const originalSizeKB = (file.size / 1024).toFixed(1);
+              const compressedSizeKB = (compressedFile.size / 1024).toFixed(1);
+              
+              console.log(`Сжатие: ${originalSizeKB}KB → ${compressedSizeKB}KB (${width}x${height})`);
+              
+              resolve(compressedFile);
+            },
+            'image/webp',
+            0.85
+          );
+        };
+        
+        img.onerror = () => reject(new Error('Не удалось загрузить изображение'));
+      };
+      
+      reader.onerror = () => reject(new Error('Не удалось прочитать файл'));
+    });
+  };
+
   const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -159,16 +229,26 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
   };
 
   const validateFile = (file: File): boolean => {
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg'];
 
     if (!validTypes.includes(file.type)) {
       toast.error('Недопустимый формат файла. Используйте JPEG, PNG, WebP или GIF.');
       return false;
     }
 
-    if (file.size > maxSize) {
-      toast.error('Размер файла не должен превышать 5MB.');
+    // Убираем проверку размера - теперь сжимаем автоматически
+    return true;
+  };
+
+  const validateTotalSize = (): boolean => {
+    const formDataString = JSON.stringify(formData);
+    const totalSize = new Blob([formDataString]).size;
+    const maxTotalSize = 800 * 1024; // 800KB (оставляем запас от 900KB лимита)
+
+    if (totalSize > maxTotalSize) {
+      const currentSizeKB = (totalSize / 1024).toFixed(2);
+      const maxSizeKB = (maxTotalSize / 1024).toFixed(2);
+      toast.error(`Общий размер проекта ${currentSizeKB}KB превышает лимит ${maxSizeKB}KB. Удалите некоторые изображения или используйте внешние ссылки.`);
       return false;
     }
 
@@ -182,28 +262,44 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
     if (!validateFile(file)) return;
 
     try {
-      const base64 = await convertToBase64(file);
+      toast.loading('Сжимаю изображение...', { id: 'compress-thumb' });
+      const compressedFile = await compressImage(file);
+      const base64 = await convertToBase64(compressedFile);
+      
+      const sizeKB = (compressedFile.size / 1024).toFixed(1);
       setFormData(prev => ({ ...prev, thumbnail: base64 }));
-      toast.success('Главное изображение загружено');
-    } catch {
-      toast.error('Ошибка загрузки изображения');
+      toast.success(`Главное изображение загружено (${sizeKB}KB)`, { id: 'compress-thumb' });
+    } catch (error) {
+      console.error('Ошибка сжатия:', error);
+      toast.error('Ошибка загрузки изображения', { id: 'compress-thumb' });
     }
   }, []);
 
   const onImagesDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
 
+    toast.loading(`Сжимаю ${acceptedFiles.length} изображений...`, { id: 'compress-images' });
+    let successCount = 0;
+
     for (const file of acceptedFiles) {
       if (!validateFile(file)) continue;
 
       try {
-        const base64 = await convertToBase64(file);
+        const compressedFile = await compressImage(file);
+        const base64 = await convertToBase64(compressedFile);
         setFormData(prev => ({ ...prev, images: [...prev.images, base64] }));
-      } catch {
+        successCount++;
+      } catch (error) {
+        console.error('Ошибка сжатия:', error);
         toast.error(`Ошибка загрузки ${file.name}`);
       }
     }
-    toast.success(`Загружено ${acceptedFiles.length} изображений`);
+    
+    if (successCount > 0) {
+      toast.success(`Загружено ${successCount} изображений`, { id: 'compress-images' });
+    } else {
+      toast.error('Не удалось загрузить изображения', { id: 'compress-images' });
+    }
   }, []);
 
   const thumbnailDropzone = useDropzone({
@@ -244,6 +340,12 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
+      // Проверяем общий размер перед отправкой
+      if (!validateTotalSize()) {
+        setIsLoading(false);
+        return;
+      }
+
       // Подготавливаем данные для сохранения
       const dataToSave: Record<string, unknown> = {
         title: formData.title,
@@ -704,6 +806,34 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ onClose, project, onSave 
                 <ChevronLeft className="w-4 h-4" />
                 Назад
               </Button>
+              
+              {/* Document Size Indicator */}
+              {(() => {
+                const formDataString = JSON.stringify(formData);
+                const totalSize = new Blob([formDataString]).size;
+                const totalSizeKB = (totalSize / 1024).toFixed(1);
+                const maxSizeKB = 800;
+                const percentage = (totalSize / (maxSizeKB * 1024)) * 100;
+                const isWarning = percentage > 70;
+                const isDanger = percentage > 90;
+
+                return (
+                  <div className="flex items-center gap-2 text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <Database className={`w-3.5 h-3.5 ${isDanger ? 'text-red-500' : isWarning ? 'text-yellow-500' : 'text-gray-400'}`} />
+                      <span className={isDanger ? 'text-red-500' : isWarning ? 'text-yellow-500' : 'text-gray-400'}>
+                        {totalSizeKB} / {maxSizeKB} KB
+                      </span>
+                    </div>
+                    <div className="w-32 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full transition-all ${isDanger ? 'bg-red-500' : isWarning ? 'bg-yellow-500' : 'bg-green-500'}`}
+                        style={{ width: `${Math.min(percentage, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
               
               {/* Auto-save status */}
               {autoSaveStatus !== 'idle' && (

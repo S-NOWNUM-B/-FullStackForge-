@@ -109,6 +109,14 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// Утилита для проверки размера документа
+function getDocumentSize(data: any): number {
+  return new Blob([JSON.stringify(data)]).size;
+}
+
+// Максимальный размер документа Firestore - 1 МБ (оставляем запас)
+const MAX_DOCUMENT_SIZE = 900 * 1024; // 900 KB
+
 export async function POST(request: NextRequest) {
   try {
     console.log('[API/Projects POST] Начало создания проекта');
@@ -122,7 +130,6 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    console.log('[API/Projects POST] Получены данные:', JSON.stringify(body, null, 2));
     
     // Добавляем timestamps
     const projectData = {
@@ -130,6 +137,18 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
+    
+    // Проверка размера документа
+    const docSize = getDocumentSize(projectData);
+    console.log(`[API/Projects POST] Размер документа: ${(docSize / 1024).toFixed(2)} KB`);
+    
+    if (docSize > MAX_DOCUMENT_SIZE) {
+      console.error(`[API/Projects POST] Документ слишком большой: ${(docSize / 1024).toFixed(2)} KB (макс: ${(MAX_DOCUMENT_SIZE / 1024).toFixed(2)} KB)`);
+      return NextResponse.json({
+        success: false,
+        error: `Размер проекта слишком большой (${(docSize / 1024).toFixed(2)} KB). Максимум: ${(MAX_DOCUMENT_SIZE / 1024).toFixed(2)} KB. Используйте внешние ссылки для изображений или загрузите файлы через UploadThing.`,
+      }, { status: 413 });
+    }
     
     console.log('[API/Projects POST] Добавление в Firestore...');
     const docRef = await db.collection(COLLECTIONS.PROJECTS).add(projectData);
@@ -157,9 +176,12 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
+    console.log('[API/Projects PUT] Начало обновления проекта');
+    
     if (!db) {
+      console.error('[API/Projects PUT] Firebase не настроен');
       return NextResponse.json(
-        { error: 'Firebase не настроен. Добавьте валидные credentials в .env.local' },
+        { error: 'Firebase не настроен. Добавьте валидные credentials в переменные окружения' },
         { status: 503 }
       );
     }
@@ -177,6 +199,7 @@ export async function PUT(request: NextRequest) {
       updatedAt: new Date().toISOString(),
     };
 
+    // Проверка размера обновленного документа
     const docRef = db.collection(COLLECTIONS.PROJECTS).doc(_id);
     const doc = await docRef.get();
 
@@ -184,8 +207,23 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Проект не найден' }, { status: 404 });
     }
 
+    // Объединяем существующие данные с обновлениями для проверки размера
+    const mergedData = { ...doc.data(), ...dataToUpdate };
+    const docSize = getDocumentSize(mergedData);
+    console.log(`[API/Projects PUT] Размер документа после обновления: ${(docSize / 1024).toFixed(2)} KB`);
+
+    if (docSize > MAX_DOCUMENT_SIZE) {
+      console.error(`[API/Projects PUT] Документ слишком большой: ${(docSize / 1024).toFixed(2)} KB (макс: ${(MAX_DOCUMENT_SIZE / 1024).toFixed(2)} KB)`);
+      return NextResponse.json({
+        success: false,
+        error: `Размер проекта слишком большой (${(docSize / 1024).toFixed(2)} KB). Максимум: ${(MAX_DOCUMENT_SIZE / 1024).toFixed(2)} KB. Используйте внешние ссылки для изображений или загрузите файлы через UploadThing.`,
+      }, { status: 413 });
+    }
+
     await docRef.update(dataToUpdate);
     const updatedDoc = await docRef.get();
+
+    console.log('[API/Projects PUT] Проект обновлен с ID:', _id);
 
     return NextResponse.json({
       success: true,
@@ -193,9 +231,15 @@ export async function PUT(request: NextRequest) {
       message: 'Проект обновлен успешно',
     });
   } catch (error) {
-    console.error('Ошибка при обновлении проекта:', error);
+    console.error('[API/Projects PUT] Ошибка при обновлении проекта:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
+    const stack = error instanceof Error ? error.stack : '';
+    console.error('[API/Projects PUT] Stack:', stack);
+    return NextResponse.json({ 
+      success: false, 
+      error: message,
+      details: process.env.NODE_ENV === 'development' ? stack : undefined
+    }, { status: 500 });
   }
 }
 
