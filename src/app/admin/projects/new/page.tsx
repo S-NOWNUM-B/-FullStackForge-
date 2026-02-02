@@ -1,8 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ChevronRight, Home, ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import ProjectEditor from '@/app/admin/components/ProjectEditor';
@@ -63,27 +62,6 @@ export default function NewProjectPage() {
             </motion.button>
           </div>
         </div>
-
-        {/* Breadcrumbs */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 border-t border-gray-800/50"
-        >
-          <div className="flex items-center gap-2 text-xs sm:text-sm">
-            <Link href="/admin" className="flex items-center gap-2 text-gray-400 hover:text-red-600 transition-colors">
-              <Home className="w-4 h-4" />
-              <span className="hidden sm:inline">Админ</span>
-            </Link>
-            <ChevronRight className="w-3 h-3 text-gray-600" />
-            <Link href="/admin" className="text-gray-400 hover:text-red-600 transition-colors">
-              Проекты
-            </Link>
-            <ChevronRight className="w-3 h-3 text-gray-600" />
-            <span className="text-red-600 font-medium">Новый</span>
-          </div>
-        </motion.div>
       </motion.header>
 
       {/* Content */}
