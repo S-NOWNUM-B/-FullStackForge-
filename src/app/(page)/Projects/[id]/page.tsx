@@ -27,6 +27,16 @@ export default function ProjectDetailPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'process' | 'results'>('overview');
 
+  const calculateDuration = (startDate: string, endDate: string) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const months = Math.floor(diffDays / 30);
+    const days = diffDays % 30;
+    return { months, days };
+  };
+
   const fetchProject = useCallback(async () => {
     try {
       const res = await fetch(`/api/projects/${projectId}`);
@@ -120,7 +130,7 @@ export default function ProjectDetailPage() {
               </p>
 
               {/* Meta Info */}
-              <div className="flex flex-wrap gap-4 sm:gap-6 mb-4 sm:mb-6">
+              <div className="flex flex-wrap gap-4 sm:gap-6 mb-6 sm:mb-8">
                 {project.startedAt && project.completedAt && (
                   <div className="flex items-center gap-2 sm:gap-3">
                     <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 shrink-0" />
@@ -136,12 +146,33 @@ export default function ProjectDetailPage() {
                           month: 'short',
                           year: 'numeric',
                         })}
+                        {(() => {
+                          const duration = calculateDuration(project.startedAt, project.completedAt);
+                          return (
+                            <span className="text-gray-400 ml-2">
+                              ({duration.months > 0 && `${duration.months} мес.`}{duration.months > 0 && duration.days > 0 && ' '}{duration.days > 0 && `${duration.days} дн.`})
+                            </span>
+                          );
+                        })()}
                       </div>
                     </div>
                   </div>
                 )}
-
               </div>
+
+              {/* Project Thumbnail */}
+              {project.thumbnail && (
+                <div className="bg-gray-900/40 border border-gray-800 rounded-lg sm:rounded-xl overflow-hidden mb-6 sm:mb-8">
+                  <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-125 bg-gray-800">
+                    <Image
+                      src={project.thumbnail}
+                      alt={project.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Links */}
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
@@ -225,18 +256,6 @@ export default function ProjectDetailPage() {
           {/* Overview Tab */}
           {activeTab === 'overview' && (
             <div className="space-y-6 sm:space-y-8 lg:space-y-12">
-              {project.thumbnail && (
-                <div className="bg-gray-900/40 border border-gray-800 rounded-lg sm:rounded-xl overflow-hidden">
-                  <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-125 bg-gray-800">
-                    <Image
-                      src={project.thumbnail}
-                      alt={project.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                </div>
-              )}
               {/* Main Description */}
               {project.fullDescription && (
                 <div className="bg-gray-900/40 border border-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8">
