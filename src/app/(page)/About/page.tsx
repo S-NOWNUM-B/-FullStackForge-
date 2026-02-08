@@ -160,7 +160,7 @@ function AboutContent() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="lg:col-span-1 h-full min-h-[520px] sm:min-h-[560px]"
+              className="lg:col-span-1 h-full min-h-130 sm:min-h-140"
             >
               <div className="flex flex-col h-full">
                 <div className="relative flex-1 rounded-2xl overflow-hidden border border-red-600/30 bg-linear-to-br from-red-900/30 via-red-800/20 to-red-700/30 backdrop-blur-sm shadow-2xl shadow-red-600/10">
@@ -200,7 +200,7 @@ function AboutContent() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="lg:col-span-2 flex flex-col justify-center"
             >
-              <div className="h-full min-h-[520px] sm:min-h-[560px] p-8 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
+              <div className="h-full min-h-130 sm:min-h-140 p-8 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
                 <div className="flex flex-col gap-6">
                   <h2 className="text-3xl font-bold text-white">О себе</h2>
                   <p className="text-gray-300 text-[17px] md:text-lg leading-8 text-justify">
