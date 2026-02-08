@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Github, Linkedin, Mail } from "lucide-react";
 
@@ -52,7 +52,11 @@ const socialLinks = [
 ];
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
 
   return (
     <footer className="relative bg-black py-8 md:py-12">
@@ -86,8 +90,8 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-          <p className="text-gray-500 text-sm">
-            © {currentYear} FullStackForge. Все права защищены.
+          <p className="text-gray-500 text-sm" suppressHydrationWarning>
+            © {currentYear ?? ""} FullStackForge. Все права защищены.
           </p>
         </div>
       </div>

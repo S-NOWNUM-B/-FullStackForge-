@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
@@ -15,7 +15,12 @@ const navLinks = [
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <motion.header
@@ -41,7 +46,7 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
             {navLinks.map((link) => {
-              const isActive = pathname === link.href;
+              const isActive = mounted && pathname === link.href;
               return (
                 <Link key={link.href} href={link.href}>
                   <motion.div
@@ -94,7 +99,7 @@ export default function Header() {
       >
         <nav className="container mx-auto px-4 py-4 flex flex-col space-y-2">
           {navLinks.map((link) => {
-            const isActive = pathname === link.href;
+            const isActive = mounted && pathname === link.href;
             return (
               <Link
                 key={link.href}
