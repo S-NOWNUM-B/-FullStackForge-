@@ -82,6 +82,15 @@
 
 ---
 
+## Деплой на Firebase
+
+```bash
+pnpm run firebase:build
+pnpm run firebase:deploy
+```
+
+---
+
 ## Ссылки и ресурсы
 
 - Управление проектом: [Render Dashboard](https://dashboard.render.com)
