@@ -1,12 +1,12 @@
 {
   "projects": {
-    "default": "YOUR_FIREBASE_PROJECT_ID"
+    "default": "fullstackforge-6618e"
   },
   "targets": {
-    "YOUR_FIREBASE_PROJECT_ID": {
+    "fullstackforge-6618e": {
       "hosting": {
         "portfolio": [
-          "YOUR_FIREBASE_HOSTING_NAME"
+          "fullstackforge-6618e"
         ]
       }
     }
