@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import ProjectEditorV2 from '@/app/admin/components/ProjectEditorV2';
+import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import ProjectEditorV2 from "@/app/admin/components/ProjectEditorV2";
 
 export default function NewProjectPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
   // Предотвращаем hydration issues
-  if (!mounted && typeof window !== 'undefined') {
+  if (!mounted && typeof window !== "undefined") {
     setMounted(true);
   }
 
@@ -25,14 +25,15 @@ export default function NewProjectPage() {
       <div
         className="absolute inset-0 bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"
         style={{
-          backgroundImage: 'linear-gradient(to right,#4f4f4f20 1px,transparent 1px),linear-gradient(to bottom,#4f4f4f20 1px,transparent 1px)',
+          backgroundImage:
+            "linear-gradient(to right,#4f4f4f20 1px,transparent 1px),linear-gradient(to bottom,#4f4f4f20 1px,transparent 1px)",
         }}
       />
       <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-red-600/10 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-400/10 rounded-full blur-3xl" />
 
       {/* Header */}
-      <motion.header 
+      <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
@@ -41,7 +42,7 @@ export default function NewProjectPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div />
-            
+
             <motion.button
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -59,16 +60,25 @@ export default function NewProjectPage() {
       </motion.header>
 
       {/* Content */}
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
+          className="space-y-8"
         >
+          <div className="text-center sm:text-left">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+              Создать новый проект
+            </h1>
+            <p className="text-gray-400">
+              Заполните информацию о вашем новом потрясающем проекте
+            </p>
+          </div>
+
           <ProjectEditorV2
             project={null}
-            onClose={() => router.back()}
-            onSave={() => router.push('/admin')}
+            onSave={() => router.push("/admin")}
           />
         </motion.div>
       </main>
