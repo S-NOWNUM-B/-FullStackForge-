@@ -1,16 +1,5 @@
 {
-  "hosting": {
-    "site": "portfolio",
-    "source": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "cleanUrls": true,
-    "trailingSlash": false,
-    "frameworksBackend": {
-      "region": "us-central1"
-    }
+  "database": {
+    "rules": "database.rules.json"
   }
 }

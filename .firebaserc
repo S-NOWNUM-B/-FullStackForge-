@@ -1,14 +1,5 @@
 {
   "projects": {
     "default": "fullstackforge-6618e"
-  },
-  "targets": {
-    "fullstackforge-6618e": {
-      "hosting": {
-        "portfolio": [
-          "fullstackforge-6618e"
-        ]
-      }
-    }
   }
 }
