@@ -74,6 +74,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
+        // Диагностика на Vercel (безопасно)
+        console.log(
+          `[auth] Проверка пароля. Длина: ${(credentials.password as string)?.length}`,
+        );
+        console.log(
+          `[auth] Хеш из ENV (первые 10 символов): ${hashedPassword?.substring(0, 10)}...`,
+        );
+        console.log(`[auth] Длина хеша: ${hashedPassword?.length}`);
+
         try {
           // Сравниваем введенный пароль с хешем
           const isValid = await bcryptjs.compare(
@@ -89,7 +98,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             };
           }
 
-          console.log("[auth] Неверный пароль");
+          console.log("[auth] Неверный пароль. Сравнение вернуло false.");
           return null;
         } catch (error) {
           console.error("❌ Ошибка при проверке пароля:", error);
