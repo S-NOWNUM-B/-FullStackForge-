@@ -30,11 +30,21 @@ if (!getApps().length && hasValidCredentials()) {
 
     console.log("[Firebase Admin] Инициализация для проекта:", projectId);
     console.log("[Firebase Admin] Длина ключа:", privateKey.length);
+    console.log("[Firebase Admin] Email:", clientEmail);
     console.log(
-      "[Firebase Admin] Формат ключа корректен:",
-      (privateKey.startsWith("-----BEGIN PRIVATE KEY-----") &&
-        privateKey.endsWith("-----END PRIVATE KEY-----\n")) ||
-        privateKey.endsWith("-----END PRIVATE KEY-----"),
+      "[Firebase Admin] Формат корректен:",
+      privateKey.includes("-----BEGIN PRIVATE KEY-----") &&
+        privateKey.includes("-----END PRIVATE KEY-----"),
+    );
+
+    // Проверка на наличие "ядра" ключа (между заголовками)
+    const keyBody = privateKey
+      .replace(/-----BEGIN PRIVATE KEY-----/, "")
+      .replace(/-----END PRIVATE KEY-----/, "")
+      .trim();
+    console.log(
+      "[Firebase Admin] Тело ключа присутствует и имеет длину:",
+      keyBody.length,
     );
 
     initializeApp({
