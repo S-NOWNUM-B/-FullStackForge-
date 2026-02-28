@@ -24,27 +24,26 @@ if (!getApps().length && hasValidCredentials()) {
     let privateKey = process.env.FIREBASE_PRIVATE_KEY || "";
 
     // Очистка приватного ключа от лишних кавычек и обработка переносов строк
-    // Это важно для корректной работы на Vercel
-    privateKey = privateKey.replace(/^['"]|['"]$/g, "").trim(); // Удаляем кавычки в начале и конце
-    privateKey = privateKey.replace(/\\n/g, "\n"); // Заменяем экранированные переносы строк
+    // Это критически важно для корректной работы на Vercel
+    privateKey = privateKey.replace(/^['"]|['"]$/g, "").trim();
+
+    // Если ключ содержит буквальные '\n' (две буквы), заменяем на реальный перенос строки
+    privateKey = privateKey.replace(/\\n/g, "\n");
+
+    // Гарантируем, что заголовки на своих местах и нет лишних пробелов внутри
+    if (!privateKey.includes("-----BEGIN PRIVATE KEY-----")) {
+      privateKey = `-----BEGIN PRIVATE KEY-----\n${privateKey}`;
+    }
+    if (!privateKey.includes("-----END PRIVATE KEY-----")) {
+      privateKey = `${privateKey}\n-----END PRIVATE KEY-----`;
+    }
 
     console.log("[Firebase Admin] Инициализация для проекта:", projectId);
     console.log("[Firebase Admin] Длина ключа:", privateKey.length);
-    console.log("[Firebase Admin] Email:", clientEmail);
     console.log(
-      "[Firebase Admin] Формат корректен:",
-      privateKey.includes("-----BEGIN PRIVATE KEY-----") &&
-        privateKey.includes("-----END PRIVATE KEY-----"),
-    );
-
-    // Проверка на наличие "ядра" ключа (между заголовками)
-    const keyBody = privateKey
-      .replace(/-----BEGIN PRIVATE KEY-----/, "")
-      .replace(/-----END PRIVATE KEY-----/, "")
-      .trim();
-    console.log(
-      "[Firebase Admin] Тело ключа присутствует и имеет длину:",
-      keyBody.length,
+      "[Firebase Admin] Формат корректен (headers):",
+      privateKey.startsWith("-----BEGIN PRIVATE KEY-----") &&
+        privateKey.trim().endsWith("-----END PRIVATE KEY-----"),
     );
 
     initializeApp({
