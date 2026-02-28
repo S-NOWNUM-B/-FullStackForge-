@@ -1,9 +1,10 @@
 // next.config.ts
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    reactStrictMode: true,
-    // Для Firebase hosting with Cloud Functions поддерживаем динамические routes
+  reactStrictMode: true,
+  distDir: ".next",
+  // Для Firebase hosting with Cloud Functions поддерживаем динамические routes
 };
 
 export default nextConfig;
