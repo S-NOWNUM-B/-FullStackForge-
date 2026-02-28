@@ -1,17 +1,53 @@
 "use client";
 
 import { signIn, useSession } from "next-auth/react";
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Loader2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import AdminDashboard from "./AdminDashboard";
+import SecuritySetup from "./components/SecuritySetup";
+import PasswordReset from "./components/PasswordReset";
+
+type AdminMode = "loading" | "login" | "setup" | "reset";
 
 export default function AdminPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
+  const [mode, setMode] = useState<AdminMode>("loading");
+  const [securityData, setSecurityData] = useState<{
+    isSetup: boolean;
+    question: string | null;
+  }>({
+    isSetup: false,
+    question: null,
+  });
+
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Проверяем статус безопасности при загрузке
+  const checkSecurityStatus = async () => {
+    try {
+      const res = await fetch("/api/admin/security/status");
+      const data = await res.json();
+      setSecurityData(data);
+
+      if (!data.isSetup) {
+        setMode("setup");
+      } else {
+        setMode("login");
+      }
+    } catch {
+      setMode("login");
+    }
+  };
+
+  useEffect(() => {
+    if (sessionStatus !== "loading") {
+      checkSecurityStatus();
+    }
+  }, [sessionStatus]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,8 +70,7 @@ export default function AdminPage() {
     }
   };
 
-  // Показываем загрузку пока проверяется сессия
-  if (status === "loading") {
+  if (sessionStatus === "loading" || mode === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-gray-900 via-black to-gray-900">
         <Loader2 className="w-8 h-8 text-red-600 animate-spin" />
@@ -43,77 +78,124 @@ export default function AdminPage() {
     );
   }
 
-  // Если авторизован, показываем админ панель
   if (session) {
     return <AdminDashboard />;
   }
 
-  // Форма входа
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-gray-900 via-black to-gray-900 px-4">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
         className="max-w-md w-full"
       >
-        <div className="bg-gray-800/50 backdrop-blur-lg border border-gray-700 rounded-lg p-8 shadow-2xl">
-          <h1 className="text-2xl font-bold text-white mb-2 text-center">
-            Админ Панель
-          </h1>
-          <p className="text-gray-400 text-center mb-8">
-            Введите пароль для доступа
-          </p>
+        <div className="bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 shadow-2xl relative overflow-hidden group">
+          <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-red-600 to-transparent opacity-50" />
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-300 mb-2"
+          <AnimatePresence mode="wait">
+            {mode === "setup" && (
+              <motion.div
+                key="setup"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
               >
-                Пароль
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-900/50 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all"
-                placeholder="Введите пароль"
-                required
-                autoFocus
-              />
-            </div>
-
-            {error && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-red-500 text-sm text-center"
-              >
-                {error}
-              </motion.p>
+                <SecuritySetup onComplete={() => checkSecurityStatus()} />
+              </motion.div>
             )}
 
-            <Button
-              type="submit"
-              variant="neon"
-              className="w-full"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Вход...
-                </>
-              ) : (
-                "Войти"
-              )}
-            </Button>
-          </form>
+            {mode === "reset" && (
+              <motion.div
+                key="reset"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+              >
+                <PasswordReset
+                  question={securityData.question || ""}
+                  onBack={() => setMode("login")}
+                  onSuccess={() => setMode("login")}
+                />
+              </motion.div>
+            )}
 
-          <p className="text-xs text-gray-500 text-center mt-6">
-            Защищено NextAuth.js
-          </p>
+            {mode === "login" && (
+              <motion.div
+                key="login"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+              >
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-red-600/10 rounded-full mb-4">
+                    <Lock className="w-8 h-8 text-red-600" />
+                  </div>
+                  <h1 className="text-2xl font-bold text-white mb-1">
+                    Админ Панель
+                  </h1>
+                  <p className="text-gray-400 text-sm">
+                    Введите пароль для управления сайтом
+                  </p>
+                </div>
+
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-1">
+                      Пароль
+                    </label>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full px-4 py-4 bg-gray-900/60 border border-gray-700 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-red-600/50 focus:border-red-600/50 transition-all"
+                      placeholder="••••••••"
+                      required
+                      autoFocus
+                    />
+                  </div>
+
+                  {error && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-500 text-sm text-center font-medium bg-red-500/10 py-2 rounded-lg"
+                    >
+                      {error}
+                    </motion.p>
+                  )}
+
+                  <Button
+                    type="submit"
+                    variant="neon"
+                    className="w-full py-6 text-lg"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                    ) : (
+                      "Войти в систему"
+                    )}
+                  </Button>
+
+                  <div className="pt-2 text-center">
+                    <button
+                      type="button"
+                      onClick={() => setMode("reset")}
+                      className="text-sm text-gray-500 hover:text-red-500 transition-colors"
+                    >
+                      Забыли пароль?
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="mt-8 pt-6 border-t border-gray-700/50 text-center">
+            <p className="text-[10px] text-gray-600 uppercase tracking-[0.2em]">
+              Защищено FullStackForge Security Suite
+            </p>
+          </div>
         </div>
       </motion.div>
     </div>

@@ -77,4 +77,5 @@ export const COLLECTIONS = {
   CONFIG: "config",
   WORK_INFO: "workInfo",
   SOCIAL_LINKS: "socialLinks",
+  ADMIN_SETTINGS: "admin_settings",
 } as const;

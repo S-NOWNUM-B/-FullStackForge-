@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import bcryptjs from "bcryptjs";
 import { authConfig } from "./auth.config";
+import { AdminAuthService } from "@/services/admin-auth.service";
 
 // Получаем secret или генерируем временный с предупреждением
 const getSecret = () => {
@@ -39,55 +39,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        // Получаем хешированный пароль из переменных окружения
-        const rawHash = process.env.ADMIN_PASSWORD_HASH;
-
-        // Очищаем хеш от лишних символов (кавычки, пробелы, экранирование)
-        const hashedPassword = rawHash
-          ? rawHash
-              .trim()
-              .replace(/^["']|["']$/g, "")
-              .replace(/\\\$|\$\$/g, "$")
-          : undefined;
-
-        if (!hashedPassword) {
-          console.error(
-            "❌ ADMIN_PASSWORD_HASH не установлен в переменных окружения",
-          );
-          return null;
-        }
-
-        // Проверяем формат bcrypt хеша (должен начинаться с $2a$, $2b$ или $2y$)
-        const isBcryptHash = /^\$2[aby]\$\d{2}\$.{53}$/.test(hashedPassword);
-
-        if (!isBcryptHash) {
-          console.error(
-            "❌ ADMIN_PASSWORD_HASH не является валидным bcrypt хешем!",
-          );
-          console.error("❌ Хеш должен начинаться с $2a$, $2b$ или $2y$");
-          console.error(
-            "❌ Сгенерируйте хеш командой: node -e \"const bcrypt = require('bcrypt'); bcrypt.hash('ваш_пароль', 10).then(console.log)\"",
-          );
-          console.error(
-            `❌ Текущее значение начинается с: ${hashedPassword.substring(0, 10)}...`,
-          );
-          return null;
-        }
-
-        // Диагностика на Vercel (безопасно)
-        console.log(
-          `[auth] Проверка пароля. Длина: ${(credentials.password as string)?.length}`,
-        );
-        console.log(
-          `[auth] Хеш из ENV (первые 10 символов): ${hashedPassword?.substring(0, 10)}...`,
-        );
-        console.log(`[auth] Длина хеша: ${hashedPassword?.length}`);
-
         try {
-          // Сравниваем введенный пароль с хешем
-          const isValid = await bcryptjs.compare(
+          // Диагностика (длина пароля)
+          console.log(
+            `[auth] Проверка пароля. Длина: ${(credentials.password as string)?.length}`,
+          );
+
+          // Сравниваем введенный пароль (через сервис, который смотрит в БД или ENV)
+          const isValid = await AdminAuthService.verifyPassword(
             credentials.password as string,
-            hashedPassword,
           );
 
           if (isValid) {
