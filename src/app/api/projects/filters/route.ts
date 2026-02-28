@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { db, COLLECTIONS } from '@/services/firebase';
+import { NextResponse } from "next/server";
+import { db, COLLECTIONS } from "@/services/firebase";
 
 export async function GET() {
   try {
@@ -7,21 +7,21 @@ export async function GET() {
       // Возвращаем пустые массивы вместо ошибки 503
       // Это позволит странице работать даже без Firebase
       return NextResponse.json(
-        { 
+        {
           success: true,
           categories: [],
-          technologies: []
+          technologies: [],
         },
-        { status: 200 }
+        { status: 200 },
       );
     }
 
     const snapshot = await db.collection(COLLECTIONS.PROJECTS).get();
-    
+
     const categories = new Set<string>();
     const technologies = new Set<string>();
 
-    snapshot.docs.forEach(doc => {
+    snapshot.docs.forEach((doc) => {
       const data = doc.data();
       if (data.category) {
         categories.add(data.category);
@@ -37,11 +37,18 @@ export async function GET() {
       technologies: Array.from(technologies).sort(),
     });
   } catch (error) {
-    console.error('Ошибка при получении фильтров:', error);
-    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error("Ошибка при получении фильтров:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    const stack = error instanceof Error ? error.stack : "";
+
     return NextResponse.json(
-      { success: false, error: message },
-      { status: 500 }
+      {
+        success: false,
+        error: message,
+        details: process.env.NODE_ENV === "development" ? stack : undefined,
+        hint: "Проверьте логи сервера для деталей инициализации Firebase",
+      },
+      { status: 500 },
     );
   }
 }
