@@ -25,10 +25,17 @@ if (!getApps().length && hasValidCredentials()) {
 
     // Очистка приватного ключа от лишних кавычек и обработка переносов строк
     // Это важно для корректной работы на Vercel
-    privateKey = privateKey.replace(/^['"]|['"]$/g, ""); // Удаляем кавычки в начале и конце
+    privateKey = privateKey.replace(/^['"]|['"]$/g, "").trim(); // Удаляем кавычки в начале и конце
     privateKey = privateKey.replace(/\\n/g, "\n"); // Заменяем экранированные переносы строк
 
     console.log("[Firebase Admin] Инициализация для проекта:", projectId);
+    console.log("[Firebase Admin] Длина ключа:", privateKey.length);
+    console.log(
+      "[Firebase Admin] Формат ключа корректен:",
+      (privateKey.startsWith("-----BEGIN PRIVATE KEY-----") &&
+        privateKey.endsWith("-----END PRIVATE KEY-----\n")) ||
+        privateKey.endsWith("-----END PRIVATE KEY-----"),
+    );
 
     initializeApp({
       credential: cert({

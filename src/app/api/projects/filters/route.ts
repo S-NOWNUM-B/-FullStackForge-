@@ -45,7 +45,7 @@ export async function GET() {
       {
         success: false,
         error: message,
-        details: process.env.NODE_ENV === "development" ? stack : undefined,
+        details: stack || "No stack trace available",
         hint: "Проверьте логи сервера для деталей инициализации Firebase",
       },
       { status: 500 },
