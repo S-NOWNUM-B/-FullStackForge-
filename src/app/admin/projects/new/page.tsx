@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import ProjectEditorV2 from "@/app/admin/components/ProjectEditorV2";
+import ProjectEditor from "@/app/admin/components/ProjectEditor";
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -76,10 +76,7 @@ export default function NewProjectPage() {
             </p>
           </div>
 
-          <ProjectEditorV2
-            project={null}
-            onSave={() => router.push("/admin")}
-          />
+          <ProjectEditor project={null} onSave={() => router.push("/admin")} />
         </motion.div>
       </main>
     </div>

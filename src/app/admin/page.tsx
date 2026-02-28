@@ -126,16 +126,18 @@ export default function AdminPage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
               >
-                <div className="text-center mb-8">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-red-600/10 rounded-full mb-4">
-                    <Lock className="w-8 h-8 text-red-600" />
+                <div className="flex items-center justify-center gap-4 mb-10">
+                  <div className="flex items-center justify-center w-12 h-12 bg-red-600/10 rounded-xl border border-red-600/20">
+                    <Lock className="w-6 h-6 text-red-600" />
                   </div>
-                  <h1 className="text-xl font-bold text-white mb-1 whitespace-nowrap">
-                    Админ панель
-                  </h1>
-                  <p className="text-gray-400 text-sm">
-                    Введите пароль для управления сайтом
-                  </p>
+                  <div>
+                    <h1 className="text-lg font-bold text-white leading-tight">
+                      Админ панель
+                    </h1>
+                    <p className="text-gray-500 text-xs mt-0.5">
+                      Панель управления
+                    </p>
+                  </div>
                 </div>
 
                 <form onSubmit={handleLogin} className="space-y-4">
