@@ -40,12 +40,11 @@ export async function GET() {
     console.error("Ошибка при получении фильтров:", error);
     const message = error instanceof Error ? error.message : "Unknown error";
     const stack = error instanceof Error ? error.stack : "";
-
     return NextResponse.json(
       {
         success: false,
         error: message,
-        details: stack || "No stack trace available",
+        details: process.env.NODE_ENV === "development" ? stack : undefined,
         hint: "Проверьте логи сервера для деталей инициализации Firebase",
       },
       { status: 500 },
