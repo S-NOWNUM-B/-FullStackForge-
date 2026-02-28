@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 import { authConfig } from "./auth.config";
 
 // Получаем secret или генерируем временный с предупреждением
@@ -76,7 +76,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         try {
           // Сравниваем введенный пароль с хешем
-          const isValid = await bcrypt.compare(
+          const isValid = await bcryptjs.compare(
             credentials.password as string,
             hashedPassword,
           );
