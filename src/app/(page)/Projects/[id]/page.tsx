@@ -17,6 +17,7 @@ import {
   CheckCircle2,
   Clock,
   TrendingUp,
+  X,
 } from "lucide-react";
 import { Project } from "@/types/api";
 
@@ -28,7 +29,7 @@ export default function ProjectDetailPage() {
   const [activeTab, setActiveTab] = useState<
     "overview" | "gallery" | "process" | "results"
   >("overview");
-  const gallery = project.gallery || [];
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const calculateDuration = (startDate: string, endDate: string) => {
     const start = new Date(startDate);
@@ -90,6 +91,7 @@ export default function ProjectDetailPage() {
 
   const processSteps = project.processSteps || [];
   const resultMetrics = project.resultMetrics || [];
+  const gallery = project.gallery || [];
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black">
@@ -191,6 +193,11 @@ export default function ProjectDetailPage() {
                       alt={project.title}
                       fill
                       className="object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src =
+                          "https://placehold.co/1200x600/111/fff?text=No+Image";
+                      }}
                     />
                   </div>
                 </div>
@@ -368,30 +375,36 @@ export default function ProjectDetailPage() {
 
           {/* Gallery Tab */}
           {activeTab === "gallery" && gallery.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {gallery.map((img, idx) => (
                 <div
                   key={idx}
-                  className="group bg-gray-900/40 border border-gray-800 rounded-xl overflow-hidden hover:border-red-600/30 transition-all shadow-lg"
+                  onClick={() => setSelectedImage(img.url)}
+                  className="group cursor-pointer bg-gray-900/40 border border-gray-800 rounded-xl overflow-hidden hover:border-red-600/50 transition-all shadow-lg hover:shadow-red-600/5"
                 >
-                  <div className="relative aspect-video bg-gray-800">
+                  <div className="relative aspect-video bg-gray-800 overflow-hidden">
                     <Image
                       src={img.url}
                       alt={img.title || `Screenshot ${idx + 1}`}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      unoptimized={img.url.startsWith("http")}
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20">
+                        <Globe className="w-5 h-5 text-white" />
+                      </div>
+                    </div>
                   </div>
                   {(img.title || img.description) && (
-                    <div className="p-4 sm:p-6 border-t border-gray-800/50">
+                    <div className="p-4 sm:p-5 border-t border-gray-800/50">
                       {img.title && (
-                        <h3 className="text-white font-bold mb-2">
+                        <h3 className="text-white font-bold mb-1 text-sm sm:text-base">
                           {img.title}
                         </h3>
                       )}
                       {img.description && (
-                        <p className="text-sm text-gray-400 leading-relaxed">
+                        <p className="text-xs sm:text-sm text-gray-400 line-clamp-2 leading-relaxed">
                           {img.description}
                         </p>
                       )}
@@ -510,6 +523,33 @@ export default function ProjectDetailPage() {
           )}
         </div>
       </main>
+
+      {/* Lightbox / Modal */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 sm:p-8"
+          onClick={() => setSelectedImage(null)}
+        >
+          <button
+            className="absolute top-4 right-4 z-60 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors"
+            onClick={() => setSelectedImage(null)}
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <div
+            className="relative w-full h-full max-w-7xl max-h-[85vh] overflow-hidden rounded-lg shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={selectedImage}
+              alt="Увеличенное изображение"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

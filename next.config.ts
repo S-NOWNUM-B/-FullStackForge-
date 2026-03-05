@@ -5,7 +5,18 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   distDir: ".next",
   output: "standalone",
-  // Для Firebase hosting with Cloud Functions поддерживаем динамические routes
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "firebasestorage.googleapis.com",
+      },
+      {
+        protocol: "https",
+        hostname: "storage.googleapis.com",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
