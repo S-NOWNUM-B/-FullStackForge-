@@ -126,15 +126,15 @@ export default function AdminPage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
               >
-                <div className="flex items-center justify-center gap-4 mb-10">
-                  <div className="flex items-center justify-center w-12 h-12 bg-red-600/10 rounded-xl border border-red-600/20">
-                    <Lock className="w-6 h-6 text-red-600" />
+                <div className="flex flex-col items-center justify-center gap-3 mb-10 text-center">
+                  <div className="flex items-center justify-center w-12 h-12 shrink-0 bg-red-600/10 rounded-xl border border-red-600/20">
+                    <Lock className="w-5 h-5 text-red-600" />
                   </div>
-                  <div>
-                    <h1 className="text-lg font-bold text-white leading-tight">
-                      Админ панель
-                    </h1>
-                    <p className="text-gray-500 text-xs mt-0.5">
+                  <div className="flex flex-col">
+                    <div className="text-xl font-bold text-white leading-tight">
+                      Админ-панель
+                    </div>
+                    <p className="text-gray-500 text-sm mt-1">
                       Панель управления
                     </p>
                   </div>
