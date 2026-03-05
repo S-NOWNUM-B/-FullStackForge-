@@ -1,34 +1,57 @@
-FROM node:22-alpine AS base
-
-FROM base AS deps
+# Stage 1: Dependencies
+FROM node:22-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY package.json pnpm-lock.yaml* ./
-RUN corepack enable pnpm && pnpm i --frozen-lockfile
 
-FROM base AS builder
+# Установка pnpm
+RUN npm install -g pnpm
+
+# Копируем конфигурационные файлы pnpm
+COPY package.json pnpm-lock.yaml* ./
+
+# Установка зависимостей
+RUN pnpm install --frozen-lockfile
+
+# Stage 2: Builder
+FROM node:22-alpine AS builder
 WORKDIR /app
+
+RUN npm install -g pnpm
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN corepack enable pnpm && pnpm build
 
-FROM base AS runner
+# Отключаем телеметрию Next.js
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# Сборка приложения
+RUN pnpm build
+
+# Stage 3: Runner
+FROM node:22-alpine AS runner
 WORKDIR /app
-ENV NODE_ENV=production
+
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Копируем публичные файлы
 COPY --from=builder /app/public ./public
 
+# Настройка standalone вывода
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
+# Копируем собранное приложение (используя standalone)
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
+
 EXPOSE 3000
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
+
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
 
 CMD ["node", "server.js"]
