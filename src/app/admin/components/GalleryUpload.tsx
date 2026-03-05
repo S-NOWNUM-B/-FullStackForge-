@@ -81,12 +81,12 @@ export const GalleryUpload: React.FC<GalleryUploadProps> = ({
   });
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {images.map((image, index) => (
           <div
             key={`${image.url}-${index}`}
-            className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-700 bg-gray-800/30 transition-all hover:border-red-500/50"
+            className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-700 bg-gray-800/30 transition-all hover:border-red-500/50"
           >
             <div className="relative aspect-video overflow-hidden">
               <Image
@@ -98,18 +98,18 @@ export const GalleryUpload: React.FC<GalleryUploadProps> = ({
               />
               <button
                 onClick={() => removeImage(index)}
-                className="absolute right-2 top-2 z-10 rounded-lg bg-red-500 p-1.5 text-white opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100 shadow-lg"
+                className="absolute right-1 top-1 z-10 rounded-md bg-red-500 p-1 text-white opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100 shadow-lg"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-3 w-3" />
               </button>
             </div>
-            <div className="p-3">
+            <div className="p-1.5 flex items-center bg-gray-900/40">
               <input
                 type="text"
-                placeholder="Описание (например: Главный экран)"
+                placeholder="Описание..."
                 value={image.description}
                 onChange={(e) => updateDescription(index, e.target.value)}
-                className="w-full bg-transparent text-xs text-gray-300 outline-none placeholder:text-gray-500"
+                className="w-full bg-transparent text-[10px] text-gray-300 outline-none placeholder:text-gray-600"
               />
             </div>
           </div>
@@ -119,29 +119,24 @@ export const GalleryUpload: React.FC<GalleryUploadProps> = ({
           Array.from({ length: uploadingCount }).map((_, i) => (
             <div
               key={`uploading-${i}`}
-              className="flex aspect-video items-center justify-center rounded-xl border-2 border-dashed border-gray-700 bg-gray-800/50"
+              className="flex aspect-video items-center justify-center rounded-lg border border-dashed border-gray-700 bg-gray-800/50"
             >
-              <div className="flex flex-col items-center gap-2">
-                <Loader2 className="h-8 w-8 animate-spin text-red-500" />
-                <span className="text-xs text-gray-500">Загрузка...</span>
-              </div>
+              <Loader2 className="h-5 w-5 animate-spin text-red-500" />
             </div>
           ))}
 
         <div
           {...getRootProps()}
-          className={`flex aspect-video cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed transition-all ${
+          className={`flex aspect-video cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed transition-all ${
             isDragActive
               ? "border-red-500 bg-red-500/10"
               : "border-gray-700 bg-gray-800/30 hover:border-gray-600 hover:bg-gray-800/50"
           }`}
         >
           <input {...getInputProps()} />
-          <div className="rounded-full bg-gray-700/50 p-3">
-            <Plus className="h-6 w-6 text-gray-400" />
-          </div>
-          <span className="text-xs font-medium text-gray-400">
-            {isDragActive ? "Отпустите для загрузки" : "Добавить скриншоты"}
+          <Plus className="h-5 w-5 text-gray-500" />
+          <span className="text-[10px] font-medium text-gray-500">
+            {isDragActive ? "Отпустите" : "Добавить"}
           </span>
         </div>
       </div>

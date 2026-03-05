@@ -71,7 +71,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
   if (value) {
     return (
-      <div className="space-y-2">
+      <div className="mx-auto max-w-2xl space-y-2">
         <label className="text-sm font-medium text-gray-400">{label}</label>
         <div className="relative group aspect-video w-full overflow-hidden rounded-xl border-2 border-gray-700">
           <Image
@@ -87,9 +87,9 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
                 e.stopPropagation();
                 onRemove();
               }}
-              className="rounded-full bg-red-500 p-3 text-white shadow-lg transition-transform hover:scale-110 hover:bg-red-600 active:scale-95"
+              className="rounded-full bg-red-500 p-2 text-white shadow-lg transition-transform hover:scale-110 hover:bg-red-600 active:scale-95"
             >
-              <X className="h-6 w-6" />
+              <X className="h-5 w-5" />
             </button>
           </div>
         </div>
@@ -98,11 +98,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="mx-auto max-w-2xl space-y-2">
       <label className="text-sm font-medium text-gray-400">{label}</label>
       <div
         {...getRootProps()}
-        className={`relative flex min-h-48 cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed transition-all duration-200 ${
+        className={`relative flex min-h-32 cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed transition-all duration-200 ${
           isDragActive
             ? "border-red-500 bg-red-500/10"
             : "border-gray-700 bg-gray-800/30 hover:border-gray-600 hover:bg-gray-800/50"
@@ -110,18 +110,17 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       >
         <input {...getInputProps()} />
         {isUploading ? (
-          <div className="flex flex-col items-center gap-4 text-center">
+          <div className="flex flex-col items-center gap-3 text-center">
             <div className="relative flex items-center justify-center">
-              <Loader2 className="h-12 w-12 animate-spin text-red-500" />
-              <span className="absolute text-[10px] font-bold text-white">
+              <Loader2 className="h-8 w-8 animate-spin text-red-500" />
+              <span className="absolute text-[8px] font-bold text-white">
                 {progress}%
               </span>
             </div>
-            <div className="space-y-1">
-              <p className="font-medium text-white">Загрузка...</p>
-              <p className="text-xs text-gray-500">Пожалуйста, подождите</p>
+            <div className="space-y-0.5">
+              <p className="text-sm font-medium text-white">Загрузка...</p>
             </div>
-            <div className="h-1.5 w-48 overflow-hidden rounded-full bg-gray-700">
+            <div className="h-1 w-32 overflow-hidden rounded-full bg-gray-700">
               <div
                 className="h-full bg-red-500 transition-all duration-300"
                 style={{ width: `${progress}%` }}
@@ -129,18 +128,16 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-2 text-center">
-            <div className="rounded-full bg-gray-700/50 p-4">
-              <Upload className="h-8 w-8 text-gray-400" />
-            </div>
-            <div className="space-y-1">
-              <p className="font-medium text-gray-300">
+          <div className="flex flex-col items-center gap-2 text-center p-4">
+            <Upload className="h-6 w-6 text-gray-400" />
+            <div className="space-y-0.5">
+              <p className="text-sm font-medium text-gray-300">
                 {isDragActive
                   ? "Отпустите файл"
                   : "Нажмите или перетащите файл"}
               </p>
-              <p className="text-xs text-gray-500">
-                Макс. размер файла 10МБ (JPEG, PNG, WebP)
+              <p className="text-[10px] text-gray-500">
+                Макс. 10МБ (JPEG, PNG, WebP)
               </p>
             </div>
           </div>
