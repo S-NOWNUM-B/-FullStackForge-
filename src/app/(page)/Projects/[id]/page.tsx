@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   ArrowLeft,
   Github,
@@ -17,15 +17,18 @@ import {
   CheckCircle2,
   Clock,
   TrendingUp,
-} from 'lucide-react';
-import { Project } from '@/types/api';
+} from "lucide-react";
+import { Project } from "@/types/api";
 
 export default function ProjectDetailPage() {
   const params = useParams();
   const projectId = params.id as string;
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'process' | 'results'>('overview');
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "gallery" | "process" | "results"
+  >("overview");
+  const gallery = project.gallery || [];
 
   const calculateDuration = (startDate: string, endDate: string) => {
     const start = new Date(startDate);
@@ -45,7 +48,7 @@ export default function ProjectDetailPage() {
         setProject(data.data);
       }
     } catch (error) {
-      console.error('Ошибка загрузки проекта:', error);
+      console.error("Ошибка загрузки проекта:", error);
     } finally {
       setLoading(false);
     }
@@ -71,7 +74,9 @@ export default function ProjectDetailPage() {
       <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-linear-to-b from-gray-900 via-black to-gray-900" />
         <div className="relative z-10 text-center px-4">
-          <h1 className="text-3xl font-bold text-white mb-4">Проект не найден</h1>
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Проект не найден
+          </h1>
           <Link href="/Projects">
             <button className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all">
               <ArrowLeft className="w-4 h-4" />
@@ -100,7 +105,10 @@ export default function ProjectDetailPage() {
         <section className="border-b border-gray-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-14">
             {/* Back Button */}
-            <Link href="/Projects" className="inline-block mb-4 sm:mb-6 lg:mb-8">
+            <Link
+              href="/Projects"
+              className="inline-block mb-4 sm:mb-6 lg:mb-8"
+            >
               <button className="flex items-center gap-2 text-sm sm:text-base text-gray-400 hover:text-white transition-colors">
                 <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Вернуться к проектам</span>
@@ -135,22 +143,36 @@ export default function ProjectDetailPage() {
                   <div className="flex items-center gap-2 sm:gap-3">
                     <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 shrink-0" />
                     <div>
-                      <div className="text-xs text-gray-400 uppercase tracking-wide">Длительность</div>
+                      <div className="text-xs text-gray-400 uppercase tracking-wide">
+                        Длительность
+                      </div>
                       <div className="text-sm sm:text-base text-white font-semibold">
-                        {new Date(project.startedAt).toLocaleDateString('ru-RU', {
-                          month: 'short',
-                          year: 'numeric',
-                        })}{' '}
-                        -{' '}
-                        {new Date(project.completedAt).toLocaleDateString('ru-RU', {
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        {new Date(project.startedAt).toLocaleDateString(
+                          "ru-RU",
+                          {
+                            month: "short",
+                            year: "numeric",
+                          },
+                        )}{" "}
+                        -{" "}
+                        {new Date(project.completedAt).toLocaleDateString(
+                          "ru-RU",
+                          {
+                            month: "short",
+                            year: "numeric",
+                          },
+                        )}
                         {(() => {
-                          const duration = calculateDuration(project.startedAt, project.completedAt);
+                          const duration = calculateDuration(
+                            project.startedAt,
+                            project.completedAt,
+                          );
                           return (
                             <span className="text-gray-400 ml-2">
-                              ({duration.months > 0 && `${duration.months} мес.`}{duration.months > 0 && duration.days > 0 && ' '}{duration.days > 0 && `${duration.days} дн.`})
+                              (
+                              {duration.months > 0 && `${duration.months} мес.`}
+                              {duration.months > 0 && duration.days > 0 && " "}
+                              {duration.days > 0 && `${duration.days} дн.`})
                             </span>
                           );
                         })()}
@@ -211,24 +233,38 @@ export default function ProjectDetailPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex gap-0 overflow-x-auto scrollbar-hide">
               <button
-                onClick={() => setActiveTab('overview')}
+                onClick={() => setActiveTab("overview")}
                 className={`px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base font-semibold transition-all whitespace-nowrap border-b-2 ${
-                  activeTab === 'overview'
-                    ? 'text-white border-red-600'
-                    : 'text-gray-400 border-transparent hover:text-gray-300'
+                  activeTab === "overview"
+                    ? "text-white border-red-600"
+                    : "text-gray-400 border-transparent hover:text-gray-300"
                 }`}
               >
                 <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline-block mr-1.5 sm:mr-2" />
                 Обзор
               </button>
 
+              {gallery.length > 0 && (
+                <button
+                  onClick={() => setActiveTab("gallery")}
+                  className={`px-4 sm:px-6 py-3 sm:py-4 text-sm sm:text-base font-semibold transition-all whitespace-nowrap border-b-2 ${
+                    activeTab === "gallery"
+                      ? "text-white border-red-600"
+                      : "text-gray-400 border-transparent hover:text-gray-300"
+                  }`}
+                >
+                  <Cpu className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline-block mr-1.5 sm:mr-2" />
+                  Галерея
+                </button>
+              )}
+
               {processSteps.length > 0 && (
                 <button
-                  onClick={() => setActiveTab('process')}
+                  onClick={() => setActiveTab("process")}
                   className={`px-6 py-4 font-semibold transition-all whitespace-nowrap border-b-2 ${
-                    activeTab === 'process'
-                      ? 'text-white border-red-600'
-                      : 'text-gray-400 border-transparent hover:text-gray-300'
+                    activeTab === "process"
+                      ? "text-white border-red-600"
+                      : "text-gray-400 border-transparent hover:text-gray-300"
                   }`}
                 >
                   Процесс
@@ -237,11 +273,11 @@ export default function ProjectDetailPage() {
 
               {resultMetrics.length > 0 && (
                 <button
-                  onClick={() => setActiveTab('results')}
+                  onClick={() => setActiveTab("results")}
                   className={`px-6 py-4 font-semibold transition-all whitespace-nowrap border-b-2 ${
-                    activeTab === 'results'
-                      ? 'text-white border-red-600'
-                      : 'text-gray-400 border-transparent hover:text-gray-300'
+                    activeTab === "results"
+                      ? "text-white border-red-600"
+                      : "text-gray-400 border-transparent hover:text-gray-300"
                   }`}
                 >
                   Результаты
@@ -254,7 +290,7 @@ export default function ProjectDetailPage() {
         {/* Tab Content */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
           {/* Overview Tab */}
-          {activeTab === 'overview' && (
+          {activeTab === "overview" && (
             <div className="space-y-6 sm:space-y-8 lg:space-y-12">
               {/* Main Description */}
               {project.fullDescription && (
@@ -330,8 +366,44 @@ export default function ProjectDetailPage() {
             </div>
           )}
 
+          {/* Gallery Tab */}
+          {activeTab === "gallery" && gallery.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+              {gallery.map((img, idx) => (
+                <div
+                  key={idx}
+                  className="group bg-gray-900/40 border border-gray-800 rounded-xl overflow-hidden hover:border-red-600/30 transition-all shadow-lg"
+                >
+                  <div className="relative aspect-video bg-gray-800">
+                    <Image
+                      src={img.url}
+                      alt={img.title || `Screenshot ${idx + 1}`}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      unoptimized={img.url.startsWith("http")}
+                    />
+                  </div>
+                  {(img.title || img.description) && (
+                    <div className="p-4 sm:p-6 border-t border-gray-800/50">
+                      {img.title && (
+                        <h3 className="text-white font-bold mb-2">
+                          {img.title}
+                        </h3>
+                      )}
+                      {img.description && (
+                        <p className="text-sm text-gray-400 leading-relaxed">
+                          {img.description}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Process Tab */}
-          {activeTab === 'process' && processSteps.length > 0 && (
+          {activeTab === "process" && processSteps.length > 0 && (
             <div className="space-y-6 sm:space-y-8">
               <div className="relative">
                 {/* Timeline Line */}
@@ -342,7 +414,7 @@ export default function ProjectDetailPage() {
                   {processSteps.map((step, idx) => (
                     <div
                       key={step.id}
-                      className={`relative flex gap-4 sm:gap-6 md:gap-0 ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
+                      className={`relative flex gap-4 sm:gap-6 md:gap-0 ${idx % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}
                     >
                       {/* Timeline Dot */}
                       <div className="absolute left-0 sm:left-0 md:left-1/2 top-4 sm:top-6 md:top-0 w-7 h-7 sm:w-9 sm:h-9 bg-red-600 rounded-full border-2 sm:border-4 border-black transform md:-translate-x-1/2 flex items-center justify-center">
@@ -350,43 +422,55 @@ export default function ProjectDetailPage() {
                       </div>
 
                       {/* Content */}
-                      <div className={`flex-1 pl-12 sm:pl-16 md:pl-0 ${idx % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
+                      <div
+                        className={`flex-1 pl-12 sm:pl-16 md:pl-0 ${idx % 2 === 0 ? "md:pr-12" : "md:pl-12"}`}
+                      >
                         <div className="bg-gray-900/40 border border-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6">
                           <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
                             <div className="flex-1">
-                              <h3 className="text-lg sm:text-xl font-bold text-white mb-2">{step.title}</h3>
+                              <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                                {step.title}
+                              </h3>
                               {step.startDate && step.endDate && (
                                 <div className="text-xs sm:text-sm text-gray-400 flex items-center gap-1.5 sm:gap-2">
                                   <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                                  {new Date(step.startDate).toLocaleDateString('ru-RU', {
-                                    month: 'short',
-                                    day: 'numeric',
-                                  })}{' '}
-                                  -{' '}
-                                  {new Date(step.endDate).toLocaleDateString('ru-RU', {
-                                    month: 'short',
-                                    day: 'numeric',
-                                  })}
+                                  {new Date(step.startDate).toLocaleDateString(
+                                    "ru-RU",
+                                    {
+                                      month: "short",
+                                      day: "numeric",
+                                    },
+                                  )}{" "}
+                                  -{" "}
+                                  {new Date(step.endDate).toLocaleDateString(
+                                    "ru-RU",
+                                    {
+                                      month: "short",
+                                      day: "numeric",
+                                    },
+                                  )}
                                 </div>
                               )}
                             </div>
                             <span
                               className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
-                                step.status === 'completed'
-                                  ? 'bg-green-600/20 text-green-400'
-                                  : step.status === 'in-progress'
-                                    ? 'bg-yellow-600/20 text-yellow-400'
-                                    : 'bg-gray-700/50 text-gray-400'
+                                step.status === "completed"
+                                  ? "bg-green-600/20 text-green-400"
+                                  : step.status === "in-progress"
+                                    ? "bg-yellow-600/20 text-yellow-400"
+                                    : "bg-gray-700/50 text-gray-400"
                               }`}
                             >
-                              {step.status === 'completed'
-                                ? 'Завершено'
-                                : step.status === 'in-progress'
-                                  ? 'В процессе'
-                                  : 'Запланировано'}
+                              {step.status === "completed"
+                                ? "Завершено"
+                                : step.status === "in-progress"
+                                  ? "В процессе"
+                                  : "Запланировано"}
                             </span>
                           </div>
-                          <p className="text-sm sm:text-base text-gray-300 leading-relaxed">{step.description}</p>
+                          <p className="text-sm sm:text-base text-gray-300 leading-relaxed">
+                            {step.description}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -397,7 +481,7 @@ export default function ProjectDetailPage() {
           )}
 
           {/* Results Tab */}
-          {activeTab === 'results' && resultMetrics.length > 0 && (
+          {activeTab === "results" && resultMetrics.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {resultMetrics.map((metric) => (
                 <div
@@ -406,16 +490,18 @@ export default function ProjectDetailPage() {
                 >
                   <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-red-600 mb-2 sm:mb-3">
                     {metric.value}
-                    {metric.type === 'percentage' && '%'}
-                    {metric.type === 'currency' && '₽'}
+                    {metric.type === "percentage" && "%"}
+                    {metric.type === "currency" && "₽"}
                   </div>
-                  <p className="text-gray-300 text-base sm:text-lg font-semibold">{metric.label}</p>
+                  <p className="text-gray-300 text-base sm:text-lg font-semibold">
+                    {metric.label}
+                  </p>
                   {metric.type && (
                     <p className="text-gray-400 text-xs uppercase tracking-widest mt-3">
-                      {metric.type === 'percentage' && 'Процент'}
-                      {metric.type === 'number' && 'Количество'}
-                      {metric.type === 'time' && 'Время'}
-                      {metric.type === 'currency' && 'Сумма'}
+                      {metric.type === "percentage" && "Процент"}
+                      {metric.type === "number" && "Количество"}
+                      {metric.type === "time" && "Время"}
+                      {metric.type === "currency" && "Сумма"}
                     </p>
                   )}
                 </div>

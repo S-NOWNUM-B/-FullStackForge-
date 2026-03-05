@@ -3,8 +3,8 @@ node_modules
 .git
 .idea
 .vscode
-.env
-.env.local
+# .env
+# .env.local
 .env.production
 *.log
 npm-debug.log*

@@ -1,14 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
-"use client";
-
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import {
   X,
-  Upload,
-  Trash2,
   ChevronLeft,
   ChevronRight,
   Check,
@@ -22,7 +16,7 @@ import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Textarea } from "@/components/ui/Textarea";
 import { PROJECT_TECHNOLOGY_NAMES } from "@/constants/project-technologies";
-import { ProcessStep, ResultMetric } from "@/types/api";
+import { ProcessStep, ResultMetric, GalleryImage } from "@/types/api";
 
 interface ProjectData {
   _id?: string;
@@ -31,6 +25,7 @@ interface ProjectData {
   fullDescription: string;
   functionality: string;
   thumbnail: string;
+  gallery?: GalleryImage[];
   processSteps?: ProcessStep[];
   resultMetrics?: ResultMetric[];
   technologies: string[];
@@ -68,6 +63,9 @@ const STEPS = [
   { id: 6, name: "Технологии", description: "Технологии и ссылки" },
 ];
 
+import { ImageUpload } from "./ImageUpload";
+import { GalleryUpload } from "./GalleryUpload";
+
 const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, onSave }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -84,6 +82,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, onSave }) => {
         fullDescription: project.fullDescription || "",
         functionality: project.functionality || "",
         thumbnail: project.thumbnail || "",
+        gallery: Array.isArray(project.gallery) ? project.gallery : [],
         processSteps: project.processSteps || [],
         resultMetrics: project.resultMetrics || [],
         technologies: project.technologies || [],
@@ -109,6 +108,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, onSave }) => {
       fullDescription: "",
       functionality: "",
       thumbnail: "",
+      gallery: [],
       processSteps: [],
       resultMetrics: [],
       technologies: [],
@@ -159,116 +159,12 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, onSave }) => {
     setValidationErrors(newErrors);
   };
 
-  const compressImage = async (file: File): Promise<File> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-
-      reader.onload = (e) => {
-        const img = new Image();
-        img.src = e.target?.result as string;
-
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-
-          if (!ctx) {
-            reject(new Error("Не удалось получить контекст canvas"));
-            return;
-          }
-
-          const width = img.width;
-          const height = img.height;
-          const quality = 0.7;
-          const maxDimension = 1200;
-
-          const ratio = Math.min(maxDimension / width, maxDimension / height);
-          const newWidth = Math.floor(width * ratio);
-          const newHeight = Math.floor(height * ratio);
-
-          canvas.width = newWidth;
-          canvas.height = newHeight;
-          ctx.drawImage(img, 0, 0, newWidth, newHeight);
-
-          canvas.toBlob(
-            (blob) => {
-              if (!blob) {
-                reject(new Error("Не удалось создать blob"));
-                return;
-              }
-
-              const compressedFile = new File([blob], file.name, {
-                type: "image/webp",
-                lastModified: Date.now(),
-              });
-
-              resolve(compressedFile);
-            },
-            "image/webp",
-            quality,
-          );
-        };
-
-        img.onerror = () =>
-          reject(new Error("Не удалось загрузить изображение"));
-      };
-
-      reader.onerror = () => reject(new Error("Не удалось прочитать файл"));
-    });
+  const handleUploadThumbnail = (url: string) => {
+    setFormData((prev) => ({ ...prev, thumbnail: url }));
   };
-
-  const validateFile = (file: File): boolean => {
-    const validTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-      "image/gif",
-      "image/jpg",
-    ];
-
-    if (!validTypes.includes(file.type)) {
-      toast.error(
-        "Недопустимый формат файла. Используйте JPEG, PNG, WebP или GIF.",
-      );
-      return false;
-    }
-
-    return true;
-  };
-
-  const onThumbnailDrop = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 0) return;
-
-    const file = acceptedFiles[0];
-    if (!validateFile(file)) return;
-
-    try {
-      toast.loading("Загружаю изображение...", { id: "upload-thumb" });
-      const compressedFile = await compressImage(file);
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64 = reader.result as string;
-        setFormData((prev) => ({ ...prev, thumbnail: base64 }));
-        toast.success("Главное изображение загружено!", { id: "upload-thumb" });
-      };
-      reader.readAsDataURL(compressedFile);
-    } catch (error) {
-      console.error("Ошибка загрузки:", error);
-      toast.error("Ошибка загрузки изображения", { id: "upload-thumb" });
-    }
-  }, []);
-
-  const thumbnailDropzone = useDropzone({
-    onDrop: onThumbnailDrop,
-    accept: { "image/*": [".jpeg", ".jpg", ".png", ".webp", ".gif"] },
-    maxFiles: 1,
-    multiple: false,
-  });
 
   const handleRemoveThumbnail = () => {
     setFormData((prev) => ({ ...prev, thumbnail: "" }));
-    toast.success("Главное изображение удалено");
   };
 
   const toggleTechnology = (tech: string) => {
@@ -355,6 +251,7 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, onSave }) => {
         fullDescription: formData.fullDescription,
         functionality: formData.functionality,
         thumbnail: formData.thumbnail,
+        gallery: formData.gallery || [],
         processSteps: formData.processSteps || [],
         resultMetrics: formData.resultMetrics || [],
         technologies: formData.technologies,
@@ -377,17 +274,6 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, onSave }) => {
 
       if (project) {
         dataToSave._id = project._id;
-      }
-
-      const documentSizeBytes = new Blob([JSON.stringify(dataToSave)]).size;
-      const documentSizeMB = (documentSizeBytes / 1024 / 1024).toFixed(2);
-
-      if (documentSizeBytes > 900 * 1024) {
-        toast.error(
-          `Размер документа ${documentSizeMB}MB превышает лимит. Уменьшите количество изображений.`,
-        );
-        setIsLoading(false);
-        return;
       }
 
       const url = project ? `/api/projects/${project._id}` : "/api/projects";
@@ -679,35 +565,31 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, onSave }) => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="space-y-6"
+      className="space-y-8"
     >
-      <div>
-        <Label>Главное изображение проекта *</Label>
-        {formData.thumbnail ? (
-          <div className="mt-2 relative group">
-            <img
-              src={formData.thumbnail}
-              alt="Thumbnail preview"
-              className="w-full h-64 object-cover rounded-xl border-2 border-gray-700"
-            />
-            <button
-              onClick={handleRemoveThumbnail}
-              className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-            >
-              <Trash2 className="w-5 h-5" />
-            </button>
-          </div>
-        ) : (
-          <div
-            {...thumbnailDropzone.getRootProps()}
-            className="mt-2 border-2 border-dashed border-gray-600 rounded-xl p-8 text-center cursor-pointer hover:border-red-500 transition-all bg-gray-800/50"
-          >
-            <input {...thumbnailDropzone.getInputProps()} />
-            <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-            <p className="text-gray-300 mb-1">Перетащите главное изображение</p>
-            <p className="text-xs text-gray-500">JPEG, PNG, WebP, GIF</p>
-          </div>
-        )}
+      <div className="space-y-6">
+        <ImageUpload
+          label="Главное изображение проекта *"
+          value={formData.thumbnail}
+          onUpload={handleUploadThumbnail}
+          onRemove={handleRemoveThumbnail}
+          folder="projects/thumbnails"
+        />
+      </div>
+
+      <div className="pt-6 border-t border-gray-800">
+        <Label className="text-lg font-semibold text-white mb-4 block">
+          Галерея проекта
+        </Label>
+        <p className="text-sm text-gray-400 mb-6">
+          Загрузите дополнительные скриншоты или изображения процесса
+          разработки.
+        </p>
+        <GalleryUpload
+          images={formData.gallery || []}
+          onChange={(gallery) => setFormData((prev) => ({ ...prev, gallery }))}
+          folder="projects/galleries"
+        />
       </div>
     </motion.div>
   );

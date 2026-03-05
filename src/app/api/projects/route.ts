@@ -139,14 +139,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Утилита для проверки размера документа
-function getDocumentSize(data: unknown): number {
-  return new Blob([JSON.stringify(data)]).size;
-}
-
-// Максимальный размер документа Firestore - 1 МБ (оставляем запас)
-const MAX_DOCUMENT_SIZE = 900 * 1024; // 900 KB
-
 export async function POST(request: NextRequest) {
   try {
     console.log("[API/Projects POST] Начало создания проекта");
@@ -170,25 +162,6 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-
-    // Проверка размера документа
-    const docSize = getDocumentSize(projectData);
-    console.log(
-      `[API/Projects POST] Размер документа: ${(docSize / 1024).toFixed(2)} KB`,
-    );
-
-    if (docSize > MAX_DOCUMENT_SIZE) {
-      console.error(
-        `[API/Projects POST] Документ слишком большой: ${(docSize / 1024).toFixed(2)} KB (макс: ${(MAX_DOCUMENT_SIZE / 1024).toFixed(2)} KB)`,
-      );
-      return NextResponse.json(
-        {
-          success: false,
-          error: `Размер проекта слишком большой (${(docSize / 1024).toFixed(2)} KB). Максимум: ${(MAX_DOCUMENT_SIZE / 1024).toFixed(2)} KB. Используйте внешние ссылки для изображений или загрузите файлы через UploadThing.`,
-        },
-        { status: 413 },
-      );
-    }
 
     console.log("[API/Projects POST] Добавление в Firestore...");
     const docRef = await db.collection(COLLECTIONS.PROJECTS).add(projectData);
@@ -245,42 +218,13 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    const docRef = db.collection(COLLECTIONS.PROJECTS).doc(_id);
+
     // Добавляем timestamp обновления
     const dataToUpdate = {
       ...updateData,
       updatedAt: new Date().toISOString(),
     };
-
-    // Проверка размера обновленного документа
-    const docRef = db.collection(COLLECTIONS.PROJECTS).doc(_id);
-    const doc = await docRef.get();
-
-    if (!doc.exists) {
-      return NextResponse.json(
-        { success: false, error: "Проект не найден" },
-        { status: 404 },
-      );
-    }
-
-    // Объединяем существующие данные с обновлениями для проверки размера
-    const mergedData = { ...doc.data(), ...dataToUpdate };
-    const docSize = getDocumentSize(mergedData);
-    console.log(
-      `[API/Projects PUT] Размер документа после обновления: ${(docSize / 1024).toFixed(2)} KB`,
-    );
-
-    if (docSize > MAX_DOCUMENT_SIZE) {
-      console.error(
-        `[API/Projects PUT] Документ слишком большой: ${(docSize / 1024).toFixed(2)} KB (макс: ${(MAX_DOCUMENT_SIZE / 1024).toFixed(2)} KB)`,
-      );
-      return NextResponse.json(
-        {
-          success: false,
-          error: `Размер проекта слишком большой (${(docSize / 1024).toFixed(2)} KB). Максимум: ${(MAX_DOCUMENT_SIZE / 1024).toFixed(2)} KB. Используйте внешние ссылки для изображений или загрузите файлы через UploadThing.`,
-        },
-        { status: 413 },
-      );
-    }
 
     await docRef.update(dataToUpdate);
     const updatedDoc = await docRef.get();
