@@ -128,10 +128,10 @@ export default function AdminPage() {
               >
                 <div className="flex items-center justify-center gap-4 mb-10 w-full">
                   <div className="flex items-center justify-center w-12 h-12 shrink-0 bg-red-600/10 rounded-xl border border-red-600/20">
-                    <Lock className="w-5 h-5 text-red-600" />
+                    <Lock className="w-5 h-5 text-red-600 justify-center" />
                   </div>
                   <div className="flex flex-col text-left">
-                    <div className="text-lg font-bold text-white leading-tight">
+                    <div className="text-lg font-bold text-white leading-tight justify-center">
                       Админ-панель
                     </div>
                     <p className="text-gray-500 text-sm mt-0.5">
