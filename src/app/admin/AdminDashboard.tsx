@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { LogOut, LayoutGrid, FileText } from 'lucide-react';
-import { signOut } from 'next-auth/react';
-import { toast } from 'sonner';
-import ProjectsManager from './components/ProjectsManager';
+import { motion } from "framer-motion";
+import { LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { toast } from "sonner";
+import ProjectsManager from "./components/ProjectsManager";
 
 export default function AdminDashboard() {
   const handleLogout = async () => {
     try {
-      await signOut({ callbackUrl: '/admin' });
-      toast.success('Вы вышли из системы');
+      await signOut({ callbackUrl: "/admin" });
+      toast.success("Вы вышли из системы");
     } catch (error) {
-      console.error('Ошибка при выходе:', error);
-      toast.error('Ошибка при выходе');
+      console.error("Ошибка при выходе:", error);
+      toast.error("Ошибка при выходе");
     }
   };
 
@@ -24,7 +24,8 @@ export default function AdminDashboard() {
       <div
         className="absolute inset-0 bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"
         style={{
-          backgroundImage: 'linear-gradient(to right,#4f4f4f20 1px,transparent 1px),linear-gradient(to bottom,#4f4f4f20 1px,transparent 1px)',
+          backgroundImage:
+            "linear-gradient(to right,#4f4f4f20 1px,transparent 1px),linear-gradient(to bottom,#4f4f4f20 1px,transparent 1px)",
         }}
       />
       <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-red-600/10 rounded-full blur-3xl" />
@@ -43,7 +44,7 @@ export default function AdminDashboard() {
                 Админ-панель
               </h1>
             </motion.div>
-            
+
             <motion.button
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
