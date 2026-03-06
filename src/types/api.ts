@@ -19,7 +19,7 @@ export interface GalleryImage {
   url: string;
   description: string;
   title?: string;
-  type?: 'screenshot' | 'design' | 'result' | 'process';
+  type?: "screenshot" | "design" | "result" | "process";
 }
 
 // Project Development Process Step
@@ -30,7 +30,7 @@ export interface ProcessStep {
   startDate?: string;
   endDate?: string;
   image?: string;
-  status: 'completed' | 'in-progress' | 'planned';
+  status: "completed" | "in-progress" | "planned";
 }
 
 // Project Result Metric
@@ -40,7 +40,7 @@ export interface ResultMetric {
   value: string;
   unit?: string;
   icon?: string;
-  type?: 'percentage' | 'number' | 'time' | 'currency';
+  type?: "percentage" | "number" | "time" | "currency";
 }
 
 // Project types
@@ -51,33 +51,33 @@ export interface Project {
   fullDescription: string;
   functionality: string;
   thumbnail: string;
-  
+
   // New gallery system - replaces old images array
   gallery: GalleryImage[];
-  
+
   // Development process timeline
   processSteps?: ProcessStep[];
-  
+
   // Results and metrics
   resultMetrics?: ResultMetric[];
-  
+
   technologies: string[];
   category: string;
   githubUrl?: string;
   demoUrl?: string;
-  
+
   // Project metadata
-  status: 'draft' | 'published';
+  status: "draft" | "published";
   featured: boolean;
   startedAt?: string;
   completedAt?: string;
   clientName?: string;
   projectDuration?: string;
-  
+
   // Content sections
   challenges?: string;
   results?: string;
-  
+
   // Analytics
   viewsCount?: number;
   createdAt: string;
@@ -92,7 +92,7 @@ export interface ProjectsResponse {
 }
 
 // Config types
-export type ConfigKey = 'home' | 'about';
+export type ConfigKey = "home" | "about";
 
 export interface Config {
   _id: string;
@@ -111,7 +111,7 @@ export interface AdminCredentials {
 export interface AuthSession {
   user: {
     id: string;
-    role: 'admin';
+    role: "admin";
   };
   expires: string;
 }
@@ -182,4 +182,17 @@ export interface SocialLinks {
   showOnWorkPage: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+// Technology types
+export interface Technology {
+  _id?: string;
+  name: string;
+  color: string;
+  iconName: string;
+  group: string;
+  showInAbout: boolean;
+  isProjectTech: boolean;
+  order: number;
+  updatedAt?: string;
 }

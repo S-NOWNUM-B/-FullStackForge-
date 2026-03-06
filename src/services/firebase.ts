@@ -78,4 +78,5 @@ export const COLLECTIONS = {
   WORK_INFO: "workInfo",
   SOCIAL_LINKS: "socialLinks",
   ADMIN_SETTINGS: "admin_settings",
+  TECHNOLOGIES: "technologies",
 } as const;

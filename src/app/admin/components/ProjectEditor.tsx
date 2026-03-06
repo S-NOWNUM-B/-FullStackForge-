@@ -15,8 +15,12 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Textarea } from "@/components/ui/Textarea";
-import { PROJECT_TECHNOLOGY_NAMES } from "@/constants/project-technologies";
-import { ProcessStep, ResultMetric, GalleryImage } from "@/types/api";
+import {
+  Technology,
+  ProcessStep,
+  ResultMetric,
+  GalleryImage,
+} from "@/types/api";
 
 interface ProjectData {
   _id?: string;
@@ -69,6 +73,8 @@ import { GalleryUpload } from "./GalleryUpload";
 const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, onSave }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTechLoading, setIsTechLoading] = useState(true);
+  const [availableTechs, setAvailableTechs] = useState<string[]>([]);
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
   >({});
@@ -124,6 +130,26 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, onSave }) => {
       results: "",
     };
   });
+
+  React.useEffect(() => {
+    const fetchTechs = async () => {
+      try {
+        const res = await fetch("/api/technologies");
+        const json = await res.json();
+        if (json.success) {
+          const projectTechs = json.data
+            .filter((t: Technology) => t.isProjectTech)
+            .map((t: Technology) => t.name);
+          setAvailableTechs(projectTechs);
+        }
+      } catch (error) {
+        console.error("Failed to fetch project technologies:", error);
+      } finally {
+        setIsTechLoading(false);
+      }
+    };
+    fetchTechs();
+  }, []);
 
   const validateField = (field: string, value: string) => {
     const newErrors = { ...validationErrors };
@@ -792,20 +818,30 @@ const ProjectEditor: React.FC<ProjectEditorProps> = ({ project, onSave }) => {
       <div>
         <Label>Технологии * ({formData.technologies.length} выбрано)</Label>
         <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-64 overflow-y-auto p-2 bg-gray-800/50 rounded-xl border-2 border-gray-700">
-          {PROJECT_TECHNOLOGY_NAMES.map((tech) => (
-            <button
-              key={tech}
-              type="button"
-              onClick={() => toggleTechnology(tech)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                formData.technologies.includes(tech)
-                  ? "bg-red-500 text-white shadow-lg shadow-red-500/50"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-              }`}
-            >
-              {tech}
-            </button>
-          ))}
+          {isTechLoading ? (
+            <div className="col-span-full py-4 text-center text-gray-500 text-sm">
+              Загрузка технологий...
+            </div>
+          ) : availableTechs.length > 0 ? (
+            availableTechs.map((tech) => (
+              <button
+                key={tech}
+                type="button"
+                onClick={() => toggleTechnology(tech)}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  formData.technologies.includes(tech)
+                    ? "bg-red-500 text-white shadow-lg shadow-red-500/30"
+                    : "bg-gray-700/50 text-gray-400 hover:bg-gray-700 hover:text-white border border-transparent"
+                }`}
+              >
+                {tech}
+              </button>
+            ))
+          ) : (
+            <div className="col-span-full py-4 text-center text-gray-500 text-sm">
+              Нет доступных технологий
+            </div>
+          )}
         </div>
       </div>
 

@@ -1,12 +1,18 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { toast } from "sonner";
+import { useState } from "react";
 import ProjectsManager from "./components/ProjectsManager";
+import TechnologyManager from "./components/TechnologyManager";
 
 export default function AdminDashboard() {
+  const [activeTab, setActiveTab] = useState<"projects" | "technologies">(
+    "projects",
+  );
+
   const handleLogout = async () => {
     try {
       await signOut({ callbackUrl: "/admin" });
@@ -35,15 +41,40 @@ export default function AdminDashboard() {
       <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-2xl border-b border-red-600/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h1 className="text-sm font-bold bg-linear-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                Админ-панель
-              </h1>
-            </motion.div>
+            <div className="flex items-center gap-8">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <h1 className="text-sm font-bold bg-linear-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                  Админ-панель
+                </h1>
+              </motion.div>
+
+              <nav className="flex items-center gap-1">
+                <button
+                  onClick={() => setActiveTab("projects")}
+                  className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                    activeTab === "projects"
+                      ? "bg-red-600/10 text-red-500 border border-red-600/20"
+                      : "text-gray-400 hover:text-white hover:bg-gray-800"
+                  }`}
+                >
+                  Проекты
+                </button>
+                <button
+                  onClick={() => setActiveTab("technologies")}
+                  className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                    activeTab === "technologies"
+                      ? "bg-red-600/10 text-red-500 border border-red-600/20"
+                      : "text-gray-400 hover:text-white hover:bg-gray-800"
+                  }`}
+                >
+                  Технологии
+                </button>
+              </nav>
+            </div>
 
             <motion.button
               initial={{ opacity: 0, x: 20 }}
@@ -63,7 +94,27 @@ export default function AdminDashboard() {
 
       {/* Content */}
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <ProjectsManager />
+        <AnimatePresence mode="wait">
+          {activeTab === "projects" ? (
+            <motion.div
+              key="projects"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              <ProjectsManager />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="technologies"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              <TechnologyManager />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
     </div>
   );

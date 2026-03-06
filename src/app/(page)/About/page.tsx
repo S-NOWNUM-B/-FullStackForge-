@@ -16,10 +16,8 @@ import {
   Download,
 } from "lucide-react";
 import Image from "next/image";
-
-import { TECHNOLOGIES } from "@/constants/technologies";
-
-const technologiesData = TECHNOLOGIES;
+import { getIconByName } from "@/utils/getIcon";
+import { Technology } from "@/types/api";
 
 const focusAreas = [
   "Разработка современных web-приложений с использованием React и Next.js",
@@ -115,9 +113,27 @@ const experience = [
 
 function AboutContent() {
   const [mounted, setMounted] = useState(false);
+  const [technologiesData, setTechnologiesData] = useState<Technology[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setMounted(true);
+    const fetchTech = async () => {
+      try {
+        const res = await fetch("/api/technologies");
+        const json = await res.json();
+        if (json.success) {
+          setTechnologiesData(
+            json.data.filter((t: Technology) => t.showInAbout),
+          );
+        }
+      } catch (error) {
+        console.error("Failed to fetch technologies:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchTech();
   }, []);
 
   if (!mounted) {
@@ -204,23 +220,23 @@ function AboutContent() {
                 <div className="flex flex-col gap-6">
                   <h2 className="text-3xl font-bold text-white">О себе</h2>
                   <p className="text-gray-300 text-[17px] md:text-lg leading-8 text-justify">
-                  Разрабатываю масштабируемые приложения — от современных
-                  веб-сервисов до кроссплатформенного программного обеспечения.
-                  Предпочитаю полный цикл разработки: проектирование
-                  архитектуры, работу с данными и создание удобных, продуманных
-                  интерфейсов. Меня отличает широкий кругозор — от физики и
-                  истории до геймдева и дизайна, что помогает находить
-                  нестандартные решения в коде и подходить к задачам системно.
-                  Увлекаюсь видеоиграми, литературой и вселенными вроде
-                  Warhammer 40,000 и Mass Effect — они вдохновляют меня на
-                  проработку деталей и создание сильных концепций. Особую роль в
-                  моём пути играет моя девушка: она поддерживает меня в моменты
-                  неопределённости и помогает сохранять уверенность в
-                  собственных силах. Благодаря её вере я двигаюсь к целям
-                  осознанно и с постоянным ростом. Вдохновение черпаю также в
-                  музыке Noize MC — его умные тексты и ироничный взгляд на мир
-                  находят отражение в моём подходе к разработке и креативным
-                  идеям.
+                    Разрабатываю масштабируемые приложения — от современных
+                    веб-сервисов до кроссплатформенного программного
+                    обеспечения. Предпочитаю полный цикл разработки:
+                    проектирование архитектуры, работу с данными и создание
+                    удобных, продуманных интерфейсов. Меня отличает широкий
+                    кругозор — от физики и истории до геймдева и дизайна, что
+                    помогает находить нестандартные решения в коде и подходить к
+                    задачам системно. Увлекаюсь видеоиграми, литературой и
+                    вселенными вроде Warhammer 40,000 и Mass Effect — они
+                    вдохновляют меня на проработку деталей и создание сильных
+                    концепций. Особую роль в моём пути играет моя девушка: она
+                    поддерживает меня в моменты неопределённости и помогает
+                    сохранять уверенность в собственных силах. Благодаря её вере
+                    я двигаюсь к целям осознанно и с постоянным ростом.
+                    Вдохновение черпаю также в музыке Noize MC — его умные
+                    тексты и ироничный взгляд на мир находят отражение в моём
+                    подходе к разработке и креативным идеям.
                   </p>
                 </div>
               </div>
@@ -269,26 +285,36 @@ function AboutContent() {
             </h2>
             <div className="p-8 rounded-2xl bg-linear-to-br from-gray-800/40 to-gray-900/40 border border-gray-700/50 backdrop-blur-sm">
               <div className="flex flex-wrap justify-center gap-3">
-                {technologiesData.map((tech, index) => {
-                  const Icon = tech.icon;
-                  // Извлекаем hex цвет из строки color
-                  const bgColor =
-                    tech.color.match(/#[0-9A-Fa-f]{6}/)?.[0] || "#gray";
+                {isLoading ? (
+                  <div className="text-gray-400 py-4">
+                    Загрузка технологий...
+                  </div>
+                ) : technologiesData.length > 0 ? (
+                  technologiesData.map((tech, index) => {
+                    const Icon = getIconByName(tech.iconName!);
+                    const isHex = tech.color.startsWith("#");
+                    const bgColor = isHex ? tech.color : "";
+                    const className = isHex
+                      ? "px-5 py-2.5 rounded-lg font-bold text-sm transition-all cursor-pointer shadow-lg flex items-center gap-2 text-white hover:scale-105"
+                      : `px-5 py-2.5 rounded-lg font-bold text-sm transition-all cursor-pointer shadow-lg flex items-center gap-2 text-white hover:scale-105 ${tech.color}`;
 
-                  return (
-                    <motion.div
-                      key={tech.name}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 1 + index * 0.03 }}
-                      style={{ backgroundColor: bgColor }}
-                      className="px-5 py-2.5 rounded-lg font-bold text-sm transition-all cursor-pointer shadow-lg flex items-center gap-2 text-white hover:scale-105"
-                    >
-                      <Icon className="text-base" />
-                      <span>{tech.name}</span>
-                    </motion.div>
-                  );
-                })}
+                    return (
+                      <motion.div
+                        key={tech.name}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.2 + index * 0.03 }}
+                        style={isHex ? { backgroundColor: bgColor } : {}}
+                        className={className}
+                      >
+                        <Icon className="text-base" />
+                        <span>{tech.name}</span>
+                      </motion.div>
+                    );
+                  })
+                ) : (
+                  <div className="text-gray-500">Технологии не добавлены</div>
+                )}
               </div>
             </div>
           </motion.div>

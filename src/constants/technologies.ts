@@ -24,7 +24,7 @@ import {
 
 
 export const TECHNOLOGIES = [
-    // Языки программирования
+    // Programming languages
     { name: "TYPESCRIPT", color: "bg-[#3178C6] hover:bg-[#3178C6]/90", icon: SiTypescript },
     { name: "JAVA", color: "bg-[#ED8B00] hover:bg-[#ED8B00]/90", icon: FaJava },
     

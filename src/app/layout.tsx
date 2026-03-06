@@ -14,30 +14,34 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: {
     default: " Главная | FullStackForge",
-    template: "%s | FullStackForge"
+    template: "%s | FullStackForge",
   },
-  description: "Создаю надёжные и современные веб-решения для бизнеса и людей. Fullstack разработка на React, Next.js, Node.js, Firebase.",
+  description:
+    "Создаю надёжные и современные веб-решения для бизнеса и людей. Fullstack разработка на React, Next.js, Node.js, Firebase.",
   keywords: [
     "fullstack developer",
     "веб-разработка",
     "React",
-    "Next.js", 
+    "Next.js",
     "Node.js",
     "TypeScript",
     "Firebase",
     "портфолио разработчика",
     "создание сайтов",
-    "разработка веб-приложений"
+    "разработка веб-приложений",
   ],
   authors: [{ name: "FullStackForge" }],
   creator: "FullStackForge",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+  ),
   openGraph: {
     type: "website",
     locale: "ru_RU",
     url: "/",
     title: "FullStackForge | Fullstack Developer",
-    description: "Создаю надёжные и современные веб-решения для бизнеса и людей",
+    description:
+      "Создаю надёжные и современные веб-решения для бизнеса и людей",
     siteName: "FullStackForge",
     images: [
       {
@@ -54,15 +58,19 @@ export const metadata: Metadata = {
     description: "Создаю надёжные и современные веб-решения",
     images: ["/og-image.png"],
   },
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: "/icon.svg",
+  },
   robots: {
     index: true,
     follow: true,
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
 };
@@ -74,9 +82,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" suppressHydrationWarning>
-      <body
-        className={`${roboto.variable} font-sans antialiased`}
-      >
+      <body className={`${roboto.variable} font-sans antialiased`}>
         <SessionProvider>
           <ThemeProvider
             attribute="class"
@@ -87,12 +93,7 @@ export default function RootLayout({
             <div className="relative min-h-screen flex flex-col">
               {children}
             </div>
-            <Toaster
-              position="top-right"
-              richColors
-              closeButton
-              theme="dark"
-            />
+            <Toaster position="top-right" richColors closeButton theme="dark" />
           </ThemeProvider>
         </SessionProvider>
       </body>
