@@ -22,10 +22,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-.env*.local
+# env and local secrets
 .env
-.env.production
-.env.development
+.env.*
+!.env.example
+!.env*.example
 
 # vercel
 .vercel
@@ -43,3 +44,28 @@ next-env.d.ts
 
 .firebase/
 .vercel/
+
+# personal/private data
+personal/
+private/
+secrets/
+public/private/
+public/personal/
+src/data/private/
+
+# cloud/service credentials
+.firebaserc
+firebase-debug.log*
+serviceAccountKey*.json
+*-firebase-adminsdk-*.json
+google-credentials*.json
+gcp-credentials*.json
+
+# private keys and certificates
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.jks
+*.keystore
