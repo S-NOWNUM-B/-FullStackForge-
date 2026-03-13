@@ -19,6 +19,19 @@ import { toast } from "sonner";
 import { Technology } from "@/types/api";
 import { getIconByName } from "@/utils/getIcon";
 
+const DEFAULT_TECH_COLOR = "#6b7280";
+const DEFAULT_TECH_ICON = "FaCode";
+
+const createDefaultTechnology = (order: number): Partial<Technology> => ({
+  name: "",
+  color: DEFAULT_TECH_COLOR,
+  iconName: DEFAULT_TECH_ICON,
+  group: "",
+  showInAbout: false,
+  isProjectTech: false,
+  order,
+});
+
 const TechnologyManager = () => {
   const [technologies, setTechnologies] = useState<Technology[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,16 +64,13 @@ const TechnologyManager = () => {
     fetchTechnologies();
   }, []);
 
+  const closeEditor = () => {
+    setIsEditing(false);
+    setEditingTech(null);
+  };
+
   const handleCreate = () => {
-    setEditingTech({
-      name: "",
-      color: "#3b82f6",
-      iconName: "SiReact",
-      group: "Frontend",
-      showInAbout: true,
-      isProjectTech: true,
-      order: technologies.length,
-    });
+    setEditingTech(createDefaultTechnology(technologies.length));
     setIsEditing(true);
   };
 
@@ -91,23 +101,37 @@ const TechnologyManager = () => {
   };
 
   const handleSave = async () => {
-    if (!editingTech?.name) {
+    if (!editingTech) return;
+
+    const normalizedTech: Partial<Technology> = {
+      ...editingTech,
+      name: editingTech.name?.trim() || "",
+      group: editingTech.group?.trim() || "",
+      iconName: editingTech.iconName?.trim() || DEFAULT_TECH_ICON,
+      color: editingTech.color?.trim() || DEFAULT_TECH_COLOR,
+      order: Number.isFinite(editingTech.order)
+        ? Number(editingTech.order)
+        : technologies.length,
+      showInAbout: Boolean(editingTech.showInAbout),
+      isProjectTech: Boolean(editingTech.isProjectTech),
+    };
+
+    if (!normalizedTech.name) {
       toast.error("Название обязательно");
       return;
     }
 
     try {
-      const method = editingTech._id ? "PUT" : "POST";
+      const method = normalizedTech._id ? "PUT" : "POST";
       const res = await fetch("/api/admin/technologies", {
         method,
-        body: JSON.stringify(editingTech),
+        body: JSON.stringify(normalizedTech),
         headers: { "Content-Type": "application/json" },
       });
       const data = await res.json();
       if (data.success) {
-        toast.success(editingTech._id ? "Обновлено" : "Создано");
-        setIsEditing(false);
-        setEditingTech(null);
+        toast.success(normalizedTech._id ? "Обновлено" : "Создано");
+        closeEditor();
         fetchTechnologies();
       } else {
         toast.error(data.error);
@@ -240,7 +264,7 @@ const TechnologyManager = () => {
                   {editingTech?._id ? "Редактировать" : "Добавить технологию"}
                 </h3>
                 <button
-                  onClick={() => setIsEditing(false)}
+                  onClick={closeEditor}
                   className="text-gray-400 hover:text-white"
                 >
                   <X className="w-6 h-6" />
@@ -251,39 +275,39 @@ const TechnologyManager = () => {
                 <div className="space-y-2">
                   <Label>Название</Label>
                   <Input
-                    value={editingTech?.name}
+                    value={editingTech?.name || ""}
                     onChange={(e) =>
                       setEditingTech({ ...editingTech!, name: e.target.value })
                     }
-                    placeholder="Напр. React"
+                    placeholder="Напр. TypeScript, Node.js, Figma..."
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Иконка (React Icons)</Label>
+                    <Label>Иконка</Label>
                     <Input
-                      value={editingTech?.iconName}
+                      value={editingTech?.iconName || ""}
                       onChange={(e) =>
                         setEditingTech({
                           ...editingTech!,
                           iconName: e.target.value,
                         })
                       }
-                      placeholder="SiReact, FaNodeJs"
+                      placeholder="FaCode, SiReact, DiPython..."
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Цвет (HEX или Tailwind)</Label>
+                    <Label>Цвет</Label>
                     <Input
-                      value={editingTech?.color}
+                      value={editingTech?.color || ""}
                       onChange={(e) =>
                         setEditingTech({
                           ...editingTech!,
                           color: e.target.value,
                         })
                       }
-                      placeholder="#3178C6"
+                      placeholder="#6B7280"
                     />
                   </div>
                 </div>
@@ -291,11 +315,11 @@ const TechnologyManager = () => {
                 <div className="space-y-2">
                   <Label>Группа</Label>
                   <Input
-                    value={editingTech?.group}
+                    value={editingTech?.group || ""}
                     onChange={(e) =>
                       setEditingTech({ ...editingTech!, group: e.target.value })
                     }
-                    placeholder="Frontend, Backend, Design..."
+                    placeholder="Напр. Frontend, Backend"
                   />
                 </div>
 
@@ -309,7 +333,7 @@ const TechnologyManager = () => {
                     </div>
                     <input
                       type="checkbox"
-                      checked={editingTech?.showInAbout}
+                      checked={Boolean(editingTech?.showInAbout)}
                       onChange={(e) =>
                         setEditingTech({
                           ...editingTech!,
@@ -329,7 +353,7 @@ const TechnologyManager = () => {
                     </div>
                     <input
                       type="checkbox"
-                      checked={editingTech?.isProjectTech}
+                      checked={Boolean(editingTech?.isProjectTech)}
                       onChange={(e) =>
                         setEditingTech({
                           ...editingTech!,
@@ -345,11 +369,11 @@ const TechnologyManager = () => {
                   <Label>Порядок сортировки</Label>
                   <Input
                     type="number"
-                    value={editingTech?.order}
+                    value={editingTech?.order ?? 0}
                     onChange={(e) =>
                       setEditingTech({
                         ...editingTech!,
-                        order: parseInt(e.target.value),
+                        order: Number(e.target.value),
                       })
                     }
                   />
@@ -357,7 +381,7 @@ const TechnologyManager = () => {
 
                 <div className="pt-4 flex gap-3">
                   <Button
-                    onClick={() => setIsEditing(false)}
+                    onClick={closeEditor}
                     variant="secondary"
                     className="flex-1"
                   >
