@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "docker:up": "docker compose -f infra/docker/docker-compose.yml up --build",
+    "docker:down": "docker compose -f infra/docker/docker-compose.yml down",
+    "firebase:deploy": "firebase deploy --config infra/firebase/firebase.json"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

@@ -1,13 +1,13 @@
 services:
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
     container_name: full-stack-forge-app
     ports:
       - "3000:3000"
     env_file:
-      - .env.local
+      - ../../.env.local
     restart: no
     environment:
       - NODE_ENV=production
