@@ -41,15 +41,8 @@ export default function HomePage() {
               <Link href="/Projects">
                 <motion.button
                   className="w-full px-8 py-3 bg-linear-to-r from-gray-800/60 to-gray-800/40 hover:from-red-600/30 hover:to-red-600/20 border border-gray-700 hover:border-red-600 rounded-lg text-white font-semibold transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-red-600/20 hover:shadow-2xl"
-                  whileHover={{ y: -2 }}
-                  transition={{ duration: 0.2 }}
                 >
-                  <motion.div
-                    whileHover={{ rotate: 360, scale: 1.2 }}
-                    transition={{ duration: 0.5 }}
-                  >
                     <Code className="w-5 h-5 text-red-600" />
-                  </motion.div>
                   <span>Мои проекты</span>
                 </motion.button>
               </Link>
@@ -63,15 +56,8 @@ export default function HomePage() {
               <Link href="/About">
                 <motion.button
                   className="w-full px-8 py-3 bg-linear-to-r from-gray-800/60 to-gray-800/40 hover:from-red-600/30 hover:to-red-600/20 border border-gray-700 hover:border-red-600 rounded-lg text-white font-semibold transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-red-600/20 hover:shadow-2xl"
-                  whileHover={{ y: -2 }}
-                  transition={{ duration: 0.2 }}
                 >
-                  <motion.div
-                    whileHover={{ rotate: 360, scale: 1.2 }}
-                    transition={{ duration: 0.5 }}
-                  >
                     <Sparkles className="w-5 h-5 text-red-600" />
-                  </motion.div>
                   <span>Обо мне</span>
                 </motion.button>
               </Link>
@@ -85,15 +71,8 @@ export default function HomePage() {
               <Link href="/Work">
                 <motion.button
                   className="w-full px-8 py-3 bg-linear-to-r from-gray-800/60 to-gray-800/40 hover:from-red-600/30 hover:to-red-600/20 border border-gray-700 hover:border-red-600 rounded-lg text-white font-semibold transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-red-600/20 hover:shadow-2xl"
-                  whileHover={{ y: -2 }}
-                  transition={{ duration: 0.2 }}
                 >
-                  <motion.div
-                    whileHover={{ rotate: 360, scale: 1.2 }}
-                    transition={{ duration: 0.5 }}
-                  >
                     <Zap className="w-5 h-5 text-red-600" />
-                  </motion.div>
                   <span>Условия работы</span>
                 </motion.button>
               </Link>
