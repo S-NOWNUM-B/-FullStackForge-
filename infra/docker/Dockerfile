@@ -1,5 +1,11 @@
+# syntax=docker/dockerfile:1
+
+ARG NODE_IMAGE=public.ecr.aws/docker/library/node:22-alpine@sha256:8094c002d08262dba12645a3b4a15cd6cd627d30bc782f53229a2ec13ee22a00
+
+FROM ${NODE_IMAGE} AS base
+
 # Stage 1: Dependencies
-FROM node:22-alpine AS deps
+FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -13,7 +19,7 @@ COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --frozen-lockfile
 
 # Stage 2: Builder
-FROM node:22-alpine AS builder
+FROM base AS builder
 WORKDIR /app
 
 RUN npm install -g pnpm
@@ -43,7 +49,7 @@ ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
 RUN pnpm build
 
 # Stage 3: Runner
-FROM node:22-alpine AS runner
+FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV production

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "docker:up": "docker compose -f infra/docker/docker-compose.yml up --build",
+    "docker:up": "docker compose --env-file .env.local -f infra/docker/docker-compose.yml up --build",
     "docker:down": "docker compose -f infra/docker/docker-compose.yml down",
     "firebase:deploy": "firebase deploy --config infra/firebase/firebase.json"
   },
